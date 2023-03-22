@@ -25,15 +25,15 @@ func NewBusHandler(ctx context.Context, db *sql.DB) *BusHandler {
 }
 
 // CreateBus godoc
-// @Summary      Add bus
-// @Description  Create new bus
-// @Tags         Bus
-// @Accept       json
-// @Produce      json
-// @Param        request   				body      dto.BusInputDTO  true  "Bus Info"
-// @Success      200  											{object}   object
-// @Failure      404
-// @Router       /bus [post]
+// @Summary      			Add bus
+// @Description  			Create new bus
+// @Tags         			Bus
+// @Accept       			json
+// @Produce      			json
+// @Param        			request   				body      dto.BusInputDTO  true  "Bus Info"
+// @Success      			200  											{object}   object
+// @Failure      			404
+// @Router       			/bus [post]
 func (h *BusHandler) CreateBus(w http.ResponseWriter, r *http.Request) {
 	busInputDTO, err := getBusInput(w, r)
 	if err != nil {
@@ -52,14 +52,14 @@ func (h *BusHandler) CreateBus(w http.ResponseWriter, r *http.Request) {
 }
 
 // GetAllBus godoc
-// @Summary      Get all bus
-// @Description  Get all bus
-// @Tags         Bus
-// @Accept       json
-// @Produce      json
-// @Success      200  						{object}   []dto.BusOutputDTO
-// @Failure      404
-// @Router       /bus [get]
+// @Summary      			Get all bus
+// @Description  			Get all bus
+// @Tags         			Bus
+// @Accept       			json
+// @Produce      			json
+// @Success      			200  						{object}   []dto.BusOutputDTO
+// @Failure      			404
+// @Router       			/bus [get]
 func (h *BusHandler) GetAll(w http.ResponseWriter, r *http.Request) {
 	busRepository := database.NewBusRepository(h.Db)
 	allBus, err := busRepository.GetAll()
@@ -76,15 +76,15 @@ func (h *BusHandler) GetAll(w http.ResponseWriter, r *http.Request) {
 }
 
 // GetBusById godoc
-// @Summary      Search for a specific bus
-// @Description  Get a bus
-// @Tags         Bus
-// @Accept       json
-// @Produce      json
-// @Param        id   			path      		int  true  "Bus ID"
-// @Success      200  										{object}   dto.BusOutputDTO
-// @Failure      404
-// @Router       /bus/{id} [get]
+// @Summary      			Search for a specific bus
+// @Description  			Get a bus
+// @Tags         			Bus
+// @Accept       			json
+// @Produce      			json
+// @Param        			id   										path      	int  true  "Bus ID"
+// @Success      			200  										{object}   	dto.BusOutputDTO
+// @Failure      			404
+// @Router       			/bus/{id} [get]
 func (h *BusHandler) GetBus(w http.ResponseWriter, r *http.Request) {
 	id, err := getBusId(w, r)
 	if err != nil {
@@ -106,15 +106,15 @@ func (h *BusHandler) GetBus(w http.ResponseWriter, r *http.Request) {
 }
 
 // DeleteBus godoc
-// @Summary      Delete a specific bus
-// @Description  Get a bus
-// @Tags         Bus
-// @Accept       json
-// @Produce      json
-// @Param        id   			path      		int  true  "Bus Id"
-// @Success      200  										{object}   object
-// @Failure      404
-// @Router       /bus/{id} [delete]
+// @Summary      			Delete a specific bus
+// @Description  			Get a bus
+// @Tags         			Bus
+// @Accept       			json
+// @Produce      			json
+// @Param        			id   										path      		int  true  "Bus Id"
+// @Success      			200  										{object}   		object
+// @Failure      			404
+// @Router       			/bus/{id} [delete]
 func (h *BusHandler) DeleteBus(w http.ResponseWriter, r *http.Request) {
 	id, err := getBusId(w, r)
 	if err != nil {
@@ -132,16 +132,16 @@ func (h *BusHandler) DeleteBus(w http.ResponseWriter, r *http.Request) {
 
 
 // UpdateBus godoc
-// @Summary      Delete a specific bus
-// @Description  Get a bus
-// @Tags         Bus
-// @Accept       json
-// @Produce      json
-// @Param        id   			path      		int  true  "Account ID"
-// @Param        request   				body      dto.BusInputDTO  true  "Bus info"
-// @Success      200  										{object}   object
-// @Failure      404
-// @Router       /bus/{id} [patch]
+// @Summary      			Delete a specific bus
+// @Description  			Get a bus
+// @Tags         			Bus
+// @Accept       			json
+// @Produce      			json
+// @Param        			id   										path      		int  true  "Account ID"
+// @Param        			request   								body      		dto.BusInputDTO  true  "Bus info"
+// @Success      			200  										{object}   		object
+// @Failure      			404
+// @Router       			/bus/{id} [patch]
 func (h *BusHandler) UpdateBus(w http.ResponseWriter, r *http.Request) {
 	id, err := getBusId(w, r)
 	if err != nil {

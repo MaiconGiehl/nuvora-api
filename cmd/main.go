@@ -28,14 +28,13 @@ import (
 // @license.name   Acerta Promotora License
 // @license.url    https://techtur.com.br
 
-// @host      localhost:8000
+// @host      localhost:8080
 // @BasePath  /
 func main() {
 
 	dbconfig := config.LoadDBConfig()
-	psqlinfo := fmt.Sprintf("host=%s port=%d user=%s "+
-	"password=%s dbname=%s sslmode=disable",
-	dbconfig.Host, dbconfig.Port, dbconfig.User, dbconfig.Password, dbconfig.Name)
+	psqlinfo := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable",
+		dbconfig.Host, dbconfig.Port, dbconfig.User, dbconfig.Password, dbconfig.Name)
 	
 	db, err := sql.Open("postgres", psqlinfo)
 	if err != nil {
@@ -43,12 +42,7 @@ func main() {
 	}
 	defer db.Close()
 	
-	err = db.Ping()
-	if err != nil {
-  		panic(err)
-	}
-
-	http.ListenAndServe(":8000", createRouter(db))
+	http.ListenAndServe(":8080", createRouter(db))
 }
 
 func createRouter(db *sql.DB) *chi.Mux {
@@ -65,7 +59,7 @@ func createRouter(db *sql.DB) *chi.Mux {
 		r.Delete("/{id}", busHandler.DeleteBus)
 		r.Patch("/{id}", busHandler.UpdateBus)
 	})
-	r.Get("/docs/*", httpSwagger.Handler(httpSwagger.URL("http://localhost:8000/docs/doc.json")))
+	r.Get("/docs/*", httpSwagger.Handler(httpSwagger.URL("http://localhost:8080/docs/doc.json")))
 	
 	return r
 }
