@@ -19,5 +19,13 @@ func NewBus (id int, number int, maxPassengers int) (*Bus, error) {
 		MaxPassengers: 		maxPassengers,
 	}
 
+	// if !bus.isValid() {
+	// 	return bus, errors.New("Invalid input")
+	// }
+
 	return bus, nil
 }
+
+// func (e *Bus) isValid() bool {
+	
+// }

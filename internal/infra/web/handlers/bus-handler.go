@@ -2,25 +2,25 @@ package handlers
 
 import (
 	"context"
-	"database/sql"
 	"encoding/json"
 	"net/http"
 	"strconv"
 
 	dto "github.com/MaiconGiehl/API/internal/dto"
 	"github.com/MaiconGiehl/API/internal/infra/database"
+	"github.com/MaiconGiehl/API/internal/usecase"
 	"github.com/go-chi/chi/v5"
 )
 
 type BusHandler struct {
 	Ctx context.Context
-	Db *sql.DB
+	BusRepository *database.BusRepository
 }
 
-func NewBusHandler(ctx context.Context, db *sql.DB) *BusHandler {
+func NewBusHandler(ctx context.Context, busRepository *database.BusRepository) *BusHandler {
 	return &BusHandler{
 		Ctx: ctx,
-		Db: db,
+		BusRepository: busRepository,
 	}
 }
 
@@ -35,14 +35,14 @@ func NewBusHandler(ctx context.Context, db *sql.DB) *BusHandler {
 // @Failure      			404
 // @Router       			/bus [post]
 func (h *BusHandler) CreateBus(w http.ResponseWriter, r *http.Request) {
-	busInputDTO, err := getBusInput(w, r)
+	input, err := getBusInput(w, r)
 	if err != nil {
 		returnErrMsg(w, err)
 		return
 	}
 
-	busRepository := database.NewBusRepository(h.Db)
-	err = busRepository.Save(busInputDTO)
+	usecase := usecase.NewCreateBusUseCase(*h.BusRepository) 
+	err = usecase.Execute(input)
 	if err != nil {
 		returnErrMsg(w, err)
 		return
@@ -61,14 +61,14 @@ func (h *BusHandler) CreateBus(w http.ResponseWriter, r *http.Request) {
 // @Failure      			404
 // @Router       			/bus [get]
 func (h *BusHandler) GetAll(w http.ResponseWriter, r *http.Request) {
-	busRepository := database.NewBusRepository(h.Db)
-	allBus, err := busRepository.GetAll()
+	usecase := usecase.NewGetAllBusUseCase(*h.BusRepository)
+	output, err := usecase.Execute()
 	if err != nil {
 		returnErrMsg(w, err)
 		return
 	}
 
-	err = json.NewEncoder(w).Encode(&allBus)
+	err = json.NewEncoder(w).Encode(&output)
 	if err != nil {
 		returnErrMsg(w, err)
 		return
@@ -91,14 +91,14 @@ func (h *BusHandler) GetBus(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	busRepository := database.NewBusRepository(h.Db)
-	bus, err := busRepository.GetById(id)
+	usecase := usecase.NewGetBusUseCase(*h.BusRepository)
+	output, err := usecase.Execute(id)
 	if err != nil {
 		returnErrMsg(w, err)
 		return
 	}
 
-	err = json.NewEncoder(w).Encode(&bus)
+	err = json.NewEncoder(w).Encode(&output)
 	if err != nil {
 		returnErrMsg(w, err)
 		return
@@ -121,9 +121,8 @@ func (h *BusHandler) DeleteBus(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 	
-	busRepository := database.NewBusRepository(h.Db)
-	
-	err = busRepository.Delete(id)
+	usecase := usecase.NewDeleteBusUseCase(*h.BusRepository)
+	err = usecase.Execute(id)
 	if err != nil {
 		returnErrMsg(w, err)
 		return
@@ -153,8 +152,8 @@ func (h *BusHandler) UpdateBus(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	busRepository := database.NewBusRepository(h.Db)
-	err = busRepository.Update(id, bus)
+	usecase := usecase.NewUpdateBusUseCase(*h.BusRepository)
+	err = usecase.Execute(id, bus)
 	
 	if err != nil {
 		returnErrMsg(w, err)

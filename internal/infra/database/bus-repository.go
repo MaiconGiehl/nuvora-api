@@ -18,10 +18,10 @@ func NewBusRepository(db *sql.DB) *BusRepository {
 	return &BusRepository{Db: db}
 }
 
-func (r *BusRepository) Save(bus *dto.BusInputDTO) (error) {
+func (r *BusRepository) Save(input *entity.Bus) (error) {
 	stmt := "INSERT INTO public.onibus (numero, max_passageiros, criado_em, atualizado_em) VALUES ($1, $2, $3, $4)"
 
-	rows, err := r.Db.Exec(stmt, &bus.Number, &bus.MaxPassengers, time.Now().Format("2006-01-02 15:04:05"), time.Now().Format("2006-01-02 15:04:05"))
+	rows, err := r.Db.Exec(stmt, &input.Number, &input.MaxPassengers, time.Now().Format("2006-01-02 15:04:05"), time.Now().Format("2006-01-02 15:04:05"))
 	if err != nil {
 		return err
 	}
@@ -34,35 +34,35 @@ func (r *BusRepository) Save(bus *dto.BusInputDTO) (error) {
 	return nil
 }
 
-func (r *BusRepository) GetById(id int) (*entity.Bus, error) {
-	var bus entity.Bus
-	stmt := "SELECT id, numero, max_passageiros, criado_em, atualizado_em FROM public.onibus WHERE id=$1"
+func (r *BusRepository) GetById(input *entity.Bus) (*dto.BusOutputDTO, error) {
+	var output dto.BusOutputDTO
+	stmt := "SELECT numero, max_passageiros FROM public.onibus WHERE id=$1"
 
 
-	rows, err := r.Db.Query(stmt, id)
+	rows, err := r.Db.Query(stmt, input.Id)
 	if err != nil {
-		return &bus, err
+		return &output, err
 	}
 	
 	rows.Next()
-	err = rows.Scan(&bus.Id, &bus.Number, &bus.MaxPassengers, &bus.CreatedIn, &bus.UpdatedIn)
+	err = rows.Scan(&output.Number, &output.MaxPassengers)
 	if err != nil {
-		return &bus, errors.New(err.Error())
+		return &output, errors.New(err.Error())
 	}
 
-	return &bus, nil
+	return &output, nil
 }
 
-func (r *BusRepository) GetAll() (*[]entity.Bus, error) {
-	var allBus []entity.Bus
-	rows, err := r.Db.Query("SELECT id, numero, max_passageiros FROM public.onibus")
+func (r *BusRepository) GetAll() (*[]dto.BusOutputDTO, error) {
+	var allBus []dto.BusOutputDTO
+	rows, err := r.Db.Query("SELECT numero, max_passageiros FROM public.onibus")
 	if err != nil {
 		return &allBus, err
 	}
 	
 	for rows.Next() {
-		var bus entity.Bus
-		err = rows.Scan(&bus.Id, &bus.Number, &bus.MaxPassengers)
+		var bus dto.BusOutputDTO
+		err = rows.Scan(&bus.Number, &bus.MaxPassengers)
 		if err != nil {
 			fmt.Print(err)
 			break
@@ -73,10 +73,10 @@ func (r *BusRepository) GetAll() (*[]entity.Bus, error) {
 	return &allBus, err
 }
 
-func (r *BusRepository) Delete(id int) error {
+func (r *BusRepository) Delete(input *entity.Bus) error {
 	stmt := "DELETE FROM public.onibus WHERE id= $1"
 
-	rows, err := r.Db.Exec(stmt, id)
+	rows, err := r.Db.Exec(stmt, &input.Id)
 	if err != nil {
 		return err
 	}
@@ -89,10 +89,10 @@ func (r *BusRepository) Delete(id int) error {
 	return nil
 }
 
-func (r *BusRepository) Update(id int, bus *dto.BusInputDTO) error {
+func (r *BusRepository) Update(input *entity.Bus) error {
 	stmt := "UPDATE public.onibus SET numero = $2, max_passageiros = $3, atualizado_em = $4 WHERE id = $1"
 
-	rows, err := r.Db.Exec(stmt, id, bus.Number, bus.MaxPassengers, time.Now().Format("2006-01-02 15:04:05"))
+	rows, err := r.Db.Exec(stmt, input.Id, input.Number, input.MaxPassengers, time.Now().Format("2006-01-02 15:04:05"))
 	if err != nil {
 		return err
 	}

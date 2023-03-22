@@ -6,7 +6,6 @@ type BusInputDTO struct {
 }
 
 type BusOutputDTO struct {
-	Id 								int 	`json:"id"`
 	Number    			 	int  	`json:"number"`
 	MaxPassengers    	int  	`json:"maxPassengers"`
 }

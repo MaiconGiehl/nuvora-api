@@ -8,6 +8,7 @@ import (
 
 	"github.com/MaiconGiehl/API/config"
 	_ "github.com/MaiconGiehl/API/docs"
+	"github.com/MaiconGiehl/API/internal/infra/database"
 	"github.com/MaiconGiehl/API/internal/infra/web/handlers"
 	"github.com/go-chi/chi/middleware"
 	"github.com/go-chi/chi/v5"
@@ -50,7 +51,8 @@ func createRouter(db *sql.DB) *chi.Mux {
 	r := chi.NewRouter()
 	r.Use(middleware.Logger)
 	
-	busHandler := handlers.NewBusHandler(ctx, db)
+	busRepository := database.NewBusRepository(db)
+	busHandler := handlers.NewBusHandler(ctx, busRepository)
 	
 	r.Route("/bus", func(r chi.Router) {
 		r.Get("/", busHandler.GetAll)
