@@ -28,7 +28,7 @@ import (
 // @license.name   Acerta Promotora License
 // @license.url    https://techtur.com.br
 
-// @host      localhost:8080
+// @host      localhost:8000
 // @BasePath  /
 func main() {
 
@@ -48,7 +48,7 @@ func main() {
   		panic(err)
 	}
 
-	http.ListenAndServe(":8080", createRouter(db))
+	http.ListenAndServe(":8000", createRouter(db))
 }
 
 func createRouter(db *sql.DB) *chi.Mux {
@@ -65,7 +65,7 @@ func createRouter(db *sql.DB) *chi.Mux {
 		r.Delete("/{id}", busHandler.DeleteBus)
 		r.Patch("/{id}", busHandler.UpdateBus)
 	})
-	r.Get("/docs/*", httpSwagger.Handler(httpSwagger.URL("http://localhost:8080/docs/doc.json")))
+	r.Get("/docs/*", httpSwagger.Handler(httpSwagger.URL("http://localhost:8000/docs/doc.json")))
 	
 	return r
 }

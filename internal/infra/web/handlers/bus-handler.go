@@ -4,7 +4,6 @@ import (
 	"context"
 	"database/sql"
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"strconv"
 
@@ -25,33 +24,34 @@ func NewBusHandler(ctx context.Context, db *sql.DB) *BusHandler {
 	}
 }
 
-// GetQuery godoc
+// CreateBus godoc
 // @Summary      Add bus
 // @Description  Create new bus
 // @Tags         Bus
 // @Accept       json
 // @Produce      json
-// @Param        request   				body      dto.BusInputDTO  true  "BusInfo"
+// @Param        request   				body      dto.BusInputDTO  true  "Bus Info"
 // @Success      200  											{object}   object
 // @Failure      404
 // @Router       /bus [post]
 func (h *BusHandler) CreateBus(w http.ResponseWriter, r *http.Request) {
-	var bus dto.BusInputDTO
-	err := json.NewDecoder(r.Body).Decode(&bus)
-
+	busInputDTO, err := getBusInput(w, r)
 	if err != nil {
-		fmt.Print(err)
-		w.WriteHeader(http.StatusBadRequest)
+		returnErrMsg(w, err)
 		return
 	}
 
 	busRepository := database.NewBusRepository(h.Db)
-	busRepository.Save(bus.Number, bus.MaxPassengers)
+	err = busRepository.Save(busInputDTO)
+	if err != nil {
+		returnErrMsg(w, err)
+		return
+	}
 
 	w.WriteHeader(http.StatusCreated)
 }
 
-// GetQuery godoc
+// GetAllBus godoc
 // @Summary      Get all bus
 // @Description  Get all bus
 // @Tags         Bus
@@ -64,160 +64,129 @@ func (h *BusHandler) GetAll(w http.ResponseWriter, r *http.Request) {
 	busRepository := database.NewBusRepository(h.Db)
 	allBus, err := busRepository.GetAll()
 	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		msg := struct {
-			Message string `json:"message"`
-		}{
-			Message: err.Error(),
-		}
-		w.WriteHeader(http.StatusBadRequest)
-		json.NewEncoder(w).Encode(msg)
+		returnErrMsg(w, err)
 		return
 	}
 
 	err = json.NewEncoder(w).Encode(&allBus)
 	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		msg := struct {
-			Message string `json:"message"`
-		}{
-			Message: err.Error(),
-		}
-		w.WriteHeader(http.StatusBadRequest)
-		json.NewEncoder(w).Encode(msg)
+		returnErrMsg(w, err)
 		return
 	}
 }
 
-// GetQuery godoc
+// GetBusById godoc
 // @Summary      Search for a specific bus
 // @Description  Get a bus
 // @Tags         Bus
 // @Accept       json
 // @Produce      json
-// @Param        id   			path      		int  true  "Account ID"
+// @Param        id   			path      		int  true  "Bus ID"
 // @Success      200  										{object}   dto.BusOutputDTO
 // @Failure      404
 // @Router       /bus/{id} [get]
 func (h *BusHandler) GetBus(w http.ResponseWriter, r *http.Request) {
-	id := chi.URLParam(r, "id")
-	if id == "" {
-		w.WriteHeader(http.StatusBadRequest)
-		return
-	}
-	
-	busId, err := strconv.Atoi(id)
+	id, err := getBusId(w, r)
 	if err != nil {
-		panic(err)
+		return
 	}
 
 	busRepository := database.NewBusRepository(h.Db)
-	bus, err := busRepository.GetById(busId)
+	bus, err := busRepository.GetById(id)
 	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		msg := struct {
-			Message string `json:"message"`
-		}{
-			Message: err.Error(),
-		}
-		w.WriteHeader(http.StatusBadRequest)
-		json.NewEncoder(w).Encode(msg)
+		returnErrMsg(w, err)
 		return
 	}
 
 	err = json.NewEncoder(w).Encode(&bus)
 	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		msg := struct {
-			Message string `json:"message"`
-		}{
-			Message: err.Error(),
-		}
-		w.WriteHeader(http.StatusBadRequest)
-		json.NewEncoder(w).Encode(msg)
+		returnErrMsg(w, err)
 		return
 	}
 }
 
-// GetQuery godoc
+// DeleteBus godoc
 // @Summary      Delete a specific bus
 // @Description  Get a bus
 // @Tags         Bus
 // @Accept       json
 // @Produce      json
-// @Param        id   			path      		int  true  "Account ID"
+// @Param        id   			path      		int  true  "Bus Id"
 // @Success      200  										{object}   object
 // @Failure      404
 // @Router       /bus/{id} [delete]
 func (h *BusHandler) DeleteBus(w http.ResponseWriter, r *http.Request) {
-	id := chi.URLParam(r, "id")
-	if id == "" {
-		w.WriteHeader(http.StatusBadRequest)
+	id, err := getBusId(w, r)
+	if err != nil {
 		return
 	}
 	
-	busId, err := strconv.Atoi(id)
-	if err != nil {
-		fmt.Print(err)
-	}
-
 	busRepository := database.NewBusRepository(h.Db)
-	err = busRepository.Delete(busId)
 	
+	err = busRepository.Delete(id)
 	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		msg := struct {
-			Message string `json:"message"`
-		}{
-			Message: err.Error(),
-		}
-		w.WriteHeader(http.StatusBadRequest)
-		json.NewEncoder(w).Encode(msg)
+		returnErrMsg(w, err)
 		return
 	}
 }
 
 
-// GetQuery godoc
+// UpdateBus godoc
 // @Summary      Delete a specific bus
 // @Description  Get a bus
 // @Tags         Bus
 // @Accept       json
 // @Produce      json
 // @Param        id   			path      		int  true  "Account ID"
-// @Param        request   				body      dto.BusInputDTO  true  "BusInfo"
+// @Param        request   				body      dto.BusInputDTO  true  "Bus info"
 // @Success      200  										{object}   object
 // @Failure      404
 // @Router       /bus/{id} [patch]
 func (h *BusHandler) UpdateBus(w http.ResponseWriter, r *http.Request) {
-	fmt.Print("a")
+	id, err := getBusId(w, r)
+	if err != nil {
+		return
+	}
 
+	bus, err := getBusInput(w, r)
+	if err != nil {
+		return
+	}
+
+	busRepository := database.NewBusRepository(h.Db)
+	err = busRepository.Update(id, bus)
+	
+	if err != nil {
+		returnErrMsg(w, err)
+		return
+	}
+}
+
+func getBusId(w http.ResponseWriter, r *http.Request) (int, error) {
 	id, err := strconv.Atoi(chi.URLParam(r, "id"))
 	if (err != nil || id <= 0) {
 		w.WriteHeader(http.StatusBadRequest)
-		return
+		return id, err
 	}
+	return id, nil
+}
 
+func getBusInput(w http.ResponseWriter, r *http.Request) (*dto.BusInputDTO, error) {
 	var bus dto.BusInputDTO
-	err = json.NewDecoder(r.Body).Decode(&bus)
+	err := json.NewDecoder(r.Body).Decode(&bus)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
+		return &bus, err
 	}
-	fmt.Print("a")
+	return &bus, nil
+}
 
-	busRepository := database.NewBusRepository(h.Db)
-	err = busRepository.Update(id, &bus)
-	
-	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		fmt.Print(err)
-		msg := struct {
-			Message string `json:"message"`
-		}{
-			Message: err.Error(),
-		}
-		w.WriteHeader(http.StatusBadRequest)
-		json.NewEncoder(w).Encode(msg)
-		return
+func returnErrMsg(w http.ResponseWriter, err error) {
+	w.WriteHeader(http.StatusBadRequest)
+	msg := struct {
+		Message string `json:"message"`
+	}{
+		Message: err.Error(),
 	}
+	json.NewEncoder(w).Encode(msg)
 }

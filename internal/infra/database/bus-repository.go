@@ -2,6 +2,7 @@ package database
 
 import (
 	"database/sql"
+	"errors"
 	"fmt"
 	"time"
 
@@ -17,42 +18,46 @@ func NewBusRepository(db *sql.DB) *BusRepository {
 	return &BusRepository{Db: db}
 }
 
-func (r *BusRepository) Save(number int, maxPassengers int) (error) {
-
+func (r *BusRepository) Save(bus *dto.BusInputDTO) (error) {
 	stmt := "INSERT INTO public.onibus (numero, max_passageiros, criado_em, atualizado_em) VALUES ($1, $2, $3, $4)"
 
-	_, err := r.Db.Exec(stmt, number, maxPassengers, time.Now().Format("2006-01-02 15:04:05"), time.Now().Format("2006-01-02 15:04:05"))
+	rows, err := r.Db.Exec(stmt, &bus.Number, &bus.MaxPassengers, time.Now().Format("2006-01-02 15:04:05"), time.Now().Format("2006-01-02 15:04:05"))
 	if err != nil {
 		return err
 	}
-	fmt.Print(err)
 
-	return err
+	err = threatNotAffectData(rows)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
-func (r *BusRepository) GetById(id int) (entity.Bus, error) {
+func (r *BusRepository) GetById(id int) (*entity.Bus, error) {
 	var bus entity.Bus
+	stmt := "SELECT id, numero, max_passageiros, criado_em, atualizado_em FROM public.onibus WHERE id=$1"
 
-	rows, err := r.Db.Query(fmt.Sprintf("select id, numero, max_passageiros, criado_em, atualizado_em from public.onibus where id=%d", id))
+
+	rows, err := r.Db.Query(stmt, id)
 	if err != nil {
-		return bus, err
+		return &bus, err
 	}
 	
 	rows.Next()
 	err = rows.Scan(&bus.Id, &bus.Number, &bus.MaxPassengers, &bus.CreatedIn, &bus.UpdatedIn)
 	if err != nil {
-		fmt.Print(err)
+		return &bus, errors.New(err.Error())
 	}
-	
 
-	return bus, err
+	return &bus, nil
 }
 
-func (r *BusRepository) GetAll() ([]entity.Bus, error) {
+func (r *BusRepository) GetAll() (*[]entity.Bus, error) {
 	var allBus []entity.Bus
-	rows, err := r.Db.Query("select id, numero, max_passageiros from public.onibus")
+	rows, err := r.Db.Query("SELECT id, numero, max_passageiros FROM public.onibus")
 	if err != nil {
-		return allBus, err
+		return &allBus, err
 	}
 	
 	for rows.Next() {
@@ -63,27 +68,47 @@ func (r *BusRepository) GetAll() ([]entity.Bus, error) {
 			break
 		}
 		allBus = append(allBus, bus)
-}
-	return allBus, err
+	}
+	
+	return &allBus, err
 }
 
-func (r *BusRepository) Delete(id int) (error) {
-	_, err := r.Db.Query(fmt.Sprintf("delete from public.onibus  where id=%d", id))
+func (r *BusRepository) Delete(id int) error {
+	stmt := "DELETE FROM public.onibus WHERE id= $1"
+
+	rows, err := r.Db.Exec(stmt, id)
 	if err != nil {
 		return err
 	}
 
-	return err
+	err = threatNotAffectData(rows)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func (r *BusRepository) Update(id int, bus *dto.BusInputDTO) error {
-	stmt := "update public.onibus SET numero = $2, max_passageiros = $3, atualizado_em = $4 where id= $1"
+	stmt := "UPDATE public.onibus SET numero = $2, max_passageiros = $3, atualizado_em = $4 WHERE id = $1"
 
-	_, err := r.Db.Exec(stmt, id, bus.Number, bus.MaxPassengers, time.Now().Format("2006-01-02 15:04:05"))
-	fmt.Print(err)
+	rows, err := r.Db.Exec(stmt, id, bus.Number, bus.MaxPassengers, time.Now().Format("2006-01-02 15:04:05"))
 	if err != nil {
 		return err
 	}
 
-	return err
+	err = threatNotAffectData(rows)
+	if err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func threatNotAffectData(rows sql.Result) error {
+	affectedRows, _ := rows.RowsAffected()
+	if affectedRows == 0 {
+		return errors.New("data not found")
+	}
+	return nil
 }
