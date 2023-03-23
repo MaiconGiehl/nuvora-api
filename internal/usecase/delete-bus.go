@@ -19,11 +19,11 @@ func NewDeleteBusUseCase(
 }
 
 func (c *DeleteBusUseCase) Execute(id int) error {
-	bus := entity.Bus{
+	entity := entity.Bus{
 		Id:								id,
 	}
 
-	err := c.BusRepository.Delete(&bus)
+	err := c.BusRepository.Delete(&entity)
 	if err != nil {
 		return err
 	}

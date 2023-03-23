@@ -20,11 +20,11 @@ func NewGetBusUseCase(
 }
 
 func (c *GetBusUseCase) Execute(id int) (*dto.BusOutputDTO, error) {
-	bus := entity.Bus{
+	entity := entity.Bus{
 		Id:								id,
 	}
 
-	output, err := c.BusRepository.GetById(&bus)
+	output, err := c.BusRepository.GetById(&entity)
 	if err != nil {
 		return output, err
 	}

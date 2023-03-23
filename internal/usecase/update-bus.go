@@ -20,13 +20,13 @@ func NewUpdateBusUseCase(
 }
 
 func (c *UpdateBusUseCase) Execute(id int, input *dto.BusInputDTO) error {
-	bus := entity.Bus{
+	entity := entity.Bus{
 		Id:							id,
 		Number: 				input.Number,
 		MaxPassengers: 	input.MaxPassengers,
 	}
 
-	err := c.BusRepository.Update(&bus)
+	err := c.BusRepository.Update(&entity)
 	if err != nil {
 		return err
 	}
