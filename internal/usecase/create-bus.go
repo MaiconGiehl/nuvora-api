@@ -20,12 +20,12 @@ func NewCreateBusUseCase(
 }
 
 func (c *CreateBusUseCase) Execute(input *dto.BusInputDTO) error {
-	bus := entity.Bus{
+	entity := entity.Bus{
 		Number: input.Number,
 		MaxPassengers: input.MaxPassengers,
 	}
 
-	err := c.BusRepository.Save(&bus)
+	err := c.BusRepository.Save(&entity)
 	if err != nil {
 		return err
 	}

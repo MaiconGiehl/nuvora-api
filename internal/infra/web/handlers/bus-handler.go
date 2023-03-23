@@ -49,6 +49,7 @@ func (h *BusHandler) CreateBus(w http.ResponseWriter, r *http.Request) {
 	}
 
 	w.WriteHeader(http.StatusCreated)
+	json.NewEncoder(w).Encode("New bus created")
 }
 
 // GetAllBus godoc
@@ -73,6 +74,8 @@ func (h *BusHandler) GetAll(w http.ResponseWriter, r *http.Request) {
 		returnErrMsg(w, err)
 		return
 	}
+
+	w.WriteHeader(http.StatusFound)
 }
 
 // GetBusById godoc
@@ -88,6 +91,7 @@ func (h *BusHandler) GetAll(w http.ResponseWriter, r *http.Request) {
 func (h *BusHandler) GetBus(w http.ResponseWriter, r *http.Request) {
 	id, err := getBusId(w, r)
 	if err != nil {
+		returnErrMsg(w, err)
 		return
 	}
 
@@ -103,6 +107,9 @@ func (h *BusHandler) GetBus(w http.ResponseWriter, r *http.Request) {
 		returnErrMsg(w, err)
 		return
 	}
+
+	w.WriteHeader(http.StatusFound)
+
 }
 
 // DeleteBus godoc
@@ -112,12 +119,13 @@ func (h *BusHandler) GetBus(w http.ResponseWriter, r *http.Request) {
 // @Accept       			json
 // @Produce      			json
 // @Param        			id   										path      		int  true  "Bus Id"
-// @Success      			200  										{object}   		object
+// @Success      			202  										{object}   		object
 // @Failure      			404
 // @Router       			/bus/{id} [delete]
 func (h *BusHandler) DeleteBus(w http.ResponseWriter, r *http.Request) {
 	id, err := getBusId(w, r)
 	if err != nil {
+		returnErrMsg(w, err)
 		return
 	}
 	
@@ -127,6 +135,8 @@ func (h *BusHandler) DeleteBus(w http.ResponseWriter, r *http.Request) {
 		returnErrMsg(w, err)
 		return
 	}
+
+	w.WriteHeader(http.StatusAccepted)
 }
 
 
@@ -138,17 +148,19 @@ func (h *BusHandler) DeleteBus(w http.ResponseWriter, r *http.Request) {
 // @Produce      			json
 // @Param        			id   										path      		int  true  "Account ID"
 // @Param        			request   								body      		dto.BusInputDTO  true  "Bus info"
-// @Success      			200  										{object}   		object
+// @Success      			202  										{object}   		object
 // @Failure      			404
 // @Router       			/bus/{id} [patch]
 func (h *BusHandler) UpdateBus(w http.ResponseWriter, r *http.Request) {
 	id, err := getBusId(w, r)
 	if err != nil {
+		returnErrMsg(w, err)
 		return
 	}
 
 	bus, err := getBusInput(w, r)
 	if err != nil {
+		returnErrMsg(w, err)
 		return
 	}
 
@@ -159,6 +171,8 @@ func (h *BusHandler) UpdateBus(w http.ResponseWriter, r *http.Request) {
 		returnErrMsg(w, err)
 		return
 	}
+
+	w.WriteHeader(http.StatusAccepted)
 }
 
 func getBusId(w http.ResponseWriter, r *http.Request) (int, error) {
@@ -182,10 +196,5 @@ func getBusInput(w http.ResponseWriter, r *http.Request) (*dto.BusInputDTO, erro
 
 func returnErrMsg(w http.ResponseWriter, err error) {
 	w.WriteHeader(http.StatusBadRequest)
-	msg := struct {
-		Message string `json:"message"`
-	}{
-		Message: err.Error(),
-	}
-	json.NewEncoder(w).Encode(msg)
+	json.NewEncoder(w).Encode(err)
 }
