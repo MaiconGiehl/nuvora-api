@@ -3,13 +3,10 @@ package entity
 import "time"
 
 type Ticket struct {
-	ID 								int
-	ClienteID 				int
-	Price							float64
-	Status 						int
-	DepartureCity 		string
-	DepartureTime 		time.Time
-	DestinyCity 			string
-	DestinyTime 			time.Time
-	BusID 						int
+	ID 									int
+  AccountID						int
+  Status 							int
+  TravelID 						int
+  CreatedAt 					time.Time
+  UpdatedAt 					time.Time
 }
