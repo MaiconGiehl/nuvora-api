@@ -8,8 +8,8 @@ type Bus struct {
 	Id 									int
 	Number 							int
 	MaxPassengers 			int
-	CreatedIn 					time.Time
-	UpdatedIn 					time.Time
+	CreatedAt 					time.Time
+	UpdatedAt 					time.Time
 }
 
 func NewBus (id int, number int, maxPassengers int) (*Bus, error) {
@@ -25,7 +25,3 @@ func NewBus (id int, number int, maxPassengers int) (*Bus, error) {
 
 	return bus, nil
 }
-
-// func (e *Bus) isValid() bool {
-	
-// }

@@ -18,7 +18,7 @@ func NewBusRepository(db *sql.DB) *BusRepository {
 }
 
 func (r *BusRepository) Save(input *entity.Bus) (error) {
-	stmt := "INSERT INTO public.onibus (numero, max_passageiros, criado_em, atualizado_em) VALUES ($1, $2, $3, $4)"
+	stmt := "INSERT INTO bus (number, max_passengers, created_at, updated_at) VALUES ($1, $2, $3, $4)"
 
 	rows, err := r.Db.Exec(stmt, &input.Number, &input.MaxPassengers, time.Now().Format("2006-01-02 15:04:05"), time.Now().Format("2006-01-02 15:04:05"))
 	if err != nil {
@@ -35,7 +35,7 @@ func (r *BusRepository) Save(input *entity.Bus) (error) {
 
 func (r *BusRepository) GetById(input *entity.Bus) (*dto.BusOutputDTO, error) {
 	var output dto.BusOutputDTO
-	stmt := "SELECT id, numero, max_passageiros FROM public.onibus WHERE id=$1"
+	stmt := "SELECT id, number, max_passengers FROM bus WHERE id=$1"
 
 	rows, err := r.Db.Query(stmt, input.Id)
 	if err != nil {
@@ -53,7 +53,7 @@ func (r *BusRepository) GetById(input *entity.Bus) (*dto.BusOutputDTO, error) {
 
 func (r *BusRepository) GetAll() (*[]dto.BusOutputDTO, error) {
 	var allBus []dto.BusOutputDTO
-	rows, err := r.Db.Query("SELECT id, numero, max_passageiros FROM public.onibus")
+	rows, err := r.Db.Query("SELECT id, number, max_passengers FROM bus")
 	if err != nil {
 		return &allBus, err
 	}
@@ -71,7 +71,7 @@ func (r *BusRepository) GetAll() (*[]dto.BusOutputDTO, error) {
 }
 
 func (r *BusRepository) Delete(input *entity.Bus) error {
-	stmt := "DELETE FROM public.onibus WHERE id= $1"
+	stmt := "DELETE FROM bus WHERE id= $1"
 
 	rows, err := r.Db.Exec(stmt, &input.Id)
 	if err != nil {
@@ -87,7 +87,7 @@ func (r *BusRepository) Delete(input *entity.Bus) error {
 }
 
 func (r *BusRepository) Update(input *entity.Bus) error {
-	stmt := "UPDATE public.onibus SET numero = $2, max_passageiros = $3, atualizado_em = $4 WHERE id = $1"
+	stmt := "UPDATE bus SET number = $2, max_passengers = $3, updated_at = $4 WHERE id = $1"
 
 	rows, err := r.Db.Exec(stmt, input.Id, input.Number, input.MaxPassengers, time.Now().Format("2006-01-02 15:04:05"))
 	if err != nil {
