@@ -2,7 +2,6 @@ package dto
 
 type TicketInputDTO struct {
   AccountID						int
-  Status 							int
   TravelID 						int
 }
 
