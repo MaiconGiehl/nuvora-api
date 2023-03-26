@@ -5,12 +5,12 @@ import "time"
 type Travel struct {
 	ID 								int
   Price 						float64
-  CompanyAccountId 	int
+  AccountID 	int
   BusID 						int
   DepartureTime 		time.Time
-  DepartureCityId 	int
+  DepartureCityID 	int
   ArrivalTime 			time.Time
-  ArrivalCityId 		int
+  ArrivalCityID 		int
   CreatedAt 				time.Time
   UpdatedAt 				time.Time
 }

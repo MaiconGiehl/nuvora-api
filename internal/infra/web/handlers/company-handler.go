@@ -57,7 +57,7 @@ func (h *CompanyHandler) GetAll(w http.ResponseWriter, r *http.Request) {
 // @Param        			request   				body      dto.CompanyInputDTO  true  "Company Info"
 // @Success      			201  											{object}   object
 // @Failure      			404
-// @Router       			/company/{email}/password [post]
+// @Router       			/company [post]
 func (h *CompanyHandler) CreateCompany(w http.ResponseWriter, r *http.Request) {
 	input, err := getCompanyInput(w, r)
 	if err != nil {

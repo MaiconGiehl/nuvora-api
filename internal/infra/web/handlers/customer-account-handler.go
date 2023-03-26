@@ -61,14 +61,14 @@ func (h *CustomerAccountHandler) CreateCustomerAccount(w http.ResponseWriter, r 
 }
 
 // Login godoc
-// @Summary      			Delete a specific bus
-// @Description  			Get a bus
+// @Summary      			Login as customer
+// @Description  			Use your customer credentials to enter in your account
 // @Tags         			Customer
 // @Accept       			json
 // @Produce      			json
-// @Param        			email   										path      		string  true  "Account ID"
-// @Param        			password   									path      		string  true  "Account ID"
-// @Success      			202  										{object}   		object
+// @Param        			email   										path      		string  true  "Customer email"
+// @Param        			password   									path      		string  true  "Customer password"
+// @Success      			202  												{object}   		dto.CustomerAccountOutputDTO
 // @Failure      			404
 // @Router       			/customer/{email}/{password} [get]
 func (h *CustomerAccountHandler) GetCustomerAccount(w http.ResponseWriter, r *http.Request) {

@@ -16,9 +16,9 @@ func NewPersonRepository(db *sql.DB) *PersonRepository {
 }
 
 func (r *PersonRepository) SaveCustomerPerson(input *entity.Person) (error) {
-	stmt := "INSERT INTO person (cep, permission_level, customer_id, created_at, updated_at) VALUES ($1, $2, $3, $4, $5)"
+	stmt := "INSERT INTO person (permission_level, customer_id, city_id, created_at, updated_at) VALUES ($1, $2, $3, $4, $5)"
 
-	rows, err := r.Db.Exec(stmt, &input.Cep, &input.PermissionLevel, &input.CustomerID, time.Now().Format("2006-01-02 15:04:05"), time.Now().Format("2006-01-02 15:04:05"))
+	rows, err := r.Db.Exec(stmt, &input.PermissionLevel, &input.CustomerID, &input.CityID, time.Now().Format("2006-01-02 15:04:05"), time.Now().Format("2006-01-02 15:04:05"))
 	if err != nil {
 		return err
 	}

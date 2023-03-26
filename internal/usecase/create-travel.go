@@ -21,13 +21,13 @@ func NewCreateTravelUseCase(
 
 func (c *CreateTravelUseCase) Execute(input *dto.TravelInputDTO) error {
 	entity := entity.Travel{
-		Price:   input.Price,
-		CompanyAccountId:   input.CompanyAccountId,
-		BusID:   input.BusID,
-		DepartureTime:   input.DepartureTime,
-		DepartureCityId:   input.DepartureCityId,
-		ArrivalTime:   input.ArrivalTime,
-		ArrivalCityId:   input.ArrivalCityId,
+		Price: 								 	input.Price,
+  	AccountID: 							input.AccountID,
+  	BusID: 								 	input.BusID,
+  	DepartureTime: 					input.DepartureTime,
+  	DepartureCityID: 				input.DepartureCityID,
+  	ArrivalTime: 						input.ArrivalTime,
+  	ArrivalCityID: 					input.ArrivalCityID,
 	}
 
 	err := c.TravelRepository.Save(&entity)

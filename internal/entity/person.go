@@ -4,7 +4,7 @@ import "time"
 
 type Person struct {
 	ID 									int
-  Cep 								int
+  CityID 							int
 	PermissionLevel 		int
 	CustomerID					int
 	CompanyID 					int

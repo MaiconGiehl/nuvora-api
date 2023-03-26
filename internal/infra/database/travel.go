@@ -17,46 +17,57 @@ func NewTravelRepository(db *sql.DB) *TravelRepository {
 	return &TravelRepository{Db: db}
 }
 
-func (r *TravelRepository) GetAll() (*[]dto.TravelOutputDTO, error) {
+func (r *TravelRepository) GetAllByDestiny(entity *entity.Travel) (*[]dto.TravelOutputDTO, error) {
 	var output []dto.TravelOutputDTO
-	rows, err := r.Db.Query(
-		`SELECT 
-			t.id,
-			t.price,
-			ac.id,
-			ac.fantasy_name,
-			ct.id, ct.description,
-			ac
-		FROM
-			public.travel AS t 
-		JOIN 
-			public.account AS ac 
-			ON t.company_account_id=ac.id
-		JOIN 
-			public.company_type AS ct
-			ON ac.company_type_id=ct.id`,
-	)
+	stmt := 
+	`SELECT 
+		t.id,
+		price, 
+		c.fantasy_name, 
+		b."number" , 
+		b.max_passengers, 
+		t.departure_time,
+		dpt_c.name,
+		t.arrival_time,
+		arv_c.name
+	FROM
+		travel t 
+	LEFT JOIN
+		account a ON t.account_id=a.id 
+	LEFT JOIN
+		person p ON a.person_id =p.id  
+	LEFT JOIN
+		company c ON p.company_id =c.id
+	LEFT JOIN
+		bus b  ON t.bus_id =b.id
+	LEFT JOIN
+		city dpt_c ON t.departure_city_id=dpt_c.id
+	LEFT JOIN
+		city arv_c ON t.arrival_city_id =arv_c.id
+	WHERE
+		arv_c.id = $1 AND dpt_c.id = $2
+	ORDER BY
+		t.departure_time
+	`
+
+	rows, err := r.Db.Query(stmt, entity.DepartureCityID, entity.ArrivalCityID)
 	if err != nil {
 		return &output, err
 	}
 	
+
 	for rows.Next() {
 		var travel dto.TravelOutputDTO
 		err = rows.Scan(
-			&travel.ID, 
+			&travel.ID,
 			&travel.Price,
-			&travel.Company.ID,
-			&travel.Company.FantasyName,
-			// &travel.Company.CompanyType.ID,
-			// &travel.Company.CompanyType.Description,
-			&travel.Bus.ID, 
-			&travel.Bus.Number,
-			&travel.Bus.MaxPassengers,
+			&travel.FantasyName,
+			&travel.BusNumber,
+			&travel.MaxPassengers,
 			&travel.DepartureTime,
-			&travel.DepartureCity.ID,
-			&travel.DepartureCity.Name,
+			&travel.DepartureCity,
 			&travel.ArrivalTime,
-			&travel.ArrivalCity.Name,
+			&travel.ArrivalCity,
 		)
 
 		if err != nil {
@@ -70,15 +81,14 @@ func (r *TravelRepository) GetAll() (*[]dto.TravelOutputDTO, error) {
 }
 
 func (r *TravelRepository) Save(input *entity.Travel) (error) {
-	stmt := "INSERT INTO public.travel (price, company_account_id, bus_id, departure_time, departure_city_id, arrival_time, arrival_city_id, created_at, updated_at) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)"
+	stmt := "INSERT INTO public.travel (price, account_id, bus_id, departure_time, departure_city_id, arrival_time, arrival_city_id, created_at, updated_at) VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)"
 
-	rows, err := r.Db.Exec(stmt, input.Price, input.CompanyAccountId, input.BusID, input.DepartureTime, input.DepartureCityId, input.ArrivalTime, input.ArrivalCityId,
+	rows, err := r.Db.Exec(stmt, input.Price, input.AccountID, input.BusID, input.DepartureTime, input.DepartureCityID, input.ArrivalTime, input.ArrivalCityID,
 		time.Now().Format("2006-01-02 15:04:05"), time.Now().Format("2006-01-02 15:04:05"))
 	fmt.Print(err)
 	if err != nil {
 		return err
 	}
-
 
 	err = threatNotAffectData(rows)
 	if err != nil {

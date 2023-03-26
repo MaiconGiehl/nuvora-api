@@ -3,6 +3,7 @@ package handlers
 import (
 	"context"
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"strconv"
 
@@ -30,8 +31,8 @@ func NewTravelHandler(ctx context.Context, travelRepository *database.TravelRepo
 // @Tags         			Travel
 // @Accept       			json
 // @Produce      			json
-// @Param        			request   				body      dto.TravelInputDTO  true  "Travel Info"
-// @Success      			201  											{object}   object
+// @Param        			request   				body     	dto.TravelInputDTO  			true  		"Travel Info"
+// @Success      			201  												{object}   								object
 // @Failure      			404
 // @Router       			/travel [post]
 func (h *TravelHandler) CreateTravel(w http.ResponseWriter, r *http.Request) {
@@ -51,6 +52,49 @@ func (h *TravelHandler) CreateTravel(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusCreated)
 }
 
+// TravelByCity godoc
+// @Summary      			Get travel by user city
+// @Description  			Use your customer credentials to enter in your account
+// @Tags         			Travel
+// @Accept       			json
+// @Produce      			json
+// @Param        			arrival_city_id   									path      		int  true  "Departure city"
+// @Param        			departure_city_id   									path      		int  true  "Arrival city"
+// @Success      			202  												{object}   		dto.TravelOutputDTO
+// @Failure      			404
+// @Router       			/travel/{departure_city_id}/{arrival_city_id}  [get]
+func (h *TravelHandler) GetAllTraveslByDestiny(w http.ResponseWriter, r *http.Request) {
+	dptCityId, err := strconv.Atoi(chi.URLParam(r, "departure_city_id"))
+	fmt.Print(dptCityId)
+	if err != nil {
+		returnErrMsg(w, err)
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	arvCityId, err := strconv.Atoi(chi.URLParam(r, "arrival_city_id"))
+	if err != nil {
+		returnErrMsg(w, err)
+		w.WriteHeader(http.StatusBadRequest)
+		return
+	}
+
+	input := dto.TravelInputDTO{
+		DepartureCityID: dptCityId,
+		ArrivalCityID: arvCityId,
+	}
+
+	usecase := usecase.NewGetAllTravelsByDestinyUseCase(*h.TravelRepository)
+	output, err := usecase.Execute(&input)
+	if err != nil {
+		returnErrMsg(w, err)
+		return
+	}
+
+	json.NewEncoder(w).Encode(output)
+	
+}
+
 
 // DeleteTravel godoc
 // @Summary      			Delete a specific travel
@@ -63,9 +107,9 @@ func (h *TravelHandler) CreateTravel(w http.ResponseWriter, r *http.Request) {
 // @Failure      			404
 // @Router       			/travel/{id} [delete]
 func (h *TravelHandler) DeleteTravel(w http.ResponseWriter, r *http.Request) {
-	id, err := getTravelId(w, r)
-	if err != nil {
-		returnErrMsg(w, err)
+	id, err := strconv.Atoi(chi.URLParam(r, "id"))
+	if (err != nil || id <= 0) {
+		w.WriteHeader(http.StatusBadRequest)
 		return
 	}
 	
@@ -77,15 +121,6 @@ func (h *TravelHandler) DeleteTravel(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
-
-func getTravelId(w http.ResponseWriter, r *http.Request) (int, error) {
-	id, err := strconv.Atoi(chi.URLParam(r, "id"))
-	if (err != nil || id <= 0) {
-		w.WriteHeader(http.StatusBadRequest)
-		return id, err
-	}
-	return id, nil
-}
 
 func getTravelInput(w http.ResponseWriter, r *http.Request) (*dto.TravelInputDTO, error) {
 	var travel dto.TravelInputDTO

@@ -1,7 +1,7 @@
 package dto
 
 type PersonCustomerInputDTO struct {
-  Cep 								int
+  CityID 							int
 	PermissionLevel 		int
 	Customer					  CustomerInputDTO
 }

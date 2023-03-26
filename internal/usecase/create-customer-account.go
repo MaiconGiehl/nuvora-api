@@ -46,13 +46,14 @@ func (c *CreateCustomerAccountUseCase) Execute(input *dto.CustomerAccountInputDT
 	}
 
 	personEntity := entity.Person{
-  	Cep:							input.Person.Cep,
+  	CityID:						input.Person.CityID,
 		PermissionLevel:	input.Person.PermissionLevel,
 		CustomerID:				int(newCustomerId),
 	}
 
 	err = c.PersonRepository.SaveCustomerPerson(&personEntity)
 	if err != nil {
+		c.CustomerRepository.Delete(&entity.Customer{Id: int(newCustomerId)})
 		return err
 	}
 
@@ -66,14 +67,16 @@ func (c *CreateCustomerAccountUseCase) Execute(input *dto.CustomerAccountInputDT
 		Email: 					input.Email,
 		Password: 			input.Password,
 		PersonID: 			int(newPersonId),
-		DailyTickets:   int(input.DailyTickets.Int16),
-		TicketsLeft:    int(input.DailyTickets.Int16),
+		DailyTickets:   input.DailyTickets,
+		TicketsLeft:    input.DailyTickets,
 	}
 
 	fmt.Print(accountEntity.TicketsLeft)
 
 	err = c.AccountRepository.SaveCustomerAccount(&accountEntity)
 	if err != nil {
+		c.CustomerRepository.Delete(&entity.Customer{Id: int(newCustomerId)})
+		c.PersonRepository.Delete(&entity.Person{ID: int(newPersonId)})
 		return err
 	}
 

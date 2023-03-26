@@ -1,24 +1,27 @@
 package dto
 
-import "time"
+import (
+	"time"
+)
 
 type TravelInputDTO struct {
   Price 						float64
-  CompanyAccountId 	int
+  AccountID 				int
   BusID 						int
   DepartureTime 		time.Time
-  DepartureCityId 	int
+  DepartureCityID 	int
   ArrivalTime 			time.Time
-  ArrivalCityId 		int
+  ArrivalCityID 		int
 }
 
 type TravelOutputDTO struct {
 	ID 								int
   Price 						float64
-  Company         	CompanyOutputDTO
-  Bus 			   			BusOutputDTO
+  FantasyName       string
+  BusNumber      		int
+  MaxPassengers 		int
   DepartureTime 		time.Time
-  DepartureCity 	  CityOutputDTO
+  DepartureCity 	  string
   ArrivalTime 			time.Time
-  ArrivalCity   		CityOutputDTO
+  ArrivalCity   		string
 }

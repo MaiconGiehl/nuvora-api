@@ -1,21 +1,20 @@
 package dto
 
-import "database/sql"
-
 type CustomerAccountInputDTO struct {
   Username     	string
   Email   			string
   Password 			string
   Person  			PersonCustomerInputDTO
-  DailyTickets 	sql.NullInt16
+  DailyTickets 	int
 }
 
 type CustomerAccountOutputDTO struct {
-	ID 						int
-  Username     	string
-  Person  			PersonCustomerOutputDTO
-	TicketsLeft 	sql.NullInt16
-  DailyTickets 	sql.NullInt16
+	ID 								int
+  Username     			string
+  PermissionLevel  	int
+	City 							string
+	TicketsLeft 			int
+  DailyTickets 			int
 }
 
 type LoginCustomerInputDTO struct {
