@@ -1,8 +1,6 @@
 package usecase
 
 import (
-	"fmt"
-
 	"github.com/MaiconGiehl/API/internal/dto"
 	"github.com/MaiconGiehl/API/internal/entity"
 	"github.com/MaiconGiehl/API/internal/infra/database"
@@ -70,8 +68,6 @@ func (c *CreateCustomerAccountUseCase) Execute(input *dto.CustomerAccountInputDT
 		DailyTickets:   input.DailyTickets,
 		TicketsLeft:    input.DailyTickets,
 	}
-
-	fmt.Print(accountEntity.TicketsLeft)
 
 	err = c.AccountRepository.SaveCustomerAccount(&accountEntity)
 	if err != nil {

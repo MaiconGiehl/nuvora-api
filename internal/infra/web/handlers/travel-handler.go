@@ -3,7 +3,6 @@ package handlers
 import (
 	"context"
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"strconv"
 
@@ -65,7 +64,6 @@ func (h *TravelHandler) CreateTravel(w http.ResponseWriter, r *http.Request) {
 // @Router       			/travel/{departure_city_id}/{arrival_city_id}  [get]
 func (h *TravelHandler) GetAllTraveslByDestiny(w http.ResponseWriter, r *http.Request) {
 	dptCityId, err := strconv.Atoi(chi.URLParam(r, "departure_city_id"))
-	fmt.Print(dptCityId)
 	if err != nil {
 		returnErrMsg(w, err)
 		w.WriteHeader(http.StatusBadRequest)

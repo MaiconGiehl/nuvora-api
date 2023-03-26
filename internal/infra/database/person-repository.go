@@ -30,25 +30,6 @@ func (r *PersonRepository) SaveCustomerPerson(input *entity.Person) (error) {
 	return nil
 }
 
-// func (r *PersonRepository) GetAll() (*[]dto.PersonOutputDTO, error) {
-// 	var allPerson []dto.PersonOutputDTO
-// 	rows, err := r.Db.Query("SELECT id, name, phone, company_id FROM person")
-// 	if err != nil {
-// 		return &allPerson, err
-// 	}
-	
-// 	for rows.Next() {
-// 		var person dto.PersonOutputDTO
-// 		// err = rows.Scan(&person.ID, &person.Name, &person.Phone, &person.CompanyID)
-// 		if err != nil {
-// 			return &[]dto.PersonOutputDTO{}, err
-// 		}
-// 		allPerson = append(allPerson, person)
-// 	}
-	
-// 	return &allPerson, err
-// }
-
 func (r *PersonRepository) Delete(input *entity.Person) error {
 	stmt := "DELETE FROM person WHERE id= $1"
 

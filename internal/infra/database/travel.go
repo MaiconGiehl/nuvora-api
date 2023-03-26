@@ -2,7 +2,6 @@ package database
 
 import (
 	"database/sql"
-	"fmt"
 	"time"
 
 	"github.com/MaiconGiehl/API/internal/dto"
@@ -85,7 +84,6 @@ func (r *TravelRepository) Save(input *entity.Travel) (error) {
 
 	rows, err := r.Db.Exec(stmt, input.Price, input.AccountID, input.BusID, input.DepartureTime, input.DepartureCityID, input.ArrivalTime, input.ArrivalCityID,
 		time.Now().Format("2006-01-02 15:04:05"), time.Now().Format("2006-01-02 15:04:05"))
-	fmt.Print(err)
 	if err != nil {
 		return err
 	}

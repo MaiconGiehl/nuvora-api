@@ -1,8 +1,6 @@
 package usecase
 
 import (
-	"fmt"
-
 	"github.com/MaiconGiehl/API/internal/dto"
 	"github.com/MaiconGiehl/API/internal/infra/database"
 )
@@ -26,6 +24,5 @@ func (c *GetAllCompanyUseCase) Execute() (*[]dto.CompanyOutputDTO, error) {
 		return output, err
 	}
 
-	fmt.Print(output)
 	return output, nil
 }
