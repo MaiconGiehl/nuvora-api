@@ -69,6 +69,15 @@ func createRouter(db *sql.DB) *chi.Mux {
 		r.Post("/", ticketHandler.CreateTicket)
 		r.Delete("/{id}", ticketHandler.DeleteTicket)
 	})
+
+	companyRepository := database.NewCompanyRepository(db)
+	companyHandler := handlers.NewCompanyHandler(ctx, companyRepository)
+
+	r.Route("/company", func(r chi.Router) {
+		r.Post("/", companyHandler.CreateCompany)
+	})
+
+
 	
 	r.Get("/docs/*", httpSwagger.Handler(httpSwagger.URL("http://localhost:8080/docs/doc.json")))
 	

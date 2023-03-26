@@ -135,7 +135,7 @@ func (h *BusHandler) DeleteBus(w http.ResponseWriter, r *http.Request) {
 		returnErrMsg(w, err)
 		return
 	}
-
+	
 	w.WriteHeader(http.StatusAccepted)
 }
 
@@ -196,5 +196,5 @@ func getBusInput(w http.ResponseWriter, r *http.Request) (*dto.BusInputDTO, erro
 
 func returnErrMsg(w http.ResponseWriter, err error) {
 	w.WriteHeader(http.StatusBadRequest)
-	json.NewEncoder(w).Encode(err)
+	json.NewEncoder(w).Encode(err.Error())
 }

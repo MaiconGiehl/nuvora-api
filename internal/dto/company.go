@@ -1,9 +1,6 @@
 package dto
 
-import "time"
-
 type CompanyInputDTO struct {
-  ID 							int
   Phone 					int
   Cnpj 						int
   SocialReason 		string
@@ -12,9 +9,8 @@ type CompanyInputDTO struct {
 }
 
 type CompanyOutputDTO struct {
-  Cep 						int
-  UserID 					int
-  CompanyID 			int
-  CreatedAt 			time.Time
-  UpdatedAt 			time.Time
+	ID int
+  Phone int
+  FantasyName string
+  CompanyType CompanyTypeOutputDTO
 }
