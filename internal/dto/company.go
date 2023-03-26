@@ -12,5 +12,5 @@ type CompanyOutputDTO struct {
 	ID int
   Phone int
   FantasyName string
-  CompanyType CompanyTypeOutputDTO
+  CompanyType string
 }

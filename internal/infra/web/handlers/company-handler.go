@@ -22,6 +22,32 @@ func NewCompanyHandler(ctx context.Context, companyRepository *database.CompanyR
 	}
 }
 
+// GetAllCompany godoc
+// @Summary      			Get all company
+// @Description  			Get all company
+// @Tags         			Company
+// @Accept       			json
+// @Produce      			json
+// @Success      			200  						{object}   []dto.CompanyOutputDTO
+// @Failure      			404
+// @Router       			/company [get]
+func (h *CompanyHandler) GetAll(w http.ResponseWriter, r *http.Request) {
+	usecase := usecase.NewGetAllCompanyUseCase(*h.CompanyRepository)
+	output, err := usecase.Execute()
+	if err != nil {
+		returnErrMsg(w, err)
+		return
+	}
+
+	err = json.NewEncoder(w).Encode(&output)
+	if err != nil {
+		returnErrMsg(w, err)
+		return
+	}
+
+	w.WriteHeader(http.StatusFound)
+}
+
 // CreateCompany godoc
 // @Summary      			Add company
 // @Description  			Create new company
@@ -31,7 +57,7 @@ func NewCompanyHandler(ctx context.Context, companyRepository *database.CompanyR
 // @Param        			request   				body      dto.CompanyInputDTO  true  "Company Info"
 // @Success      			201  											{object}   object
 // @Failure      			404
-// @Router       			/company [post]
+// @Router       			/company/{email}/password [post]
 func (h *CompanyHandler) CreateCompany(w http.ResponseWriter, r *http.Request) {
 	input, err := getCompanyInput(w, r)
 	if err != nil {

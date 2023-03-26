@@ -75,6 +75,16 @@ func createRouter(db *sql.DB) *chi.Mux {
 
 	r.Route("/company", func(r chi.Router) {
 		r.Post("/", companyHandler.CreateCompany)
+		r.Get("/", companyHandler.GetAll)
+	})
+
+	customerRepository := database.NewCustomerRepository(db)
+	personRepository := database.NewPersonRepository(db)
+	accountHandler := database.NewAccountRepository(db)
+	customerAccountHandler := handlers.NewCustomerAccountHandler(ctx, customerRepository, personRepository, accountHandler)
+	r.Route("/customer", func(r chi.Router) {
+		r.Post("/", customerAccountHandler.CreateCustomerAccount)
+		r.Get("/{email}/{password}", customerAccountHandler.GetCustomerAccount)
 	})
 
 

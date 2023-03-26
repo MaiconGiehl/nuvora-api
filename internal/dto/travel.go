@@ -2,8 +2,7 @@ package dto
 
 import "time"
 
-type Travel struct {
-	ID 								int
+type TravelInputDTO struct {
   Price 						float64
   CompanyAccountId 	int
   BusID 						int
@@ -11,6 +10,15 @@ type Travel struct {
   DepartureCityId 	int
   ArrivalTime 			time.Time
   ArrivalCityId 		int
-  CreatedAt 				time.Time
-  UpdatedAt 				time.Time
+}
+
+type TravelOutputDTO struct {
+	ID 								int
+  Price 						float64
+  Company         	CompanyOutputDTO
+  Bus 			   			BusOutputDTO
+  DepartureTime 		time.Time
+  DepartureCity 	  CityOutputDTO
+  ArrivalTime 			time.Time
+  ArrivalCity   		CityOutputDTO
 }

@@ -7,7 +7,7 @@ type Account  struct{
   Username     	string
   Email   			string
   Password 			string
-  PersonId 			int
+  PersonID 			int
   LastAccess 		time.Time
   TicketsLeft 	int
   DailyTickets 	int

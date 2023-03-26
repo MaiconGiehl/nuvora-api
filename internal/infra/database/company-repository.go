@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"time"
 
+	"github.com/MaiconGiehl/API/internal/dto"
 	"github.com/MaiconGiehl/API/internal/entity"
 )
 
@@ -15,6 +16,26 @@ type CompanyRepository struct {
 func NewCompanyRepository(db *sql.DB) *CompanyRepository {
 	return &CompanyRepository{Db: db}
 }
+
+func (r *CompanyRepository) GetAll() (*[]dto.CompanyOutputDTO, error) {
+	var output []dto.CompanyOutputDTO
+	rows, err := r.Db.Query("SELECT c.id, phone, fantasy_name, ct.description FROM company AS c JOIN company_type AS ct ON c.company_type_id=ct.id")
+	if err != nil {
+		return &output, err
+	}
+
+	for rows.Next() {
+		var entity dto.CompanyOutputDTO
+		err = rows.Scan(&entity.ID, &entity.Phone, &entity.FantasyName, &entity.CompanyType )
+		if err != nil {
+			return &[]dto.CompanyOutputDTO{}, err
+		}
+		output = append(output, entity)
+	}
+	
+	return &output, err
+}
+
 
 func (r *CompanyRepository) Save(input *entity.Company) (error) {
 	fmt.Print(time.Now().Format("2006-01-02T15:04:05"))
