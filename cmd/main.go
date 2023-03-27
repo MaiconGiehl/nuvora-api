@@ -76,6 +76,10 @@ func createRouter(db *sql.DB) *chi.Mux {
 	r.Route("/company", func(r chi.Router) {
 		r.Post("/", companyHandler.CreateCompany)
 		r.Get("/", companyHandler.GetAll)
+		r.Get("/{id}/employees", companyHandler.GetEmployees)
+		r.Get("/{id}/employees", companyHandler.GetEmployees)
+		r.Get("/{id}/employees/tickets", companyHandler.GetEmployeesTickets)
+		
 	})
 
 	customerRepository := database.NewCustomerRepository(db)
