@@ -1,12 +1,12 @@
 package dto
 
 type BusInputDTO struct {
-	Number    			 	int  `json:"number"`
-	MaxPassengers    	int  `json:"maxPassengers"`
+	Number    			 	int
+	MaxPassengers    	int
 }
 
 type BusOutputDTO struct {
-	ID 								int  `json:"id"`
-	Number    			 	int  	`json:"number"`
-	MaxPassengers    	int  	`json:"maxPassengers"`
+	ID 								int
+	Number    			 	int
+	MaxPassengers    	int
 }

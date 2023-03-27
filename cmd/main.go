@@ -66,13 +66,41 @@ func createRouter(db *sql.DB) *chi.Mux {
 	ticketHandler := handlers.NewTicketHandler(ctx, ticketRepository)
 
 	r.Route("/ticket", func(r chi.Router) {
-		r.Get("/", ticketHandler.GetAll)
 		r.Post("/", ticketHandler.CreateTicket)
-		r.Get("/{id}", ticketHandler.GetTicket)
 		r.Delete("/{id}", ticketHandler.DeleteTicket)
-		r.Patch("/{id}", ticketHandler.UpdateTicket)
+	})
+
+	companyRepository := database.NewCompanyRepository(db)
+	companyHandler := handlers.NewCompanyHandler(ctx, companyRepository)
+
+	r.Route("/company", func(r chi.Router) {
+		r.Post("/", companyHandler.CreateCompany)
+		r.Get("/", companyHandler.GetAll)
+	})
+
+	customerRepository := database.NewCustomerRepository(db)
+	personRepository := database.NewPersonRepository(db)
+	accountHandler := database.NewAccountRepository(db)
+	customerAccountHandler := handlers.NewCustomerAccountHandler(ctx, customerRepository, personRepository, accountHandler)
+	
+	r.Route("/customer", func(r chi.Router) {
+		r.Post("/", customerAccountHandler.CreateCustomerAccount)
+		r.Get("/{email}/{password}", customerAccountHandler.GetCustomerAccount)
+	})
+
+	travelRepository := database.NewTravelRepository(db)
+	travelHandler := handlers.NewTravelHandler(ctx, travelRepository)
+	r.Route("/travel", func(r chi.Router) {
+		r.Post("/", travelHandler.CreateTravel)
+		r.Get("/{departure_city_id}/{arrival_city_id}", travelHandler.GetAllTraveslByDestiny)
 	})
 	
+	cityRepository := database.NewCityRepository(db)
+	cityHandler := handlers.NewCityHandler(ctx, cityRepository)
+	r.Route("/city", func(r chi.Router) {
+		r.Post("/{name}", cityHandler.CreateCity)
+	})
+
 	r.Get("/docs/*", httpSwagger.Handler(httpSwagger.URL("http://localhost:8080/docs/doc.json")))
 	
 	return r
