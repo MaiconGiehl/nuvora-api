@@ -33,9 +33,9 @@ import (
 // @BasePath  /
 func main() {
 
-	dbconfig := config.LoadDBConfig()
-	psqlinfo := fmt.Sprintf("host=%s port=%d user=%s password=%s dbname=%s sslmode=disable",
-		dbconfig.Host, dbconfig.Port, dbconfig.User, dbconfig.Password, dbconfig.Name)
+	dbconfig := config.LoadConfig()
+	psqlinfo := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
+		dbconfig.DBHost, dbconfig.DBPort, dbconfig.DBUser, dbconfig.DBPassword, dbconfig.DBName)
 	
 	db, err := sql.Open("postgres", psqlinfo)
 	if err != nil {
