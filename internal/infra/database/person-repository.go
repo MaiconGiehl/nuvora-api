@@ -4,7 +4,7 @@ import (
 	"database/sql"
 	"time"
 
-	"github.com/MaiconGiehl/API/internal/entity"
+	"github.com/maicongiehl/techtur-api/internal/entity"
 )
 
 type PersonRepository struct {

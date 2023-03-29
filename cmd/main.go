@@ -6,13 +6,13 @@ import (
 	"fmt"
 	"net/http"
 
-	"github.com/MaiconGiehl/API/config"
-	_ "github.com/MaiconGiehl/API/docs"
-	"github.com/MaiconGiehl/API/internal/infra/database"
-	"github.com/MaiconGiehl/API/internal/infra/web/handlers"
 	"github.com/go-chi/chi/middleware"
 	"github.com/go-chi/chi/v5"
 	_ "github.com/lib/pq"
+	"github.com/maicongiehl/techtur-api/config"
+	_ "github.com/maicongiehl/techtur-api/docs"
+	"github.com/maicongiehl/techtur-api/internal/infra/database"
+	"github.com/maicongiehl/techtur-api/internal/infra/web/handlers"
 
 	httpSwagger "github.com/swaggo/http-swagger"
 )
@@ -42,7 +42,9 @@ func main() {
 	  panic(err)
 	}
 	defer db.Close()
+
 	
+	fmt.Print("DB connected\n")
 	http.ListenAndServe(":8080", createRouter(db))
 }
 
