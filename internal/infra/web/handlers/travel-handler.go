@@ -7,9 +7,9 @@ import (
 	"strconv"
 
 	"github.com/go-chi/chi/v5"
-	dto "github.com/maicongiehl/techtur-api/internal/dto"
-	"github.com/maicongiehl/techtur-api/internal/infra/database"
-	"github.com/maicongiehl/techtur-api/internal/usecase"
+	dto "github.com/maicongiehl/nuvera-api/internal/dto"
+	"github.com/maicongiehl/nuvera-api/internal/infra/database"
+	"github.com/maicongiehl/nuvera-api/internal/usecase"
 )
 
 type TravelHandler struct {
@@ -52,7 +52,7 @@ func (h *TravelHandler) CreateTravel(w http.ResponseWriter, r *http.Request) {
 }
 
 // TravelByCity godoc
-// @Summary      			Get travel by user city
+// @Summary      			Get travel by user city and company city
 // @Description  			Use your customer credentials to enter in your account
 // @Tags         			Travel
 // @Accept       			json
@@ -62,7 +62,7 @@ func (h *TravelHandler) CreateTravel(w http.ResponseWriter, r *http.Request) {
 // @Success      			202  												{object}   		dto.TravelOutputDTO
 // @Failure      			404
 // @Router       			/travel/{departure_city_id}/{arrival_city_id}  [get]
-func (h *TravelHandler) GetAllTraveslByDestiny(w http.ResponseWriter, r *http.Request) {
+func (h *TravelHandler) GetAllPossibleTravesl(w http.ResponseWriter, r *http.Request) {
 	dptCityId, err := strconv.Atoi(chi.URLParam(r, "departure_city_id"))
 	if err != nil {
 		returnErrMsg(w, err)
@@ -82,7 +82,7 @@ func (h *TravelHandler) GetAllTraveslByDestiny(w http.ResponseWriter, r *http.Re
 		ArrivalCityID: arvCityId,
 	}
 
-	usecase := usecase.NewGetAllTravelsByDestinyUseCase(*h.TravelRepository)
+	usecase := usecase.NewGetTravelsByArrivalAndDeparture(*h.TravelRepository)
 	output, err := usecase.Execute(&input)
 	if err != nil {
 		returnErrMsg(w, err)

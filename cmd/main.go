@@ -9,10 +9,10 @@ import (
 	"github.com/go-chi/chi/middleware"
 	"github.com/go-chi/chi/v5"
 	_ "github.com/lib/pq"
-	"github.com/maicongiehl/techtur-api/config"
-	_ "github.com/maicongiehl/techtur-api/docs"
-	"github.com/maicongiehl/techtur-api/internal/infra/database"
-	"github.com/maicongiehl/techtur-api/internal/infra/web/handlers"
+	"github.com/maicongiehl/nuvera-api/config"
+	_ "github.com/maicongiehl/nuvera-api/docs"
+	"github.com/maicongiehl/nuvera-api/internal/infra/database"
+	"github.com/maicongiehl/nuvera-api/internal/infra/web/handlers"
 
 	httpSwagger "github.com/swaggo/http-swagger"
 )
@@ -72,29 +72,34 @@ func createRouter(db *sql.DB) *chi.Mux {
 		r.Delete("/{id}", ticketHandler.DeleteTicket)
 	})
 
-	companyRepository := database.NewCompanyRepository(db)
-	companyHandler := handlers.NewCompanyHandler(ctx, companyRepository)
-
-	r.Route("/company", func(r chi.Router) {
-		r.Post("/", companyHandler.CreateCompany)
-		r.Get("/", companyHandler.GetAll)
-	})
-
-	customerRepository := database.NewCustomerRepository(db)
 	personRepository := database.NewPersonRepository(db)
 	accountHandler := database.NewAccountRepository(db)
+
+	customerRepository := database.NewCustomerRepository(db)
+	
 	customerAccountHandler := handlers.NewCustomerAccountHandler(ctx, customerRepository, personRepository, accountHandler)
 	
 	r.Route("/customer", func(r chi.Router) {
-		r.Post("/", customerAccountHandler.CreateCustomerAccount)
-		r.Get("/{email}/{password}", customerAccountHandler.GetCustomerAccount)
+		r.Get("/{email}/{password}", customerAccountHandler.Login)
+	})
+
+	companyRepository := database.NewCompanyRepository(db)
+	companyHandler := handlers.NewCompanyHandler(ctx, personRepository, companyRepository, accountHandler, customerRepository)
+
+	r.Route("/company", func(r chi.Router) {
+		r.Get("/", companyHandler.GetAll)
+		r.Get("/{id}/employees", companyHandler.GetEmployees)
+		r.Get("/{id}/employees", companyHandler.GetEmployees)
+		r.Get("/{id}/employees/tickets", companyHandler.GetEmployeesTickets)
+		r.Get("/{email}/{password}", companyHandler.Login)
+		r.Post("/{id}/employees", companyHandler.CreateEmployee)
 	})
 
 	travelRepository := database.NewTravelRepository(db)
 	travelHandler := handlers.NewTravelHandler(ctx, travelRepository)
 	r.Route("/travel", func(r chi.Router) {
 		r.Post("/", travelHandler.CreateTravel)
-		r.Get("/{departure_city_id}/{arrival_city_id}", travelHandler.GetAllTraveslByDestiny)
+		r.Get("/{departure_city_id}/{arrival_city_id}", travelHandler.GetAllPossibleTravesl)
 	})
 	
 	cityRepository := database.NewCityRepository(db)

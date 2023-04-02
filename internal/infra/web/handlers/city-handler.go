@@ -8,9 +8,9 @@ import (
 	"strings"
 
 	"github.com/go-chi/chi/v5"
-	"github.com/maicongiehl/techtur-api/internal/dto"
-	"github.com/maicongiehl/techtur-api/internal/infra/database"
-	"github.com/maicongiehl/techtur-api/internal/usecase"
+	"github.com/maicongiehl/nuvera-api/internal/dto"
+	"github.com/maicongiehl/nuvera-api/internal/infra/database"
+	"github.com/maicongiehl/nuvera-api/internal/usecase"
 )
 
 type CityHandler struct {

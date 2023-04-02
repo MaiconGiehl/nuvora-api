@@ -2,24 +2,29 @@ package usecase
 
 import (
 	"github.com/maicongiehl/nuvera-api/internal/dto"
+	"github.com/maicongiehl/nuvera-api/internal/entity"
 	"github.com/maicongiehl/nuvera-api/internal/infra/database"
 )
 
 
-type GetAllCompanyUseCase struct {
+type GetEmployees struct {
 	CompanyRepository database.CompanyRepository
 }
 
-func NewGetAllCompanyUseCase(
+func NewGetEmployees(
 	CompanyRepository database.CompanyRepository,
-) *GetAllCompanyUseCase {
-	return &GetAllCompanyUseCase{
+) *GetEmployees {
+	return &GetEmployees{
 		CompanyRepository: CompanyRepository,
 	}
 }
 
-func (c *GetAllCompanyUseCase) Execute() (*[]dto.CompanyOutputDTO, error) {
-	output, err := c.CompanyRepository.GetAll()
+func (c *GetEmployees) Execute(id int) (*[]dto.EmployeeOutputDTO, error) {
+	entity := entity.Company{
+		ID:								id,
+	}
+
+	output, err := c.CompanyRepository.GetEmployees(&entity)
 	if err != nil {
 		return output, err
 	}

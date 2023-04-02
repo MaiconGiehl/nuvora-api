@@ -7,25 +7,25 @@ import (
 )
 
 
-type GetCustomerAccountUseCase struct {
+type GetCompanyAccountUseCase struct {
 	AccountRepository database.AccountRepository
 }
 
-func NewGetCustomerAccountUseCase(
+func NewGetCompanyAccountUseCase(
 	AccountRepository database.AccountRepository,
-) *GetCustomerAccountUseCase {
-	return &GetCustomerAccountUseCase{
+) *GetCompanyAccountUseCase {
+	return &GetCompanyAccountUseCase{
 		AccountRepository: AccountRepository,
 	}
 }
 
-func (c *GetCustomerAccountUseCase) Execute(input *dto.LoginCustomerInputDTO) (*dto.CustomerAccountOutputDTO, error) {
+func (c *GetCompanyAccountUseCase) Execute(input *dto.CompanyLoginDTO) (*dto.CompanyAccountOutputDTO, error) {
 	entity := entity.Account{
 		Email: input.Email,
 		Password: input.Password,
 	}
 
-	output, err := c.AccountRepository.GetCustomerAccount(&entity)
+	output, err := c.AccountRepository.GetCompanyAccount(&entity)
 	if err != nil {
 		return output, err
 	}

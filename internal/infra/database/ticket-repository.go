@@ -4,7 +4,7 @@ import (
 	"database/sql"
 	"time"
 
-	"github.com/maicongiehl/techtur-api/internal/entity"
+	"github.com/maicongiehl/nuvera-api/internal/entity"
 )
 
 type TicketRepository struct {
@@ -16,10 +16,10 @@ func NewTicketRepository(db *sql.DB) *TicketRepository {
 }
 
 func (r *TicketRepository) Save(input *entity.Ticket) (error) {
-	stmt := "INSERT INTO public.ticket (account_id, price, status, travel_id, created_at, updated_at) VALUES ($1, $2, $3, $4, $5, $6)"
+	stmt := "INSERT INTO public.ticket (account_id, status_id, travel_id, created_at, updated_at) VALUES ($1, $2, $3, $4, $5)"
 
 	rows, err := r.Db.Exec(stmt, &input.AccountID, &input.Status, &input.TravelID,
-		time.Now().Format("2006-01-02 15:04:05"), time.Now().Format("2006-01-02 15:04:05"), time.Now().Format("2006-01-02 15:04:05"), time.Now().Format("2006-01-02 15:04:05"))
+		time.Now().Format("2006-01-02 15:04:05"), time.Now().Format("2006-01-02 15:04:05"))
 	if err != nil {
 		return err
 	}

@@ -4,8 +4,8 @@ import (
 	"database/sql"
 	"time"
 
-	"github.com/maicongiehl/techtur-api/internal/dto"
-	"github.com/maicongiehl/techtur-api/internal/entity"
+	"github.com/maicongiehl/nuvera-api/internal/dto"
+	"github.com/maicongiehl/nuvera-api/internal/entity"
 )
 
 type CompanyRepository struct {
@@ -67,4 +67,66 @@ func (r *CompanyRepository) Delete(input *entity.Company) error {
 	}
 
 	return nil
+}
+
+func (r *CompanyRepository) GetEmployees(input *entity.Company) (*[]dto.EmployeeOutputDTO, error) {
+	var output []dto.EmployeeOutputDTO
+	stmt := "SELECT a.id AS account_id, name FROM account a JOIN person p ON  a.person_id =p.id JOIN customer c  ON p.customer_id =c.id WHERE c.company_id = $1;"
+
+	rows, err := r.Db.Query(stmt, input.ID)
+	if err != nil {
+		return &output, err
+	}
+
+	for rows.Next() {
+		var entity dto.EmployeeOutputDTO
+		err = rows.Scan(&entity.ID, &entity.Name)
+		if err != nil {
+			return &[]dto.EmployeeOutputDTO{}, err
+		}
+		output = append(output, entity)
+	}
+	
+	return &output, err
+}
+
+func (r *CompanyRepository) GetLastMonthTickets(input *entity.Company) (*[]dto.EmployeesTicketsOutputDTO, error) {
+	var output []dto.EmployeesTicketsOutputDTO
+	stmt := `SELECT c.name, c.cpf, t.price, t.departure_time, dpt_city.name, t.arrival_time, arv_city."name", ts.description FROM ticket tkt 
+		JOIN travel t ON tkt.travel_id=t.id 
+		JOIN account a ON tkt.account_id =a.id
+		JOIN person p ON a.person_id =a.person_id
+		JOIN customer c ON p.customer_id =c.id
+		JOIN city dpt_city ON t.departure_city_id =dpt_city.id
+		JOIN city arv_city ON t.arrival_city_id=arv_city.id
+		JOIN ticket_status ts ON tkt.status_id=ts.id 
+		WHERE c.company_id = $1
+		ORDER BY c."name", t.departure_time, t.arrival_time
+		`
+	
+	rows, err := r.Db.Query(stmt, input.ID)
+	if err != nil {
+		return &output, err
+	}
+
+	for rows.Next() {
+		var entity dto.EmployeesTicketsOutputDTO
+		err = rows.Scan(
+			&entity.Name,
+			&entity.Cpf,
+			&entity.Travel.Price,
+			&entity.Travel.Departure.Time,
+			&entity.Travel.Departure.City,
+			&entity.Travel.Arrival.Time,
+			&entity.Travel.Arrival.City,
+			&entity.Status,
+		)
+
+		if err != nil {
+			return &output, err
+		}
+		output = append(output, entity)
+	}
+	
+	return &output, err
 }

@@ -1,9 +1,9 @@
 package usecase
 
 import (
-	"github.com/maicongiehl/techtur-api/internal/dto"
-	"github.com/maicongiehl/techtur-api/internal/entity"
-	"github.com/maicongiehl/techtur-api/internal/infra/database"
+	"github.com/maicongiehl/nuvera-api/internal/dto"
+	"github.com/maicongiehl/nuvera-api/internal/entity"
+	"github.com/maicongiehl/nuvera-api/internal/infra/database"
 )
 
 type CreateCustomerAccountUseCase struct {
@@ -24,13 +24,13 @@ func NewCreateCustomerAccountUseCase(
 	}
 }
 
-func (c *CreateCustomerAccountUseCase) Execute(input *dto.CustomerAccountInputDTO) error {
+func (c *CreateCustomerAccountUseCase) Execute(input *dto.CustomerAccountInputDTO, companyId int) error {
 	customerEntity := entity.Customer{
 		Name:   			input.Person.Customer.Name,
 		Cpf:   				input.Person.Customer.Cpf,
 		Phone:   			input.Person.Customer.Phone,
 		BirthDate: 		input.Person.Customer.BirthDate,
-		CompanyID:   	input.Person.Customer.CompanyID,
+		CompanyID:   	companyId,
 	}
 
 	err := c.CustomerRepository.Save(&customerEntity)
@@ -45,7 +45,7 @@ func (c *CreateCustomerAccountUseCase) Execute(input *dto.CustomerAccountInputDT
 
 	personEntity := entity.Person{
   	CityID:						input.Person.CityID,
-		PermissionLevel:	input.Person.PermissionLevel,
+		PermissionLevel:	1,
 		CustomerID:				int(newCustomerId),
 	}
 
@@ -61,7 +61,6 @@ func (c *CreateCustomerAccountUseCase) Execute(input *dto.CustomerAccountInputDT
 	}
 
 	accountEntity := entity.Account{
-		Username: 			input.Username,
 		Email: 					input.Email,
 		Password: 			input.Password,
 		PersonID: 			int(newPersonId),
