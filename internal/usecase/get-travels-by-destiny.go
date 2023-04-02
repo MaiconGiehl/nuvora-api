@@ -1,9 +1,9 @@
 package usecase
 
 import (
-	"github.com/MaiconGiehl/API/internal/dto"
-	"github.com/MaiconGiehl/API/internal/entity"
-	"github.com/MaiconGiehl/API/internal/infra/database"
+	"github.com/maicongiehl/techtur-api/internal/dto"
+	"github.com/maicongiehl/techtur-api/internal/entity"
+	"github.com/maicongiehl/techtur-api/internal/infra/database"
 )
 
 

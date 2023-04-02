@@ -7,10 +7,10 @@ import (
 	"strconv"
 	"strings"
 
-	"github.com/MaiconGiehl/API/internal/dto"
-	"github.com/MaiconGiehl/API/internal/infra/database"
-	"github.com/MaiconGiehl/API/internal/usecase"
 	"github.com/go-chi/chi/v5"
+	"github.com/maicongiehl/techtur-api/internal/dto"
+	"github.com/maicongiehl/techtur-api/internal/infra/database"
+	"github.com/maicongiehl/techtur-api/internal/usecase"
 )
 
 type CityHandler struct {

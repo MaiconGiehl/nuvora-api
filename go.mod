@@ -1,4 +1,4 @@
-module github.com/MaiconGiehl/API
+module github.com/maicongiehl/techtur-api
 
 go 1.20
 
@@ -6,9 +6,11 @@ require (
 	github.com/go-chi/chi v1.5.4
 	github.com/go-chi/chi/v5 v5.0.8
 	github.com/lib/pq v1.10.7
-	github.com/swaggo/http-swagger v1.3.4
+	github.com/swaggo/http-swagger v1.3.4 //go:build exclude
 	github.com/swaggo/swag v1.8.1
 )
+
+require github.com/joho/godotenv v1.5.1
 
 require (
 	github.com/KyleBanks/depth v1.2.1 // indirect

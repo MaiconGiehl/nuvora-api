@@ -3,7 +3,7 @@ package database
 import (
 	"database/sql"
 
-	"github.com/MaiconGiehl/API/internal/entity"
+	"github.com/maicongiehl/techtur-api/internal/entity"
 )
 
 type CityRepository struct {
