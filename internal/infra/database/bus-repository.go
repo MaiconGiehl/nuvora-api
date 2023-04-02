@@ -5,8 +5,8 @@ import (
 	"errors"
 	"time"
 
-	"github.com/maicongiehl/techtur-api/internal/dto"
-	"github.com/maicongiehl/techtur-api/internal/entity"
+	"github.com/maicongiehl/nuvera-api/internal/dto"
+	"github.com/maicongiehl/nuvera-api/internal/entity"
 )
 
 type BusRepository struct {

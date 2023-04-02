@@ -3,7 +3,7 @@ package database
 import (
 	"database/sql"
 
-	"github.com/maicongiehl/techtur-api/internal/entity"
+	"github.com/maicongiehl/nuvera-api/internal/entity"
 )
 
 type CityRepository struct {

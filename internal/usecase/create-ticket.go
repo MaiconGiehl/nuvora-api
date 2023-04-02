@@ -1,10 +1,10 @@
 package usecase
 
 import (
-	"github.com/maicongiehl/techtur-api/internal/dto"
-	"github.com/maicongiehl/techtur-api/internal/entity"
-	"github.com/maicongiehl/techtur-api/internal/enum"
-	"github.com/maicongiehl/techtur-api/internal/infra/database"
+	"github.com/maicongiehl/nuvera-api/internal/dto"
+	"github.com/maicongiehl/nuvera-api/internal/entity"
+	"github.com/maicongiehl/nuvera-api/internal/enum"
+	"github.com/maicongiehl/nuvera-api/internal/infra/database"
 )
 
 

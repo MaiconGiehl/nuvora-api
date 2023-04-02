@@ -1,4 +1,4 @@
-module github.com/maicongiehl/techtur-api
+module github.com/maicongiehl/nuvera-api
 
 go 1.20
 

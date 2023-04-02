@@ -2,11 +2,10 @@ package database
 
 import (
 	"database/sql"
-	"fmt"
 	"time"
 
-	"github.com/maicongiehl/techtur-api/internal/dto"
-	"github.com/maicongiehl/techtur-api/internal/entity"
+	"github.com/maicongiehl/nuvera-api/internal/dto"
+	"github.com/maicongiehl/nuvera-api/internal/entity"
 )
 
 type AccountRepository struct {
@@ -38,7 +37,6 @@ func (r *AccountRepository) GetCustomerAccount(input *entity.Account) (*dto.Cust
 	stmt := `SELECT a.id, a.tickets_left, p.permission_level, cty.id AS city_id FROM account a LEFT JOIN person p ON a.person_id =p.id LEFT JOIN customer c ON p.customer_id =c.id LEFT JOIN city cty ON p.city_id=cty.id
 		WHERE email= $1 AND password=$2`
 	
-	fmt.Print(input.Email, input.Password)
 	rows, err := r.Db.Query(stmt, input.Email, input.Password)
 	if err != nil {
 		return &output, err
@@ -64,7 +62,6 @@ func (r *AccountRepository) GetCompanyAccount(input *entity.Account) (*dto.Compa
 	stmt := `SELECT a.id, p.permission_level, cty.id FROM account a LEFT JOIN person p ON a.person_id =p.id LEFT JOIN company c ON p.company_id =c.id LEFT JOIN city cty ON p.city_id=cty.id
 		WHERE email= $1 AND password=$2`
 	
-	fmt.Print(input.Email, input.Password)
 	rows, err := r.Db.Query(stmt, input.Email, input.Password)
 	if err != nil {
 		return &output, err

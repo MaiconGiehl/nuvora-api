@@ -1,8 +1,8 @@
 package usecase
 
 import (
-	"github.com/maicongiehl/techtur-api/internal/dto"
-	"github.com/maicongiehl/techtur-api/internal/infra/database"
+	"github.com/maicongiehl/nuvera-api/internal/dto"
+	"github.com/maicongiehl/nuvera-api/internal/infra/database"
 )
 
 

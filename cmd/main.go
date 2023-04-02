@@ -9,10 +9,10 @@ import (
 	"github.com/go-chi/chi/middleware"
 	"github.com/go-chi/chi/v5"
 	_ "github.com/lib/pq"
-	"github.com/maicongiehl/techtur-api/config"
-	_ "github.com/maicongiehl/techtur-api/docs"
-	"github.com/maicongiehl/techtur-api/internal/infra/database"
-	"github.com/maicongiehl/techtur-api/internal/infra/web/handlers"
+	"github.com/maicongiehl/nuvera-api/config"
+	_ "github.com/maicongiehl/nuvera-api/docs"
+	"github.com/maicongiehl/nuvera-api/internal/infra/database"
+	"github.com/maicongiehl/nuvera-api/internal/infra/web/handlers"
 
 	httpSwagger "github.com/swaggo/http-swagger"
 )

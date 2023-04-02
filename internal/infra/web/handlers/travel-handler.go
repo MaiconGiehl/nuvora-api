@@ -7,9 +7,9 @@ import (
 	"strconv"
 
 	"github.com/go-chi/chi/v5"
-	dto "github.com/maicongiehl/techtur-api/internal/dto"
-	"github.com/maicongiehl/techtur-api/internal/infra/database"
-	"github.com/maicongiehl/techtur-api/internal/usecase"
+	dto "github.com/maicongiehl/nuvera-api/internal/dto"
+	"github.com/maicongiehl/nuvera-api/internal/infra/database"
+	"github.com/maicongiehl/nuvera-api/internal/usecase"
 )
 
 type TravelHandler struct {
