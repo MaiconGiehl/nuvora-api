@@ -1,20 +1,27 @@
 package dto
 
+import "time"
+
 type CustomerAccountInputDTO struct {
-  Username     	string
   Email   			string
   Password 			string
-  Person  			PersonCustomerInputDTO
+  Person  			struct {
+		CityID 							int
+		Customer					  struct {
+			Name 							string
+			Cpf 							int
+			Phone 						int
+			BirthDate 				time.Time
+		}
+	}
   DailyTickets 	int
 }
 
 type CustomerAccountOutputDTO struct {
 	ID 								int
-  Username     			string
   PermissionLevel  	int
-	City 							string
+	CityID  					int
 	TicketsLeft 			int
-  DailyTickets 			int
 }
 
 type LoginCustomerInputDTO struct {

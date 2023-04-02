@@ -7,19 +7,19 @@ import (
 )
 
 
-type GetTravelsByDestinyUseCase struct {
+type GetTravelsByArrivalAndDeparture struct {
 	TravelRepository database.TravelRepository
 }
 
-func NewGetAllTravelsByDestinyUseCase(
+func NewGetTravelsByArrivalAndDeparture(
 	TravelRepository database.TravelRepository,
-) *GetTravelsByDestinyUseCase {
-	return &GetTravelsByDestinyUseCase{
+) *GetTravelsByArrivalAndDeparture {
+	return &GetTravelsByArrivalAndDeparture{
 		TravelRepository: TravelRepository,
 	}
 }
 
-func (c *GetTravelsByDestinyUseCase) Execute(input *dto.TravelInputDTO) (*[]dto.TravelOutputDTO, error) {
+func (c *GetTravelsByArrivalAndDeparture) Execute(input *dto.TravelInputDTO) (*[]dto.TravelOutputDTO, error) {
 	entity := entity.Travel{
 		ArrivalCityID:  input.ArrivalCityID,
 		DepartureCityID: input.DepartureCityID,

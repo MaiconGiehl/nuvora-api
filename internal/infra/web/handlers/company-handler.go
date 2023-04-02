@@ -14,42 +14,26 @@ import (
 
 type CompanyHandler struct {
 	Ctx context.Context
-	CompanyRepository *database.CompanyRepository
+	CompanyRepository 			*database.CompanyRepository
+	PersonRepository 				*database.PersonRepository
+	AccountRepository 			*database.AccountRepository
+	CustomerRepository      *database.CustomerRepository
 }
 
-func NewCompanyHandler(ctx context.Context, companyRepository *database.CompanyRepository) *CompanyHandler {
+func NewCompanyHandler(
+	ctx context.Context,
+	personRepository *database.PersonRepository,
+	companyRepository *database.CompanyRepository,
+	accountRepository *database.AccountRepository,
+	customerRepository *database.CustomerRepository,
+	) *CompanyHandler {
 	return &CompanyHandler{
 		Ctx: ctx,
-		CompanyRepository: companyRepository,
+		CompanyRepository: 			companyRepository,
+		PersonRepository: 			personRepository,
+		AccountRepository: 			accountRepository,
+		CustomerRepository:     customerRepository,
 	}
-}
-
-// CreateCompany godoc
-// @Summary      			Add company
-// @Description  			Create new company
-// @Tags         			Company
-// @Accept       			json
-// @Produce      			json
-// @Param        			request   				body      dto.CompanyInputDTO  true  "Company Info"
-// @Success      			201  											{object}   object
-// @Failure      			404
-// @Router       			/company [post]
-func (h *CompanyHandler) CreateCompany(w http.ResponseWriter, r *http.Request) {
-	input, err := getCompanyInput(w, r)
-	if err != nil {
-		returnErrMsg(w, err)
-		return
-	}
-
-	usecase := usecase.NewCreateCompanyUseCase(*h.CompanyRepository) 
-	err = usecase.Execute(input)
-	if err != nil {
-		returnErrMsg(w, err)
-		returnErrMsg(w, err)
-		return
-	}
-
-	w.WriteHeader(http.StatusCreated)
 }
 
 // GetAllCompany godoc
@@ -144,13 +128,82 @@ func (h *CompanyHandler) GetEmployeesTickets(w http.ResponseWriter, r *http.Requ
 	w.WriteHeader(http.StatusFound)
 }
 
+// Login godoc
+// @Summary      			Login as company
+// @Description  			Use your company credentials to enter in your account
+// @Tags         			Company
+// @Accept       			json
+// @Produce      			json
+// @Param        			email   										path      		string  true  "Company email"
+// @Param        			password   									path      		string  true  "Company password"
+// @Success      			202  												{object}   		dto.CompanyAccountOutputDTO
+// @Failure      			404
+// @Router       			/company/{email}/{password} [get]
+func (h *CompanyHandler) Login(w http.ResponseWriter, r *http.Request) {
+	input, err := h.getLoginInfo(w, r)
+	if err != nil {
+		returnErrMsg(w, err)
+		return
+	}
 
-func getCompanyInput(w http.ResponseWriter, r *http.Request) (*dto.CompanyInputDTO, error) {
-	var company dto.CompanyInputDTO
-	err := json.NewDecoder(r.Body).Decode(&company)
+	usecase := usecase.NewGetCompanyAccountUseCase(*h.AccountRepository) 
+	output, err := usecase.Execute(input)
+	if err != nil {
+		returnErrMsg(w, err)
+		return
+	}
+
+	w.WriteHeader(http.StatusAccepted)
+	json.NewEncoder(w).Encode(output)
+}
+
+// CreateEmployee godoc
+// @Summary      			Add customer
+// @Description  			Create new customer
+// @Tags         			Company
+// @Accept       			json
+// @Produce      			json
+// @Param        			id   										path      		int  true  "Company id"
+// @Param        			request   				body      dto.CustomerAccountInputDTO  true  "Customer Info"
+// @Success      			200  											{object}   object
+// @Failure      			404
+// @Router       			/company/{id}/employees [post]
+func (h *CompanyHandler) CreateEmployee(w http.ResponseWriter, r *http.Request) {
+	input, err := h.getCreateInput(w, r)
+	if err != nil {
+		returnErrMsg(w, err)
+		return
+	}
+	companyId, err := strconv.Atoi(chi.URLParam(r, "id"))
+	if err != nil {
+		returnErrMsg(w, err)
+		return
+	}
+
+	usecase := usecase.NewCreateCustomerAccountUseCase(*h.CustomerRepository, *h.PersonRepository, *h.AccountRepository) 
+	err = usecase.Execute(input, companyId)
+	if err != nil {
+		returnErrMsg(w, err)
+		return
+	}
+
+	w.WriteHeader(http.StatusCreated)
+	json.NewEncoder(w).Encode("New customer created")
+}
+
+func (h *CompanyHandler) getLoginInfo(w http.ResponseWriter, r *http.Request) (*dto.CompanyLoginDTO, error) {
+	return &dto.CompanyLoginDTO{
+		Email: chi.URLParam(r, "email"),
+		Password: chi.URLParam(r, "password"),
+	}, nil
+}
+
+func (h *CompanyHandler) getCreateInput(w http.ResponseWriter, r *http.Request) (*dto.CustomerAccountInputDTO, error) {
+	var customerAccount dto.CustomerAccountInputDTO
+	err := json.NewDecoder(r.Body).Decode(&customerAccount)
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
-		return &company, err
+		return &customerAccount, err
 	}
-	return &company, nil
+	return &customerAccount, nil
 }

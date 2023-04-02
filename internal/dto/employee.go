@@ -1,6 +1,8 @@
 package dto
 
-import "database/sql"
+import (
+	"time"
+)
 
 type EmployeeOutputDTO struct {
 	ID 											string
@@ -13,11 +15,11 @@ type EmployeesTicketsOutputDTO struct {
 	Travel struct {
 		Price 									float64
 		Departure struct {
-			Time 									sql.NullTime
+			Time 									time.Time
 			City 									string
 		}
 		Arrival struct {
-			Time 									sql.NullTime
+			Time 									time.Time
 			City 									string
 		}
 	}

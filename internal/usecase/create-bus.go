@@ -23,6 +23,7 @@ func (c *CreateBusUseCase) Execute(input *dto.BusInputDTO) error {
 	entity := entity.Bus{
 		Number: input.Number,
 		MaxPassengers: input.MaxPassengers,
+		CompanyID: input.CompanyID,
 	}
 
 	err := c.BusRepository.Save(&entity)

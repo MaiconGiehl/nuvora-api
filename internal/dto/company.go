@@ -14,3 +14,28 @@ type CompanyOutputDTO struct {
   FantasyName string
   CompanyType string
 }
+
+
+type CompanyLoginDTO struct {
+	Email string
+	Password string
+}
+
+type CompanyAccountInputDTO struct {
+	Email   			string
+  Password 			string
+  Person  			struct {
+		CityID 							int
+		Company					  struct {
+			FantasyName 			string
+			Cnpj 							int
+			Phone 						int
+		}
+	}
+}
+
+type CompanyAccountOutputDTO struct {
+	ID 								int
+  PermissionLevel  	int
+	CityID  					int
+}

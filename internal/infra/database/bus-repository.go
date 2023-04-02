@@ -18,9 +18,9 @@ func NewBusRepository(db *sql.DB) *BusRepository {
 }
 
 func (r *BusRepository) Save(input *entity.Bus) (error) {
-	stmt := "INSERT INTO bus (number, max_passengers, created_at, updated_at) VALUES ($1, $2, $3, $4)"
+	stmt := "INSERT INTO bus (number, max_passengers, account_id, created_at, updated_at) VALUES ($1, $2, $3, $4, $5)"
 
-	rows, err := r.Db.Exec(stmt, &input.Number, &input.MaxPassengers, time.Now().Format("2006-01-02 15:04:05"), time.Now().Format("2006-01-02 15:04:05"))
+	rows, err := r.Db.Exec(stmt, &input.Number, &input.MaxPassengers,&input.CompanyID,  time.Now().Format("2006-01-02 15:04:05"), time.Now().Format("2006-01-02 15:04:05"))
 	if err != nil {
 		return err
 	}
@@ -35,7 +35,7 @@ func (r *BusRepository) Save(input *entity.Bus) (error) {
 
 func (r *BusRepository) GetById(input *entity.Bus) (*dto.BusOutputDTO, error) {
 	var output dto.BusOutputDTO
-	stmt := "SELECT id, number, max_passengers FROM bus WHERE id=$1"
+	stmt := "SELECT id, number, max_passengers, account_id FROM bus WHERE id=$1"
 
 	rows, err := r.Db.Query(stmt, input.Id)
 	if err != nil {
@@ -43,7 +43,7 @@ func (r *BusRepository) GetById(input *entity.Bus) (*dto.BusOutputDTO, error) {
 	}
 	
 	rows.Next()
-	err = rows.Scan(&output.ID, &output.Number, &output.MaxPassengers)
+	err = rows.Scan(&output.ID, &output.Number, &output.MaxPassengers, &output.CompanyID)
 	if err != nil {
 		return &output, err
 	}
@@ -53,14 +53,14 @@ func (r *BusRepository) GetById(input *entity.Bus) (*dto.BusOutputDTO, error) {
 
 func (r *BusRepository) GetAll() (*[]dto.BusOutputDTO, error) {
 	var allBus []dto.BusOutputDTO
-	rows, err := r.Db.Query("SELECT id, number, max_passengers FROM bus")
+	rows, err := r.Db.Query("SELECT id, number, max_passengers, account_id FROM bus")
 	if err != nil {
 		return &allBus, err
 	}
 	
 	for rows.Next() {
 		var bus dto.BusOutputDTO
-		err = rows.Scan(&bus.ID, &bus.Number, &bus.MaxPassengers)
+		err = rows.Scan(&bus.ID, &bus.Number, &bus.MaxPassengers, &bus.CompanyID)
 		if err != nil {
 			return &[]dto.BusOutputDTO{}, err
 		}
