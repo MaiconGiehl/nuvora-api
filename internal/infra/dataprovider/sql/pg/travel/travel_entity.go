@@ -1,16 +1,22 @@
 package entity
 
-import (
-	"database/sql"
-)
+import "time"
 
 type Travel struct {
 	ID int
-	Email sql.NullString
-	LastAccess sql.NullTime
-	TicketsLeft sql.NullInt16
-	PermissionLevel sql.NullInt16
-	Company sql.NullString
-	City sql.NullString
-	Name sql.NullString
+  Price float64
+  CompanyID string
+  CompanyFantasyName string
+	Bus struct {
+		Number int
+		MaxPassengers int
+	}
+	Departure struct {
+		Time time.Time
+		CityName string
+	}
+	Arrival struct {
+		Time time.Time
+		CityName string
+	}
 }

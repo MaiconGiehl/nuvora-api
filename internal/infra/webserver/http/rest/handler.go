@@ -10,3 +10,7 @@ import (
 func LoginAsCustomer(w http.ResponseWriter, r *http.Request, customerHandler *handler_functions.CustomerHandler) {
 	customerHandler.Login(w, r)
 }
+
+func GetCustomerPossibleTravel(w http.ResponseWriter, r *http.Request, travelHandler *handler_functions.TravelHandler) {
+	travelHandler.CustomerPossibleTravels(w, r)
+}

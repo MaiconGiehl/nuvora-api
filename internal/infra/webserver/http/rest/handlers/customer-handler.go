@@ -3,13 +3,13 @@ package handlers
 import (
 	"encoding/json"
 	"net/http"
+	"strconv"
 
+	"github.com/go-chi/chi/v5"
 	di "github.com/maicongiehl/nuvora-api/configs/di"
 	get_last_purchases_command "github.com/maicongiehl/nuvora-api/internal/core/application/usecase/customer/get-last-purchases"
-	get_possible_command "github.com/maicongiehl/nuvora-api/internal/core/application/usecase/customer/get-possible-travels"
-	"github.com/maicongiehl/nuvora-api/internal/core/application/usecase/customer/get-possible-travels/dto"
 	login_command "github.com/maicongiehl/nuvora-api/internal/core/application/usecase/customer/login"
-	shared_dto "github.com/maicongiehl/nuvora-api/internal/core/application/usecase/shared/dto/login"
+	dto "github.com/maicongiehl/nuvora-api/internal/core/application/usecase/shared/dto"
 )
 
 type CustomerHandler struct {
@@ -27,15 +27,15 @@ func NewCustomerHandler(
 // Customer godoc
 // @Summary      Login as customer
 // @Description  Login as customer with email and password
-// @Tags         customer
+// @Tags         Customer
 // @Accept       json
 // @Produce      json
-// @Param        request   				body     shared_dto.LoginAsCustomerDTO  true  "Login info"
-// @Success      200  										{object}   	object
+// @Param        request   								body     		dto.LoginInputDTO  true  "Login info"
+// @Success      200  										{object}   	dto.CustomerAccountOutputDTO
 // @Failure      404
 // @Router       /customer [post]
 func (h *CustomerHandler) Login(w http.ResponseWriter, r *http.Request) {
-	var input shared_dto.LoginAsCustomerDTO
+	var input dto.LoginInputDTO
 
 	err := json.NewDecoder(r.Body).Decode(&input)
 	if err != nil {
@@ -56,32 +56,18 @@ func (h *CustomerHandler) Login(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(output)
 }
 
-func (h *CustomerHandler) PossibleTravels(w http.ResponseWriter, r *http.Request) {
-	var input dto.GetPossibleTravelsDTO
-	err := json.NewDecoder(r.Body).Decode(&input)
-
-	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		json.NewEncoder(w).Encode(err.Error())
-		return
-	}
-
-	command := get_possible_command.With()
-	output, err := h.app.GetPossibleTravelsUseCase.Execute(command)
-
-	if err != nil {
-		w.WriteHeader(http.StatusBadRequest)
-		json.NewEncoder(w).Encode(err.Error())
-		return
-	}
-
-	w.WriteHeader(http.StatusAccepted)
-	json.NewEncoder(w).Encode(output)
-}
-
+// Customer godoc
+// @Summary      Get last purchases
+// @Description  Get last purchases with customer account id
+// @Tags         Customer
+// @Accept       json
+// @Produce      json
+// @Param        id   				path     		int  true  "Id"
+// @Success      200  										{object}   	object
+// @Failure      404
+// @Router       /customer/last-purchases/{id} [get]
 func (h *CustomerHandler) LastPurchases(w http.ResponseWriter, r *http.Request) {
-	var input dto.GetPossibleTravelsDTO
-	err := json.NewDecoder(r.Body).Decode(&input)
+	customerId, err := strconv.Atoi(chi.URLParam(r, "id"))
 
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
@@ -89,7 +75,7 @@ func (h *CustomerHandler) LastPurchases(w http.ResponseWriter, r *http.Request) 
 		return
 	}
 
-	command := get_last_purchases_command.With()
+	command := get_last_purchases_command.With(customerId)
 	output, err := h.app.GetLastPurchasesUseCase.Execute(command)
 
 	if err != nil {

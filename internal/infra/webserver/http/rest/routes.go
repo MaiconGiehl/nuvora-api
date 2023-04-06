@@ -12,13 +12,23 @@ import (
 
 func Router(app *di.App) http.Handler {
 	r := chi.NewRouter()
-	
-	customerHandler := handlers.NewCustomerHandler(app) 
-
 	r.Use(middleware.Logger)
 	r.Get("/docs/nuvora/v1*", httpSwagger.Handler(httpSwagger.URL("http://localhost:8080/docs/nuvora/v1/doc.json")))
+	
+	customerHandler := handlers.NewCustomerHandler(app) 
 	r.Route("/customer", func (r chi.Router) {
 		r.Post("/",  customerHandler.Login)
+		r.Get("/last-purchases/{id}", customerHandler.LastPurchases)
+	})
+	
+	travelHandler := handlers.NewTravelHandler(app) 
+	r.Route("/travel", func (r chi.Router) {
+		r.Get("/avaiables/{id}", travelHandler.CustomerPossibleTravels)
+	})
+
+	companyHandler := handlers.NewCompanyHandler(app)
+	r.Route("/company", func (r chi.Router) {
+		r.Post("/", companyHandler.Login)
 	})
 
 	return r
