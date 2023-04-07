@@ -22,13 +22,7 @@ func NewCompanyPGSQLRepository(
 	}
 }
 
-func (r *CompanyPGSQLRepository) Login(email, password string) (*Company, error) {
-	var output Company
-
-	return &output, nil
-}
-
-func (r *CompanyPGSQLRepository) GetCompany(companyId int) (*Company, error) {
+func (r *CompanyPGSQLRepository) GetCompanyByID(companyId int) (*Company, error) {
 	var output Company
 	stmt := `SELECT * FROM account a WHERE p.company_id =$1`
 	

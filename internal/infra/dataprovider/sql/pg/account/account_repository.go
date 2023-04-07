@@ -20,7 +20,7 @@ func NewAccountPGSQLRepository(
 	}
 }
 
-func (r *AccountPGSQLRepository) GetAccount(accountId int) (*Account, error) {
+func (r *AccountPGSQLRepository) GetAccountByID(accountId int) (*Account, error) {
 	var output Account
 
 	return &output, nil
@@ -40,6 +40,13 @@ func (r *AccountPGSQLRepository) LoginAsCustomer(email, password string) (*Accou
 	if err != nil {
 		return &output, err
 	}
+
+	return &output, nil
+}
+
+
+func (r *AccountPGSQLRepository) LoginAsCompany(email, password string) (*Account, error) {
+	var output Account
 
 	return &output, nil
 }

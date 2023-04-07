@@ -3,6 +3,7 @@ package usecase
 import (
 	"context"
 
+	"github.com/maicongiehl/nuvora-api/internal/core/application/shared/dto"
 	customer_entity "github.com/maicongiehl/nuvora-api/internal/infra/dataprovider/sql/pg/customer"
 )
 
@@ -22,8 +23,20 @@ func NewGetEmployeesUseCase(
 }
 
 func (u *GetEmployeesUseCase) Execute(
-	command *GetEmployeesUseCase,
-) error {
+	command *getEmployeesCommand,
+) (*[]dto.EmployeeOutputDTO, error) {
+	var output []dto.EmployeeOutputDTO
 
-	return nil
+	employees, err := u.customerPGSQLRepository.GetCustomersByCompanyID(command.companyId)
+	if err != nil {
+		return &output, err
+	}
+
+	for _, employee := range *employees {
+		output = append(output, dto.EmployeeOutputDTO{
+			Name: employee.Name,
+		})
+	}
+
+	return &output, nil
 }

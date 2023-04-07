@@ -1,7 +1,7 @@
 package usecase
 
-import entity "github.com/maicongiehl/nuvora-api/internal/infra/dataprovider/sql/pg/travel"
+import "github.com/maicongiehl/nuvora-api/internal/core/application/shared/dto"
 
 type GetPossibleTravelsUseCaseInterface interface {
-	Execute(command *getPossibleTravelsCommand) (*[]entity.Travel, error)
+	Execute(command *getPossibleTravelsCommand) (*[]dto.TravelOutputDTO, error)
 }

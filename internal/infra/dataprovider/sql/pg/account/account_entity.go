@@ -9,7 +9,3 @@ type Account struct {
 	// PermissionLevel sql.NullInt16
 	// CityID int
 }
-
-type CompanyAccount struct {
-	
-}

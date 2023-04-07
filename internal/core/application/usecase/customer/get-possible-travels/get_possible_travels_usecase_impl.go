@@ -3,6 +3,7 @@ package usecase
 import (
 	"context"
 
+	"github.com/maicongiehl/nuvora-api/internal/core/application/shared/dto"
 	account_entity "github.com/maicongiehl/nuvora-api/internal/infra/dataprovider/sql/pg/account"
 	company_entity "github.com/maicongiehl/nuvora-api/internal/infra/dataprovider/sql/pg/company"
 	customer_entity "github.com/maicongiehl/nuvora-api/internal/infra/dataprovider/sql/pg/customer"
@@ -39,33 +40,37 @@ func NewGetPossibleTravelsUseCase(
 
 func (u *GetPossibleTravelsUseCase) Execute(
 	command *getPossibleTravelsCommand,
-) (*[]travel_entity.Travel, error) {
-	var output *[]travel_entity.Travel
+) (*[]dto.TravelOutputDTO, error) {
+	var output []dto.TravelOutputDTO
 	
-	customerAccount, err := u.accountPGSQLRepository.GetAccount(command.accountID)
+	customerAccount, err := u.accountPGSQLRepository.GetAccountByID(command.accountID)
 	if err != nil {
-		return output, err
+		return &output, err
 	}
 
-	customerPerson, err := u.personPGSQLRepository.GetPersonByAccount(customerAccount.ID)
+	customerPerson, err := u.personPGSQLRepository.GetPersonByAccountID(customerAccount.ID)
 	if err != nil {
-		return output, err
+		return &output, err
 	}
 
-	customer, err := u.customerPGSQLRepository.GetCustomerByPerson(customerPerson.ID)
+	customer, err := u.customerPGSQLRepository.GetCustomerByPersonID(customerPerson.ID)
 	if err != nil {
-		return output, err
+		return &output, err
 	}
 
-	companyPerson, err := u.personPGSQLRepository.GetPersonByCompany(customer.CompanyID)
+	companyPerson, err := u.personPGSQLRepository.GetPersonByCompanyID(customer.CompanyID)
 	if err != nil {
-		return output, err
+		return &output, err
 	}
 
-	output, err = u.travelPGSQLRepository.GetTravelsByCities(customerPerson.CityID, companyPerson.CityID)
+	possibleTravels, err := u.travelPGSQLRepository.GetTravelsByCities(customerPerson.CityID, companyPerson.CityID)
 	if err != nil {
-		return output, err
+		return &output, err
 	}
 
-	return output, nil
+	for travel := range *possibleTravels {
+		output = append(output, dto.TravelOutputDTO{ID: travel})
+	}
+
+	return &output, nil
 }

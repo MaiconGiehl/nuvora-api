@@ -3,7 +3,7 @@ package usecase
 import (
 	"context"
 
-	"github.com/maicongiehl/nuvora-api/internal/core/application/usecase/shared/dto"
+	"github.com/maicongiehl/nuvora-api/internal/core/application/shared/dto"
 	account_entity "github.com/maicongiehl/nuvora-api/internal/infra/dataprovider/sql/pg/account"
 	customer_entity "github.com/maicongiehl/nuvora-api/internal/infra/dataprovider/sql/pg/customer"
 	person_entity "github.com/maicongiehl/nuvora-api/internal/infra/dataprovider/sql/pg/person"
@@ -38,12 +38,12 @@ func (u *LoginAsCustomerUseCase) Execute(command *loginAsCustomerCommand) (*dto.
 		return output, err
 	}
 
-	customerPerson, err := u.personPGSQLRepository.GetPersonByAccount(customerAccount.PersonID)
+	customerPerson, err := u.personPGSQLRepository.GetPersonByAccountID(customerAccount.PersonID)
 	if err != nil {
 		return output, err
 	}
 
-	customer, err := u.customerPGSQLRepository.GetCustomerByPerson(customerPerson.ID)
+	customer, err := u.customerPGSQLRepository.GetCustomerByPersonID(customerPerson.ID)
 	if err != nil {
 		return output, err
 	}

@@ -3,6 +3,7 @@ package usecase
 import (
 	"context"
 
+	"github.com/maicongiehl/nuvora-api/internal/core/application/shared/dto"
 	entity "github.com/maicongiehl/nuvora-api/internal/infra/dataprovider/sql/pg/ticket"
 )
 
@@ -23,12 +24,19 @@ func NewGetLastPurchasesUsecase(
 
 func (u *GetLastPurchasesUsecase) Execute(
 	command *getLastPurchasesCommand,
-) (*[]entity.Ticket, error) {
+) (*[]dto.TicketOutputDTO, error) {
+	var output []dto.TicketOutputDTO
 
-	output, err := u.ticketPGSQLRepository.GetLastPurchases(command.accountId)
+	lastPurchases, err := u.ticketPGSQLRepository.GetLastPurchases(command.accountId)
 	if err != nil {
-		return output, err
+		return &output, err
 	}
 
-	return output, nil
+	for purchase := range *lastPurchases {
+		output = append(output, dto.TicketOutputDTO{
+			ID: purchase,
+		})
+	}
+
+	return &output, nil
 }

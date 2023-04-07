@@ -3,6 +3,7 @@ package usecase
 import (
 	"context"
 
+	"github.com/maicongiehl/nuvora-api/internal/core/application/shared/dto"
 	account_entity "github.com/maicongiehl/nuvora-api/internal/infra/dataprovider/sql/pg/account"
 	company_entity "github.com/maicongiehl/nuvora-api/internal/infra/dataprovider/sql/pg/company"
 	person_entity "github.com/maicongiehl/nuvora-api/internal/infra/dataprovider/sql/pg/person"
@@ -29,13 +30,30 @@ func NewLoginAsCompanyUseCase(
 	}
 }
 
-func (u *LoginAsCompanyUseCase) Execute(command *loginAsCompany) (*company_entity.Company, error) {
-	var output *company_entity.Company
+func (u *LoginAsCompanyUseCase) Execute(
+	command *loginAsCompany) (*dto.CompanyAccountOutputDTO, error) {
+	var output *dto.CompanyAccountOutputDTO
 
-	output, err := u.companyPGSQLRepository.Login(command.Email, command.Password)
+	companyAccount, err := u.accountPGSQLRepository.LoginAsCompany(command.Email, command.Password)
 	if err != nil {
 		return output, err
 	}
+
+	companyPerson, err := u.personPGSQLRepository.GetPersonByAccountID(companyAccount.PersonID)
+	if err != nil {
+		return output, err
+	}
+
+	company, err := u.companyPGSQLRepository.GetCompanyByID(companyPerson.CompanyID)
+	if err != nil {
+		return output, err
+	}
+
+	output = dto.NewCompanyOutputDTO(
+		companyAccount.ID,
+		company.FantasyName,
+		companyPerson.PermissionLevel,
+	)
 
 	return output, err
 }

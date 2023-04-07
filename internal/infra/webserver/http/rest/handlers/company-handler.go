@@ -5,7 +5,7 @@ import (
 	"net/http"
 
 	di "github.com/maicongiehl/nuvora-api/configs/di"
-	dto "github.com/maicongiehl/nuvora-api/internal/core/application/usecase/shared/dto"
+	dto "github.com/maicongiehl/nuvora-api/internal/core/application/shared/dto"
 )
 
 type CompanyHandler struct {

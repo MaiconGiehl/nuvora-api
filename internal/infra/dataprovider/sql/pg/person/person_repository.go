@@ -20,13 +20,13 @@ func NewPersonPGSQLRepository(
 	}
 }
 
-func (r *PersonPGSQLRepository) GetPersonByAccount(personId int) (*Person, error) {
+func (r *PersonPGSQLRepository) GetPersonByAccountID(personId int) (*Person, error) {
 	var output Person
 
 	return &output, nil
 }
 
-func (r *PersonPGSQLRepository) GetPersonByCompany(CompanyId int) (*Person, error) {
+func (r *PersonPGSQLRepository) GetPersonByCompanyID(CompanyId int) (*Person, error) {
 	var output Person
 
 	// stmt := "SELECT * FROM person p WHERE p.company_id = $1"

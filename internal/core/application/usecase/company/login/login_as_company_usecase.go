@@ -1,7 +1,7 @@
 package usecase
 
-import entity "github.com/maicongiehl/nuvora-api/internal/infra/dataprovider/sql/pg/company"
+import "github.com/maicongiehl/nuvora-api/internal/core/application/shared/dto"
 
 type LoginAsCompanyUseCaseInterface interface {
-	Execute(command *loginAsCompany) (*entity.Company, error)
+	Execute(command *loginAsCompany) (*dto.CompanyAccountOutputDTO, error)
 }

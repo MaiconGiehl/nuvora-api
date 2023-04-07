@@ -2,18 +2,18 @@ package dto
 
 type CompanyAccountOutputDTO struct {
 	ID int
-	Name string
+	FantasyName string
 	PermissionLevel int
 }
 
 func NewCompanyOutputDTO(
 	id int,
-	name string,
+	fantasyName string,
 	permissionLevel int,
 ) *CompanyAccountOutputDTO {
 	return &CompanyAccountOutputDTO{
 		ID: id,
-		Name: name,
+		FantasyName: fantasyName,
 		PermissionLevel: permissionLevel,
 	}
 }

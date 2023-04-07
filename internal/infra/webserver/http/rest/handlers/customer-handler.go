@@ -7,9 +7,9 @@ import (
 
 	"github.com/go-chi/chi/v5"
 	di "github.com/maicongiehl/nuvora-api/configs/di"
+	dto "github.com/maicongiehl/nuvora-api/internal/core/application/shared/dto"
 	get_last_purchases_command "github.com/maicongiehl/nuvora-api/internal/core/application/usecase/customer/get-last-purchases"
 	login_command "github.com/maicongiehl/nuvora-api/internal/core/application/usecase/customer/login"
-	dto "github.com/maicongiehl/nuvora-api/internal/core/application/usecase/shared/dto"
 )
 
 type CustomerHandler struct {

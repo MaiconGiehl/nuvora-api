@@ -3,27 +3,39 @@ package usecase
 import (
 	"context"
 
+	"github.com/maicongiehl/nuvora-api/internal/core/application/shared/dto"
 	ticket_entity "github.com/maicongiehl/nuvora-api/internal/infra/dataprovider/sql/pg/ticket"
 )
 
 type GetEmployeesTicketsUseCase struct {
 	ctx context.Context
-	customerPGSQLRepository *ticket_entity.TicketPGSQLRepository
+	ticketPGSQLRepository *ticket_entity.TicketPGSQLRepository
 }
 
-func NewGetEmployeesUseCase(
+func NewGetEmployeesTicketsUseCase(
 	ctx context.Context,
-	customerPGSQLRepository *ticket_entity.TicketPGSQLRepository,
+	ticketPGSQLRepository *ticket_entity.TicketPGSQLRepository,
 ) *GetEmployeesTicketsUseCase {
 	return &GetEmployeesTicketsUseCase{
 		ctx: ctx,
-		customerPGSQLRepository: customerPGSQLRepository, 
+		ticketPGSQLRepository: ticketPGSQLRepository, 
 	}	
 }
 
 func (u *GetEmployeesTicketsUseCase) Execute(
-	command *GetEmployeesTicketsUseCase,
-) error {
+	command *getEmployeesTicketsCommand,
+) (*[]dto.EmployeeTicket, error) {
+	var output []dto.EmployeeTicket
 
-	return nil
+	employeesTickets, err := u.ticketPGSQLRepository.GetEmployeesTickets(command.companyId)
+	if err != nil {
+		return &output, err
+	}
+
+	for _, empTicket := range *employeesTickets {
+		output = append(output, dto.EmployeeTicket{
+			Name: empTicket.Name,
+		})
+	}
+	return &output, nil
 }
