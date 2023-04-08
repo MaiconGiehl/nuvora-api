@@ -51,7 +51,11 @@ func SetupDIConfig(
 
 	newGetEmployeesUseCase := get_employees_usecase.NewGetEmployeesUseCase(
 		ctx,
+		logrus,
 		newCustomerPGSQLRepository,
+		newCompanyPGSQLRepository,
+		newPersonPGSQLRepository,
+		newAccountPGSQLRepository,
 	)
 
 	newLoginAsCompanyUseCase := login_as_company_usecase.NewLoginAsCompanyUseCase(

@@ -28,6 +28,7 @@ func Router(app *di.App, logger logger.Logger) http.Handler {
 	companyHandler := handlers.NewCompanyHandler(logger, app)
 	r.Route("/company", func (r chi.Router) {
 		r.Post("/", companyHandler.Login)
+		r.Get("/{id}/employees", companyHandler.GetEmployees)
 	})
 
 	return r

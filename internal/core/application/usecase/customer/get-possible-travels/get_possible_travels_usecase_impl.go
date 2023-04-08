@@ -58,7 +58,7 @@ func (u *GetPossibleTravelsUseCase) Execute(
 		return &output, err
 	}
 
-	companyPerson, err := u.personPGSQLRepository.GetPersonByCompanyID(customer.CompanyID)
+	companyPerson, err := u.personPGSQLRepository.GetPersonByID(customer.CompanyID)
 	if err != nil {
 		return &output, err
 	}

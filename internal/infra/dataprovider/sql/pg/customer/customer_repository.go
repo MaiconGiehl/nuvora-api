@@ -56,19 +56,35 @@ func (r *CustomerPGSQLRepository) GetCustomerByID(id int) (*Customer, error) {
 func (r *CustomerPGSQLRepository) GetCustomersByCompanyID(id int) (*[]Customer, error) {
 	var output []Customer
 
-	// stmt := `SELECT * FROM customer c WHERE c.id=$1`
-	
-	// row := r.db.QueryRow(stmt, id)
+	stmt := "SELECT * FROM customer c WHERE c.company_id= $1"
 
-	// // err := row.Scan(
-	// // 	&output.ID,
-	// // 	&output.Name,
-	// // 	&output.CompanyID,
-	// // )
+	rows, err := r.db.Query(stmt, id)
 
-	// if err != nil {
-	// 	return &output, err
-	// }
+	for rows.Next() {
+		var customer Customer
+		err := rows.Scan(
+			&customer.ID,
+			&customer.Cpf,
+			&customer.Name,
+			&customer.Phone,
+			&customer.Birth_date,
+			&customer.CompanyID,
+			&customer.CreatedAt,
+			&customer.UpdatedAt,
+		)
+
+		if err != nil {
+			return &output, err
+		}
+		output = append(output, customer)
+	}
+
+	if err != nil {
+		r.logger.Errorf("CustomerRepository.GetCustomersByCompanyID: Unable to find customers, %s", err)
+		err = errors.New("internal error, please try again in some minutes")
+		return &output, err
+	}
+
 
 	return &output, nil
 }

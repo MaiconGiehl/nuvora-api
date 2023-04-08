@@ -29,6 +29,28 @@ func NewAccountPGSQLRepository(
 func (r *AccountPGSQLRepository) GetAccountByID(accountId int) (*Account, error) {
 	var output Account
 
+	stmt := `SELECT * FROM account a WHERE id = $1`
+	
+	row := r.db.QueryRow(stmt, accountId)
+
+	err := row.Scan(
+		&output.ID,
+		&output.Email,
+		&output.Password,
+		&output.PersonID,
+		&output.LastAccess,
+		&output.TicketsLeft,
+		&output.DailyTickets,
+		&output.CreatedAt,
+		&output.UpdatedAt,
+	)
+
+	if err != nil {
+		r.logger.Errorf("AccountRepository.GetAccountByID: Unable to find account, %s", err)
+		err = errors.New("invalid account")
+		return &output, err
+	}
+
 	return &output, nil
 }
 

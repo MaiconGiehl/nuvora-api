@@ -45,5 +45,6 @@ func StartServer() {
 
 	app := di.SetupDIConfig(ctx, db, logger)
 
+	logger.Infof("Server.StartServer: Starting server in %s", port)
 	http.ListenAndServe(port, Router(app, logger))
 }

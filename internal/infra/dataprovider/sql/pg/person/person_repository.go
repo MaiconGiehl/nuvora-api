@@ -51,11 +51,3 @@ func (r *PersonPGSQLRepository) GetPersonByID(id int) (*Person, error) {
 
 	return &output, nil
 }
-
-func (r *PersonPGSQLRepository) GetPersonByCompanyID(CompanyId int) (*Person, error) {
-	var output Person
-
-	// stmt := "SELECT * FROM person p WHERE p.company_id = $1"
-
-	return &output, nil
-}
