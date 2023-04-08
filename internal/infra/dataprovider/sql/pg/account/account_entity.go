@@ -1,11 +1,17 @@
 package entity
 
+import (
+	"database/sql"
+)
+
 type Account struct {
-	ID int 
-	// Email sql.NullString
-	// LastAccess sql.NullTime
-	PersonID int
-	TicketsLeft int
-	// PermissionLevel sql.NullInt16
-	// CityID int
+	ID int
+  Email string
+  Password string
+  PersonID int
+  LastAccess sql.NullTime
+  TicketsLeft int 
+  DailyTickets int
+  CreatedAt sql.NullTime
+  UpdatedAt sql.NullTime
 }

@@ -1,5 +1,9 @@
 package dto
 
+import (
+	"time"
+)
+
 type CustomerAccountOutputDTO struct {
 	ID int
 	Name string
@@ -19,4 +23,16 @@ func NewCustomerAccountOutputDTO(
 		PermissionLevel: permissionLevel,
 		TicketsLeft: ticketsLeft,
 	}
+}
+
+type CustomerAccountInputDTO struct {
+	Email string
+	Password string
+	DailyTickets int
+	CityID int
+	Cpf int
+	Name string
+	Phone int
+	BirthDate time.Time
+	CompanyID int
 }

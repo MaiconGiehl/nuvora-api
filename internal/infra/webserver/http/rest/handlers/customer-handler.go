@@ -8,18 +8,22 @@ import (
 	"github.com/go-chi/chi/v5"
 	di "github.com/maicongiehl/nuvora-api/configs/di"
 	dto "github.com/maicongiehl/nuvora-api/internal/core/application/shared/dto"
+	"github.com/maicongiehl/nuvora-api/internal/core/application/shared/logger"
 	get_last_purchases_command "github.com/maicongiehl/nuvora-api/internal/core/application/usecase/customer/get-last-purchases"
 	login_command "github.com/maicongiehl/nuvora-api/internal/core/application/usecase/customer/login"
 )
 
 type CustomerHandler struct {
+	logger logger.Logger
 	app *di.App
 }
 
 func NewCustomerHandler(
+	logger logger.Logger,
 	app *di.App,
 ) *CustomerHandler {
 	return &CustomerHandler{
+		logger: logger,
 		app: app,
 	}
 }
@@ -39,6 +43,7 @@ func (h *CustomerHandler) Login(w http.ResponseWriter, r *http.Request) {
 
 	err := json.NewDecoder(r.Body).Decode(&input)
 	if err != nil {
+		h.logger.Errorf("CustomerHandler.Login: Error at decoding request body, %s", err.Error())
 		w.WriteHeader(http.StatusBadRequest)
 		json.NewEncoder(w).Encode(err.Error())
 		return
@@ -47,6 +52,7 @@ func (h *CustomerHandler) Login(w http.ResponseWriter, r *http.Request) {
 	command := login_command.With(input.Email, input.Password)
 	output, err := h.app.LoginAsCustomerUseCase.Execute(command)
 	if err != nil {
+		h.logger.Errorf("CustomerHandler.Login: Error at searching for customer account, %s", err.Error())
 		w.WriteHeader(http.StatusBadRequest)
 		json.NewEncoder(w).Encode(err.Error())
 		return

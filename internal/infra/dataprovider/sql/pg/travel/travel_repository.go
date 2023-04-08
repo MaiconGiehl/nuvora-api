@@ -20,6 +20,10 @@ func NewTravelPGSQLRepository(
 	}
 }
 
+func (r *TravelPGSQLRepository) CreateTravel() error {
+	return nil
+}
+
 func (r *TravelPGSQLRepository) GetTravelsByCities(dptCityID, arvCityID int) (*[]Travel, error) {
 	var output []Travel
 

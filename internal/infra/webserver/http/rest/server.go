@@ -9,6 +9,7 @@ import (
 	"github.com/maicongiehl/nuvora-api/configs/env"
 	_ "github.com/maicongiehl/nuvora-api/docs"
 	postgresdb_config "github.com/maicongiehl/nuvora-api/internal/infra/dataprovider/sql/pg"
+	logrus_config "github.com/maicongiehl/nuvora-api/internal/infra/log/logrus"
 )
 
 //	@title			Nuvora API
@@ -27,18 +28,20 @@ import (
 //	@BasePath	/
 func StartServer() {
 	port := ":8080"
-
 	ctx := context.Background()
-	
-	env := env.LoadConfig()
+	logger := logrus_config.NewLogrusLogger()
+	env := env.LoadConfig(logger)
 
-	db := postgresdb_config.ConnectWithConnector(env.DBHost, env.DBPort, env.DBUser, env.DBPassword, env.DBName)
-	err := db.Ping()
+	db := postgresdb_config.ConnectWithConnector(
+		logger,
+		env.DBHost, 
+		env.DBPort, 
+		env.DBUser, 
+		env.DBPassword, 
+		env.DBName,
+	)
 
-	if err != nil {
-		panic(err)
-	}
-	app := di.SetupDIConfig(ctx, db)
+	app := di.SetupDIConfig(ctx, db, logger)
 
-	http.ListenAndServe(port, Router(app))
+	http.ListenAndServe(port, Router(app, logger))
 }

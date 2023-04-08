@@ -3,25 +3,30 @@ package entity
 import (
 	"context"
 	"database/sql"
+	"errors"
+
+	"github.com/maicongiehl/nuvora-api/internal/core/application/shared/logger"
 )
 
 type CustomerPGSQLRepository struct {
 	ctx context.Context
 	db *sql.DB
+	logger logger.Logger
 }
 
 func NewCustomerPGSQLRepository(
 	ctx context.Context,
 	db *sql.DB,
+	logger logger.Logger,
 ) *CustomerPGSQLRepository {
-
 	return &CustomerPGSQLRepository{
 		ctx: ctx,
 		db: db,
+		logger: logger,
 	}
 }
 
-func (r *CustomerPGSQLRepository) GetCustomerByPersonID(id int) (*Customer, error) {
+func (r *CustomerPGSQLRepository) GetCustomerByID(id int) (*Customer, error) {
 	var output Customer
 
 	stmt := `SELECT * FROM customer c WHERE c.id=$1`
@@ -30,11 +35,18 @@ func (r *CustomerPGSQLRepository) GetCustomerByPersonID(id int) (*Customer, erro
 
 	err := row.Scan(
 		&output.ID,
+		&output.Cpf,
 		&output.Name,
+		&output.Phone,
+		&output.Birth_date,
 		&output.CompanyID,
+		&output.CreatedAt,
+		&output.UpdatedAt,
 	)
 
 	if err != nil {
+		r.logger.Errorf("CustomerRepository.GetCustomerByID: Unable to find customer, %s", err)
+		err = errors.New("internal error, please try again in some minutes")
 		return &output, err
 	}
 

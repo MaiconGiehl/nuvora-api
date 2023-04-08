@@ -39,7 +39,7 @@ func (u *LoginAsCompanyUseCase) Execute(
 		return output, err
 	}
 
-	companyPerson, err := u.personPGSQLRepository.GetPersonByAccountID(companyAccount.PersonID)
+	companyPerson, err := u.personPGSQLRepository.GetPersonByID(companyAccount.PersonID)
 	if err != nil {
 		return output, err
 	}
