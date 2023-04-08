@@ -20,7 +20,7 @@ func LoadConfig(logger logger.Logger) *DBConfig {
 	if err != nil {
 		logger.Fatalf("EnvConfig.LoadConfig: Unable to load env, %s", err.Error())
 	}
-	
+
 	return &DBConfig{
 		DBHost:              		os.Getenv("DB_HOST"),
 		DBPort:     						os.Getenv("DB_PORT"),

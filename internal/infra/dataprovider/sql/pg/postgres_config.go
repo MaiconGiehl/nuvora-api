@@ -9,7 +9,7 @@ import (
 	"fmt"
 )
 
-func ConnectWithConnector(
+func ConnectWithDB(
 	logger logger.Logger,
 	dbHost, 
 	dbPort, 
@@ -29,6 +29,8 @@ func ConnectWithConnector(
 	if err != nil {
 	  logger.Fatalf("PostgresConfig.ConnectWithConnector: Something went wrong while pinging to database, %s", err.Error())
 	}
+
+	logger.Infof("PostgresConfig.ConnectWithDB: Database connection successfully established")
 
 	return db
 }

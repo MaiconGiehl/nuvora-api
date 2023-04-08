@@ -28,11 +28,13 @@ import (
 //	@BasePath	/
 func StartServer() {
 	port := ":8080"
+
 	ctx := context.Background()
 	logger := logrus_config.NewLogrusLogger()
+
 	env := env.LoadConfig(logger)
 
-	db := postgresdb_config.ConnectWithConnector(
+	db := postgresdb_config.ConnectWithDB(
 		logger,
 		env.DBHost, 
 		env.DBPort, 

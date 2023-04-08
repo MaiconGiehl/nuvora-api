@@ -3,7 +3,6 @@ package rest
 import (
 	"net/http"
 
-	"github.com/go-chi/chi/middleware"
 	"github.com/go-chi/chi/v5"
 	di "github.com/maicongiehl/nuvora-api/configs/di"
 	"github.com/maicongiehl/nuvora-api/internal/core/application/shared/logger"
@@ -13,7 +12,6 @@ import (
 
 func Router(app *di.App, logger logger.Logger) http.Handler {
 	r := chi.NewRouter()
-	r.Use(middleware.Logger)
 	r.Get("/docs/nuvora/v1*", httpSwagger.Handler(httpSwagger.URL("http://localhost:8080/docs/nuvora/v1/doc.json")))
 	
 	customerHandler := handlers.NewCustomerHandler(logger, app) 

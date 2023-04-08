@@ -31,7 +31,7 @@ func NewTravelHandler(
 // @Tags         Travel
 // @Accept       json
 // @Produce      json
-// @Param        body   				request      dto.TravelInputDTO  true  "Login info"
+// @Param        request   				body      dto.TravelInputDTO  true  "Login info"
 // @Success      200  										{object}   	object
 // @Failure      404
 // @Router       /travel [post]

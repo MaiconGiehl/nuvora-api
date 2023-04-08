@@ -36,7 +36,8 @@ func NewCompanyHandler(
 // @Failure      404
 // @Router       /company [post]
 func (h *CompanyHandler) Login(w http.ResponseWriter, r *http.Request) {
-	var input dto.CustomerAccountInputDTO
+	h.logger.Infof("CompanyHandler.Login: Request received")
+	var input dto.LoginInputDTO
 
 	err := json.NewDecoder(r.Body).Decode(&input)
 	if err != nil {
@@ -55,6 +56,7 @@ func (h *CompanyHandler) Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	h.logger.Infof("CompanyHandler.Login: New connection to account %s", input.Email)
 	w.WriteHeader(http.StatusAccepted)
 	json.NewEncoder(w).Encode(output)
 }
