@@ -47,8 +47,8 @@ func (h *TravelHandler) CreateTravel(w http.ResponseWriter, r *http.Request) {
 // @Tags         Travel
 // @Accept       json
 // @Produce      json
-// @Param        id   				path      int  true  "Login info"
-// @Success      200  										{object}   	dto.TravelOutputDTO
+// @Param        id   				path      int  true  "Customer account id"
+// @Success      200  										{object}   	[]dto.TravelOutputDTO
 // @Failure      404
 // @Router       /travel/avaiables/{id} [get]
 func (h *TravelHandler) CustomerPossibleTravels(w http.ResponseWriter, r *http.Request) {
