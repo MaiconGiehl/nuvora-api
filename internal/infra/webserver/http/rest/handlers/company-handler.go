@@ -64,39 +64,6 @@ func (h *CompanyHandler) Login(w http.ResponseWriter, r *http.Request) {
 	json.NewEncoder(w).Encode(output)
 }
 
-// // Customer godoc
-// // @Summary      Login as customer
-// // @Description  Login as customer with email and password
-// // @Tags         Customer
-// // @Accept       json
-// // @Produce      json
-// // @Param        request   								body     		dto.LoginInputDTO  true  "Login info"
-// // @Success      200  										{object}   	dto.CustomerAccountOutputDTO
-// // @Failure      404
-// // @Router       /company/{id}/employees [post]
-// func (h *CompanyHandler) CreateEmployee(w http.ResponseWriter, r *http.Request) {
-// 	var input dto.CustomerAccountInputDTO
-
-// 	err := json.NewDecoder(r.Body).Decode(&input)
-// 	if err != nil {
-// 		w.WriteHeader(http.StatusBadRequest)
-// 		json.NewEncoder(w).Encode(err.Error())
-// 		return
-// 	}
-
-// 	command := login_command.With(input.Email, input.Password)
-// 	output, err := h.app.LoginAsCompanyUseCase.Execute(command)
-// 	if err != nil {
-// 		w.WriteHeader(http.StatusBadRequest)
-// 		json.NewEncoder(w).Encode(err.Error())
-// 		return
-// 	}
-
-// 	w.WriteHeader(http.StatusAccepted)
-// 	json.NewEncoder(w).Encode(output)
-// }
-
-
 // Company godoc
 // @Summary      Get all employees
 // @Description  Get all employees based on company account id
