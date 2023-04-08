@@ -27,7 +27,7 @@ func Router(app *di.App, logger logger.Logger) http.Handler {
 		r.Get("/avaiables/{id}", travelHandler.CustomerPossibleTravels)
 	})
 
-	companyHandler := handlers.NewCompanyHandler(app)
+	companyHandler := handlers.NewCompanyHandler(logger, app)
 	r.Route("/company", func (r chi.Router) {
 		r.Post("/", companyHandler.Login)
 	})

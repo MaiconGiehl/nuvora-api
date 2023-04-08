@@ -37,7 +37,7 @@ func NewLoginAsCustomerUseCase(
 func (u *LoginAsCustomerUseCase) Execute(command *loginAsCustomerCommand) (*dto.CustomerAccountOutputDTO, error) {
 	var output *dto.CustomerAccountOutputDTO
 
-	customerAccount, err := u.accountPGSQLRepository.LoginAsCustomer(command.Email, command.Password)
+	customerAccount, err := u.accountPGSQLRepository.Login(command.Email, command.Password)
 	if err != nil {
 		u.logger.Errorf("LoginAsCustomerUseCase.Execute: Unable to login in account, %s", err.Error())
 		return output, err
@@ -49,7 +49,7 @@ func (u *LoginAsCustomerUseCase) Execute(command *loginAsCustomerCommand) (*dto.
 		return output, err
 	}
 
-	customer, err := u.customerPGSQLRepository.GetCustomerByID(customerPerson.CustomerID)
+	customer, err := u.customerPGSQLRepository.GetCustomerByID(int(customerPerson.CustomerID.Int64))
 	if err != nil {
 		u.logger.Errorf("LoginAsCustomerUseCase.Execute: Unable to get customer, %s", err.Error())
 		return output, err
@@ -59,7 +59,7 @@ func (u *LoginAsCustomerUseCase) Execute(command *loginAsCustomerCommand) (*dto.
 		customerAccount.ID,
 		customer.Name,
 		customerPerson.PermissionLevel,
-		customerAccount.TicketsLeft,
+		customerAccount.TicketsLeft.Int64,
 	)
 
 	return output, err

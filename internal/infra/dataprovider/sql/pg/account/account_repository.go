@@ -32,7 +32,7 @@ func (r *AccountPGSQLRepository) GetAccountByID(accountId int) (*Account, error)
 	return &output, nil
 }
 
-func (r *AccountPGSQLRepository) LoginAsCustomer(email, password string) (*Account, error) {
+func (r *AccountPGSQLRepository) Login(email, password string) (*Account, error) {
 	var output Account
 	stmt := `SELECT * FROM account a WHERE email= $1 AND password=$2`
 	
@@ -51,19 +51,10 @@ func (r *AccountPGSQLRepository) LoginAsCustomer(email, password string) (*Accou
 	)
 
 	if err != nil {
-		r.logger.Errorf("AccountRepository.LoginAsCustomer: Unable to find account, %s", err)
+		r.logger.Errorf("AccountRepository.Login: Unable to find account, %s", err)
 		err = errors.New("invalid credentials")
 		return &output, err
 	}
-
-	return &output, nil
-}
-
-
-func (r *AccountPGSQLRepository) LoginAsCompany(email, password string) (*Account, error) {
-	var output Account
-
-	
 
 	return &output, nil
 }

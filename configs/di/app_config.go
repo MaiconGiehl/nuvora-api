@@ -30,7 +30,7 @@ func SetupDIConfig(
 ) *App {
 
 	newCustomerPGSQLRepository := customer_entity.NewCustomerPGSQLRepository(ctx, db, logrus)
-	newCompanyPGSQLRepository := company_entity.NewCompanyPGSQLRepository(ctx, db)
+	newCompanyPGSQLRepository := company_entity.NewCompanyPGSQLRepository(ctx, db, logrus)
 	newPersonPGSQLRepository := person_entity.NewPersonPGSQLRepository(ctx, db, logrus)
 	newAccountPGSQLRepository := account_entity.NewAccountPGSQLRepository(ctx, db, logrus)
 
@@ -55,7 +55,8 @@ func SetupDIConfig(
 	)
 
 	newLoginAsCompanyUseCase := login_as_company_usecase.NewLoginAsCompanyUseCase(
-		ctx, 
+		ctx,
+		logrus,
 		newCompanyPGSQLRepository,
 		newPersonPGSQLRepository,
 		newAccountPGSQLRepository,

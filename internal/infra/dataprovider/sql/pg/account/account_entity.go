@@ -2,6 +2,7 @@ package entity
 
 import (
 	"database/sql"
+	"time"
 )
 
 type Account struct {
@@ -9,9 +10,9 @@ type Account struct {
   Email string
   Password string
   PersonID int
-  LastAccess sql.NullTime
-  TicketsLeft int 
+  LastAccess time.Time
+  TicketsLeft sql.NullInt64
   DailyTickets int
-  CreatedAt sql.NullTime
+  CreatedAt time.Time
   UpdatedAt sql.NullTime
 }
