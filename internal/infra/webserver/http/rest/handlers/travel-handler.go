@@ -2,10 +2,12 @@ package handlers
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"strconv"
 
 	"github.com/go-chi/chi/v5"
+	"github.com/maicongiehl/nuvora-api/internal/core/application/shared/dto"
 	get_possible_command "github.com/maicongiehl/nuvora-api/internal/core/application/usecase/customer/get-possible-travels"
 
 	di "github.com/maicongiehl/nuvora-api/configs/di"
@@ -21,6 +23,22 @@ func NewTravelHandler(
 	return &TravelHandler{
 		app: app,
 	}
+}
+
+// Travel godoc
+// @Summary      CreateTravel
+// @Description  Create a new travel
+// @Tags         Travel
+// @Accept       json
+// @Produce      json
+// @Param        request   				body      dto.TravelInputDTO  true  "Login info"
+// @Success      200  										{object}   	object
+// @Failure      404
+// @Router       /travel [post]
+func (h *TravelHandler) CreateTravel(w http.ResponseWriter, r *http.Request) {
+	var input dto.TravelOutputDTO
+
+	fmt.Print(input)
 }
 
 // Travel godoc

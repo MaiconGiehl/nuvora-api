@@ -48,12 +48,12 @@ func (u *GetPossibleTravelsUseCase) Execute(
 		return &output, err
 	}
 
-	customerPerson, err := u.personPGSQLRepository.GetPersonByAccountID(customerAccount.ID)
+	customerPerson, err := u.personPGSQLRepository.GetPersonByID(customerAccount.ID)
 	if err != nil {
 		return &output, err
 	}
 
-	customer, err := u.customerPGSQLRepository.GetCustomerByPersonID(customerPerson.ID)
+	customer, err := u.customerPGSQLRepository.GetCustomerByID(customerPerson.ID)
 	if err != nil {
 		return &output, err
 	}

@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/maicongiehl/nuvora-api/internal/core/application/shared/dto"
+	"github.com/maicongiehl/nuvora-api/internal/core/application/shared/logger"
 	account_entity "github.com/maicongiehl/nuvora-api/internal/infra/dataprovider/sql/pg/account"
 	company_entity "github.com/maicongiehl/nuvora-api/internal/infra/dataprovider/sql/pg/company"
 	person_entity "github.com/maicongiehl/nuvora-api/internal/infra/dataprovider/sql/pg/person"
@@ -11,6 +12,7 @@ import (
 
 type LoginAsCompanyUseCase struct {
 	ctx context.Context
+	logger logger.Logger
 	companyPGSQLRepository *company_entity.CompanyPGSQLRepository
 	personPGSQLRepository *person_entity.PersonPGSQLRepository
 	accountPGSQLRepository *account_entity.AccountPGSQLRepository
@@ -18,12 +20,14 @@ type LoginAsCompanyUseCase struct {
 
 func NewLoginAsCompanyUseCase(
 	ctx context.Context,
+	logger logger.Logger,
 	companyPGSQLRepository *company_entity.CompanyPGSQLRepository,
 	personPGSQLRepository *person_entity.PersonPGSQLRepository,
 	accountPGSQLRepository *account_entity.AccountPGSQLRepository,
 ) *LoginAsCompanyUseCase {
 	return &LoginAsCompanyUseCase{
-		ctx:          					 ctx,
+		ctx: ctx,
+		logger: logger,
 		companyPGSQLRepository: companyPGSQLRepository,
 		personPGSQLRepository: personPGSQLRepository,
 		accountPGSQLRepository: accountPGSQLRepository,
@@ -34,24 +38,27 @@ func (u *LoginAsCompanyUseCase) Execute(
 	command *loginAsCompany) (*dto.CompanyAccountOutputDTO, error) {
 	var output *dto.CompanyAccountOutputDTO
 
-	companyAccount, err := u.accountPGSQLRepository.LoginAsCompany(command.Email, command.Password)
+	companyAccount, err := u.accountPGSQLRepository.Login(command.Email, command.Password)
 	if err != nil {
+		u.logger.Errorf("LoginAsCompanyUseCase.Execute: Unable to login in account, %s", err.Error())
 		return output, err
 	}
 
-	companyPerson, err := u.personPGSQLRepository.GetPersonByAccountID(companyAccount.PersonID)
+	companyPerson, err := u.personPGSQLRepository.GetPersonByID(companyAccount.PersonID)
 	if err != nil {
+		u.logger.Errorf("LoginAsCompanyUseCase.Execute: Unable to get person, %s", err.Error())
 		return output, err
 	}
 
-	company, err := u.companyPGSQLRepository.GetCompanyByID(companyPerson.CompanyID)
+	company, err := u.companyPGSQLRepository.GetCompanyByID(int(companyPerson.CompanyID.Int64))
 	if err != nil {
+		u.logger.Errorf("LoginAsCompanyUseCase.Execute: Unable to get company, %s", err.Error())
 		return output, err
 	}
 
 	output = dto.NewCompanyOutputDTO(
 		companyAccount.ID,
-		company.FantasyName,
+		company.FantasyName.String,
 		companyPerson.PermissionLevel,
 	)
 

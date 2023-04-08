@@ -2,6 +2,11 @@ package dto
 
 import "time"
 
+type TicketInputDTO struct {
+	AccountID int
+	TravelID int
+}
+
 type TicketOutputDTO struct {
 	ID int
 	Status string

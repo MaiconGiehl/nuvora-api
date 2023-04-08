@@ -2,6 +2,10 @@ package dto
 
 import "time"
 
+type TravelInputDTO struct {
+	
+}
+
 type TravelOutputDTO struct {
 	ID int
 	Price float64

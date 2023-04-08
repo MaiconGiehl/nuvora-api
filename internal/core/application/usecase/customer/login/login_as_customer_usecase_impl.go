@@ -4,6 +4,7 @@ import (
 	"context"
 
 	"github.com/maicongiehl/nuvora-api/internal/core/application/shared/dto"
+	"github.com/maicongiehl/nuvora-api/internal/core/application/shared/logger"
 	account_entity "github.com/maicongiehl/nuvora-api/internal/infra/dataprovider/sql/pg/account"
 	customer_entity "github.com/maicongiehl/nuvora-api/internal/infra/dataprovider/sql/pg/customer"
 	person_entity "github.com/maicongiehl/nuvora-api/internal/infra/dataprovider/sql/pg/person"
@@ -11,6 +12,7 @@ import (
 
 type LoginAsCustomerUseCase struct {
 	ctx context.Context
+	logger logger.Logger
 	customerPGSQLRepository *customer_entity.CustomerPGSQLRepository
 	personPGSQLRepository *person_entity.PersonPGSQLRepository
 	accountPGSQLRepository *account_entity.AccountPGSQLRepository
@@ -18,12 +20,14 @@ type LoginAsCustomerUseCase struct {
 
 func NewLoginAsCustomerUseCase(
 	ctx context.Context,
+	logger logger.Logger,
 	customerPGSQLRepository *customer_entity.CustomerPGSQLRepository,
 	personPGSQLRepository *person_entity.PersonPGSQLRepository,
 	accountPGSQLRepository *account_entity.AccountPGSQLRepository,
 ) *LoginAsCustomerUseCase {
 	return &LoginAsCustomerUseCase{
-		ctx:          					 ctx,
+		ctx: ctx,
+		logger: logger,
 		customerPGSQLRepository: customerPGSQLRepository,
 		personPGSQLRepository: personPGSQLRepository,
 		accountPGSQLRepository: accountPGSQLRepository,
@@ -33,18 +37,21 @@ func NewLoginAsCustomerUseCase(
 func (u *LoginAsCustomerUseCase) Execute(command *loginAsCustomerCommand) (*dto.CustomerAccountOutputDTO, error) {
 	var output *dto.CustomerAccountOutputDTO
 
-	customerAccount, err := u.accountPGSQLRepository.LoginAsCustomer(command.Email, command.Password)
+	customerAccount, err := u.accountPGSQLRepository.Login(command.Email, command.Password)
 	if err != nil {
+		u.logger.Errorf("LoginAsCustomerUseCase.Execute: Unable to login in account, %s", err.Error())
 		return output, err
 	}
 
-	customerPerson, err := u.personPGSQLRepository.GetPersonByAccountID(customerAccount.PersonID)
+	customerPerson, err := u.personPGSQLRepository.GetPersonByID(customerAccount.PersonID)
 	if err != nil {
+		u.logger.Errorf("LoginAsCustomerUseCase.Execute: Unable to get person, %s", err.Error())
 		return output, err
 	}
 
-	customer, err := u.customerPGSQLRepository.GetCustomerByPersonID(customerPerson.ID)
+	customer, err := u.customerPGSQLRepository.GetCustomerByID(int(customerPerson.CustomerID.Int64))
 	if err != nil {
+		u.logger.Errorf("LoginAsCustomerUseCase.Execute: Unable to get customer, %s", err.Error())
 		return output, err
 	}
 
@@ -52,7 +59,7 @@ func (u *LoginAsCustomerUseCase) Execute(command *loginAsCustomerCommand) (*dto.
 		customerAccount.ID,
 		customer.Name,
 		customerPerson.PermissionLevel,
-		customerAccount.TicketsLeft,
+		customerAccount.TicketsLeft.Int64,
 	)
 
 	return output, err

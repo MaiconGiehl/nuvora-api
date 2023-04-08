@@ -1,9 +1,17 @@
 package entity
 
-import "time"
+import (
+	"database/sql"
+	"time"
+)
 
 type Ticket struct {
 	ID int
+	AccountID int
+	StatusID int
+	TravelID int
+	CreatedAt time.Time
+	UpdatedAt sql.NullTime
 }
 
 type EmployeeTravelTicket struct {

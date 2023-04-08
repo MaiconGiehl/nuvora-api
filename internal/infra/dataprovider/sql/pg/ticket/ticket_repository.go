@@ -20,6 +20,10 @@ func NewTicketPGSQLRepository(
 	}
 }
 
+func (r *TicketPGSQLRepository) CreateTicket() error {
+	return nil
+}
+
 func (r *TicketPGSQLRepository) GetLastPurchases(accountId int) (*[]Ticket, error) {
 	var output []Ticket
 
