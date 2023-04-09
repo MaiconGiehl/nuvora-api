@@ -5,6 +5,8 @@ import (
 	"database/sql"
 
 	account_entity "github.com/maicongiehl/nuvora-api/internal/infra/dataprovider/sql/pg/account"
+	bus_entity "github.com/maicongiehl/nuvora-api/internal/infra/dataprovider/sql/pg/bus"
+	city_entity "github.com/maicongiehl/nuvora-api/internal/infra/dataprovider/sql/pg/city"
 	company_entity "github.com/maicongiehl/nuvora-api/internal/infra/dataprovider/sql/pg/company"
 	customer_entity "github.com/maicongiehl/nuvora-api/internal/infra/dataprovider/sql/pg/customer"
 	person_entity "github.com/maicongiehl/nuvora-api/internal/infra/dataprovider/sql/pg/person"
@@ -36,6 +38,9 @@ func SetupDIConfig(
 
 	newTicketPGSQLRepository := ticket_entity.NewTicketPGSQLRepository(ctx, db)
 	newTravelPGSQLRepository := travel_entity.NewTravelPGSQLRepository(ctx, db)
+
+	newBusPGSQLRepository := bus_entity.NewBusPGSQLRepository(ctx, db, logrus)
+	newCityPGSQLRepository := city_entity.NewCityPGSQLRepository(ctx, db, logrus)
 
 	// CompanyUseCases
 	newCreateEmployeeUseCase := create_employee_usecase.NewCreateEmployeeUseCase(ctx, 
@@ -97,6 +102,10 @@ func SetupDIConfig(
 	// TravelCompanyUseCases
 	newCreateTravelUseCase := create_travel_usecase.NewCreateTravelUseCase(
 		ctx,
+		logrus,
+		newBusPGSQLRepository,
+		newCityPGSQLRepository,
+		newCompanyPGSQLRepository,
 		newTravelPGSQLRepository,
 	)
 

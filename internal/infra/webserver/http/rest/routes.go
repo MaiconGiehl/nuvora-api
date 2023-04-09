@@ -20,15 +20,20 @@ func Router(app *di.App, logger logger.Logger) http.Handler {
 		r.Get("/last-purchases/{id}", customerHandler.LastPurchases)
 	})
 	
+	companyHandler := handlers.NewCompanyHandler(logger, app)
+	r.Route("/company", func (r chi.Router) {
+		r.Post("/", companyHandler.Login)
+		r.Get("/{id}/employees", companyHandler.GetEmployees)
+	})
+
 	travelHandler := handlers.NewTravelHandler(app) 
 	r.Route("/travel", func (r chi.Router) {
 		r.Get("/avaiables/{id}", travelHandler.CustomerPossibleTravels)
 	})
 
-	companyHandler := handlers.NewCompanyHandler(logger, app)
-	r.Route("/company", func (r chi.Router) {
-		r.Post("/", companyHandler.Login)
-		r.Get("/{id}/employees", companyHandler.GetEmployees)
+	travelCompanyHandler := handlers.NewTravelCompanyHandler(logger, app)
+	r.Route("/travel-company", func (r chi.Router) {
+		r.Post("/{id}/travels", travelCompanyHandler.CreateTravel)
 	})
 
 	return r

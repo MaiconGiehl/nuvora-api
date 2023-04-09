@@ -3,7 +3,10 @@ package dto
 import "time"
 
 type TravelInputDTO struct {
-	
+  Price float64
+  BusID int
+  Departure DepartureInputDTO
+  Arrival ArrivalInputDTO
 }
 
 type TravelOutputDTO struct {

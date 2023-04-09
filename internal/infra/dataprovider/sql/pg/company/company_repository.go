@@ -26,7 +26,7 @@ func NewCompanyPGSQLRepository(
 	}
 }
 
-func (r *CompanyPGSQLRepository) GetCompanyByID(companyId int) (*Company, error) {
+func (r *CompanyPGSQLRepository) FindCompanyByID(companyId int) (*Company, error) {
 	var output Company
 	stmt := `SELECT * FROM company c WHERE c.id =$1`
 	
@@ -44,7 +44,7 @@ func (r *CompanyPGSQLRepository) GetCompanyByID(companyId int) (*Company, error)
 	)
 
 	if err != nil {
-		r.logger.Errorf("CompanyRepository.GetCompanyByID: Unable to find company, %s", err)
+		r.logger.Errorf("CompanyRepository.FindCompanyByID: Unable to find company, %s", err)
 		err = errors.New("internal error, please try again in some minutes")
 		return &output, err
 	}
