@@ -31,3 +31,13 @@ func NewArrivalOutputDTO(
 		City: city,
 	}
 }
+
+type DepartureInputDTO struct {
+	Time string
+	CityID int
+}
+
+type ArrivalInputDTO struct {
+	Time string
+	CityID int
+}

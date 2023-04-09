@@ -50,7 +50,7 @@ func (u *LoginAsCompanyUseCase) Execute(
 		return output, err
 	}
 
-	company, err := u.companyPGSQLRepository.GetCompanyByID(int(companyPerson.CompanyID.Int64))
+	company, err := u.companyPGSQLRepository.FindCompanyByID(int(companyPerson.CompanyID.Int64))
 	if err != nil {
 		u.logger.Errorf("LoginAsCompanyUseCase.Execute: Unable to get company, %s", err.Error())
 		return output, err

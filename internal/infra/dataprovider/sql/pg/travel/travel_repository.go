@@ -3,6 +3,7 @@ package entity
 import (
 	"context"
 	"database/sql"
+	"time"
 )
 
 type TravelPGSQLRepository struct {
@@ -20,7 +21,25 @@ func NewTravelPGSQLRepository(
 	}
 }
 
-func (r *TravelPGSQLRepository) CreateTravel() error {
+func (r *TravelPGSQLRepository) CreateTravel(
+	companyId int,
+	price float64,
+	busId int,
+	departureTime time.Time,
+	departureCityId int,
+	arrivalTime time.Time,
+	arrivalCityId int,
+) error {
+
+	stmt := `INSERT INTO travel ( price, account_id, bus_id, status, departure_time, departure_city_id, arrival_time, arrival_city_id, created_at)
+		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, CURRENT_DATE)
+		`
+	_, err := r.db.Exec(stmt, price, companyId, busId, 0, departureTime, departureCityId, arrivalTime, arrivalCityId)
+
+	if err != nil {
+		return err
+	}
+
 	return nil
 }
 

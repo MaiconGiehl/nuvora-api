@@ -62,7 +62,7 @@ func (u *GetEmployeesUseCase) Execute(
 		return &output, err
 	} 
 
-	company, err := u.companyPGSQLRepository.GetCompanyByID(int(companyPerson.CompanyID.Int64))
+	company, err := u.companyPGSQLRepository.FindCompanyByID(int(companyPerson.CompanyID.Int64))
 	if err != nil {
 		u.logger.Errorf("GetEmployeesUseCase.Execute: Unable to find a company associated with the person, %s", err.Error())
 		return &output, err
