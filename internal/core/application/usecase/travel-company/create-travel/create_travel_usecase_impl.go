@@ -73,7 +73,7 @@ func (u *CreateTravelUsecase) Execute(
 func (u *CreateTravelUsecase) validateInput(input *createTravelCommand) error {
 	_, err := u.companyPGSQLRepository.FindCompanyByID(input.CompanyID)
 	if err != nil {
-		return errors.New("company don't exist")
+		return errors.New("company does not exist")
 	}
 
 	if input.Price <= 0 {

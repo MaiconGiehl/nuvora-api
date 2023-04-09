@@ -27,7 +27,7 @@ func With(
 		return nil, errors.New("departure time must be in time format")
 	}
 	
-	arvTime, err := time.Parse("2006-01-02", travel.Arrival.Time)
+	arvTime, err := time.Parse("2006-01-02T00:00:00", travel.Arrival.Time)
 	if err != nil {
 		return nil, errors.New("departure time must be in time format")
 	}

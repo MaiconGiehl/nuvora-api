@@ -75,5 +75,5 @@ func (h *TravelCompanyHandler) CreateTravel(w http.ResponseWriter, r *http.Reque
 	}
 
 	h.logger.Infof("TravelCompanyHandler.Create: New travel created")
-	w.WriteHeader(http.StatusAccepted)
+	w.WriteHeader(http.StatusCreated)
 }
