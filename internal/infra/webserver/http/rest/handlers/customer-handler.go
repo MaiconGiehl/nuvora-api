@@ -69,8 +69,8 @@ func (h *CustomerHandler) Login(w http.ResponseWriter, r *http.Request) {
 // @Summary      Buy a ticket
 // @Description  Generate a ticket when user buy one
 // @Tags         Customer
-// @Param        id   							path     		int  true  "Id"
-// @Param        travelId   				path     		int  true  "Id"
+// @Param        id   							path     		int  true  "Customer Account Id"
+// @Param        travelId   				path     		int  true  "Travel Id"
 // @Accept       json
 // @Produce      json
 // @Success      200  										{object}   	object
