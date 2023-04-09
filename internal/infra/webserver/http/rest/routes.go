@@ -14,21 +14,22 @@ func Router(app *di.App, logger logger.Logger) http.Handler {
 	r := chi.NewRouter()
 	r.Get("/docs/nuvora/v1*", httpSwagger.Handler(httpSwagger.URL("http://localhost:8080/docs/nuvora/v1/doc.json")))
 	
+	travelHandler := handlers.NewTravelHandler(app) 
+	r.Route("/travel", func (r chi.Router) {
+		r.Get("/avaiables/{id}", travelHandler.CustomerPossibleTravels)
+	})
+
 	customerHandler := handlers.NewCustomerHandler(logger, app) 
 	r.Route("/customer", func (r chi.Router) {
 		r.Post("/",  customerHandler.Login)
 		r.Get("/last-purchases/{id}", customerHandler.LastPurchases)
+		r.Post("/{id}/tickets/{travelId}", customerHandler.BuyTicket)
 	})
 	
 	companyHandler := handlers.NewCompanyHandler(logger, app)
 	r.Route("/company", func (r chi.Router) {
 		r.Post("/", companyHandler.Login)
 		r.Get("/{id}/employees", companyHandler.GetEmployees)
-	})
-
-	travelHandler := handlers.NewTravelHandler(app) 
-	r.Route("/travel", func (r chi.Router) {
-		r.Get("/avaiables/{id}", travelHandler.CustomerPossibleTravels)
 	})
 
 	travelCompanyHandler := handlers.NewTravelCompanyHandler(logger, app)

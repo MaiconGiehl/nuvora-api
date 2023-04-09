@@ -9,6 +9,7 @@ import (
 	di "github.com/maicongiehl/nuvora-api/configs/di"
 	dto "github.com/maicongiehl/nuvora-api/internal/core/application/shared/dto"
 	"github.com/maicongiehl/nuvora-api/internal/core/application/shared/logger"
+	buy_ticket_command "github.com/maicongiehl/nuvora-api/internal/core/application/usecase/customer/buy-ticket"
 	get_last_purchases_command "github.com/maicongiehl/nuvora-api/internal/core/application/usecase/customer/get-last-purchases"
 	login_command "github.com/maicongiehl/nuvora-api/internal/core/application/usecase/customer/login"
 )
@@ -59,10 +60,54 @@ func (h *CustomerHandler) Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	h.logger.Infof("CompanyHandler.Login: New connection to account %s", input.Email)
+	h.logger.Infof("CustomerHandler.Login: New connection to account %s", input.Email)
 	w.WriteHeader(http.StatusAccepted)
 	json.NewEncoder(w).Encode(output)
 }
+
+// Ticket godoc
+// @Summary      Buy a ticket
+// @Description  Generate a ticket when user buy one
+// @Tags         Customer
+// @Param        id   							path     		int  true  "Id"
+// @Param        travelId   				path     		int  true  "Id"
+// @Accept       json
+// @Produce      json
+// @Success      200  										{object}   	object
+// @Failure      404
+// @Router       /customer/{id}/tickets/{travelId} [post]
+func (h *CustomerHandler) BuyTicket(w http.ResponseWriter, r *http.Request) {
+	h.logger.Infof("CustomerHandler.BuyTicket: Request received")
+
+	customerId, err := strconv.Atoi(chi.URLParam(r, "id"))
+	if err != nil {
+		h.logger.Errorf("CustomerHandler.BuyTicket: Invalid url path, %s", err.Error())
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(err.Error())
+		return
+	}
+
+	travelId, err := strconv.Atoi(chi.URLParam(r, "travelId"))
+	if err != nil {
+		h.logger.Errorf("CustomerHandler.BuyTicket: Invalid url path, %s", err.Error())
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(err.Error())
+		return
+	}
+
+	command := buy_ticket_command.With(customerId, travelId)
+	err = h.app.BuyTicketUseCase.Execute(command)
+	if err != nil {
+		h.logger.Errorf("CustomerHandler.BuyTicket: Error while buying a ticket, %s", err.Error())
+		w.WriteHeader(http.StatusNotAcceptable)
+		json.NewEncoder(w).Encode(err.Error())
+		return
+	}
+
+	h.logger.Infof("CustomerHandler.BuyTicket: New ticket bought")
+	w.WriteHeader(http.StatusCreated)
+}
+
 
 // Customer godoc
 // @Summary      Get last purchases

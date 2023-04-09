@@ -3,21 +3,27 @@ package entity
 import (
 	"context"
 	"database/sql"
+	"errors"
 	"time"
+
+	"github.com/maicongiehl/nuvora-api/internal/core/application/shared/logger"
 )
 
 type TravelPGSQLRepository struct {
 	ctx context.Context
 	db *sql.DB
+	logger logger.Logger
 }
 
 func NewTravelPGSQLRepository(
 	ctx context.Context,
 	db *sql.DB,
+	logger logger.Logger,
 ) *TravelPGSQLRepository {
 	return &TravelPGSQLRepository{
 		ctx: ctx,
 		db: db,
+		logger: logger,
 	}
 }
 
@@ -43,6 +49,36 @@ func (r *TravelPGSQLRepository) CreateTravel(
 	return nil
 }
 
+func (r *TravelPGSQLRepository) FindTravelByID(id int) (*Travel, error) {
+	var output Travel
+
+	stmt := `SELECT * FROM travel t WHERE t.id = $1`
+	
+	row := r.db.QueryRow(stmt, id)
+
+	err := row.Scan(
+		&output.ID,
+		&output.Price,
+		&output.CompanyID,
+		&output.Bus.Number,
+		&output.Bus.MaxPassengers,
+		&output.Departure.Time,
+		&output.Departure.CityName,
+		&output.Arrival.Time,
+		&output.Arrival.CityName,
+		&output.CreatedAt,
+		&output.UpdatedAt,
+	)
+
+	if err != nil {
+		r.logger.Errorf("TravelRepository.FindTravelByID: Unable to find travel, %s", err)
+		err = errors.New("internal error, please try again in some minutes")
+		return &output, err
+	}
+	
+	return &output, err
+}
+
 func (r *TravelPGSQLRepository) GetTravelsByCities(dptCityID, arvCityID int) (*[]Travel, error) {
 	var output []Travel
 
@@ -66,7 +102,6 @@ func (r *TravelPGSQLRepository) GetTravelsByCities(dptCityID, arvCityID int) (*[
 			&travel.ID,
 			&travel.Price,
 			&travel.CompanyID,
-			&travel.CompanyFantasyName,
 			&travel.Bus.Number,
 			&travel.Bus.MaxPassengers,
 			&travel.Departure.Time,

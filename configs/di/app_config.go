@@ -36,8 +36,8 @@ func SetupDIConfig(
 	newPersonPGSQLRepository := person_entity.NewPersonPGSQLRepository(ctx, db, logrus)
 	newAccountPGSQLRepository := account_entity.NewAccountPGSQLRepository(ctx, db, logrus)
 
-	newTicketPGSQLRepository := ticket_entity.NewTicketPGSQLRepository(ctx, db)
-	newTravelPGSQLRepository := travel_entity.NewTravelPGSQLRepository(ctx, db)
+	newTicketPGSQLRepository := ticket_entity.NewTicketPGSQLRepository(ctx, db, logrus)
+	newTravelPGSQLRepository := travel_entity.NewTravelPGSQLRepository(ctx, db, logrus)
 
 	newBusPGSQLRepository := bus_entity.NewBusPGSQLRepository(ctx, db, logrus)
 	newCityPGSQLRepository := city_entity.NewCityPGSQLRepository(ctx, db, logrus)
@@ -96,7 +96,10 @@ func SetupDIConfig(
 
 	newBuyTicketUseCase := buy_ticket_usecase.NewBuyTicketUsecase(
 		ctx,
+		logrus,
+		newAccountPGSQLRepository,
 		newTicketPGSQLRepository,
+		newTravelPGSQLRepository,
 	)
 
 	// TravelCompanyUseCases
