@@ -13,7 +13,7 @@ import (
 	travel_entity "github.com/maicongiehl/nuvora-api/internal/infra/dataprovider/sql/pg/travel"
 )
 
-type CreateTravelUsecase struct {
+type CreateTravelUseCase struct {
 	ctx context.Context
 	logger logger.Logger
 	busPGSQLRepository *bus_entity.BusPGSQLRepository
@@ -29,8 +29,8 @@ func NewCreateTravelUseCase(
 	cityPGSQLRepository *city_entity.CityPGSQLRepository,
 	companyPGSQLRepository *company_entity.CompanyPGSQLRepository,
 	travelPGSQLRepository *travel_entity.TravelPGSQLRepository,
-) *CreateTravelUsecase {
-	return &CreateTravelUsecase{
+) *CreateTravelUseCase {
+	return &CreateTravelUseCase{
 		ctx: ctx,
 		logger: logger,
 		travelPGSQLRepository: travelPGSQLRepository,
@@ -40,7 +40,7 @@ func NewCreateTravelUseCase(
 	}	
 }
 
-func (u *CreateTravelUsecase) Execute(
+func (u *CreateTravelUseCase) Execute(
 	command *createTravelCommand,
 ) error {
 	
@@ -70,7 +70,7 @@ func (u *CreateTravelUsecase) Execute(
 	return nil
 }
 
-func (u *CreateTravelUsecase) validateInput(input *createTravelCommand) error {
+func (u *CreateTravelUseCase) validateInput(input *createTravelCommand) error {
 	_, err := u.companyPGSQLRepository.FindCompanyByID(input.CompanyID)
 	if err != nil {
 		return errors.New("company not found")
@@ -86,8 +86,8 @@ func (u *CreateTravelUsecase) validateInput(input *createTravelCommand) error {
 	}
 
 	now := time.Now()
-	if input.DepartureTime.Compare(now) == -1 || input.DepartureTime.Compare(now) == 0 {
-		return errors.New("departure time must be in the future")
+	if input.ArrivalTime.Compare(input.ArrivalTime) == -1 || input.DepartureTime.Compare(input.ArrivalTime) == 0 {
+		return errors.New("arrival time must be after departure")
 	}
 
 	_, err = u.cityPGSQLRepository.FindCityByID(input.DepartureCityID)
@@ -95,8 +95,8 @@ func (u *CreateTravelUsecase) validateInput(input *createTravelCommand) error {
 		return errors.New("city not found")
 	}
 
-	if input.ArrivalTime.Compare(now) == -1 || input.ArrivalTime.Compare(now) == 0 {
-		return errors.New("departure time must be in the future")
+	if input.DepartureTime.Compare(now) == 1 || input.DepartureTime.Compare(now) == 0 {
+		return errors.New("departure time must be now or in the future")
 	}
 
 	_, err = u.cityPGSQLRepository.FindCityByID(input.ArrivalCityID)

@@ -15,8 +15,8 @@ type DBConfig struct {
 	DBPassword 	string
 }
 
-func LoadConfig(logger logger.Logger) *DBConfig {
-	err := godotenv.Load(".env")
+func LoadConfig(path string, logger logger.Logger) *DBConfig {
+	err := godotenv.Load(path)
 	if err != nil {
 		logger.Fatalf("EnvConfig.LoadConfig: Unable to load env, %s", err.Error())
 	}

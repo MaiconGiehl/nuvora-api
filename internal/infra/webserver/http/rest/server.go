@@ -32,7 +32,7 @@ func StartServer() {
 	ctx := context.Background()
 	logger := logrus_config.NewLogrusLogger()
 
-	env := env.LoadConfig(logger)
+	env := env.LoadConfig(".env", logger)
 
 	db := postgresdb_config.ConnectWithDB(
 		logger,
