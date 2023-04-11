@@ -10,7 +10,7 @@ import (
 	dto "github.com/maicongiehl/nuvora-api/internal/core/application/shared/dto"
 	"github.com/maicongiehl/nuvora-api/internal/core/application/shared/logger"
 	buy_ticket_command "github.com/maicongiehl/nuvora-api/internal/core/application/usecase/customer/buy-ticket"
-	get_last_purchases_command "github.com/maicongiehl/nuvora-api/internal/core/application/usecase/customer/get-last-purchases"
+	get_last_purchases_command "github.com/maicongiehl/nuvora-api/internal/core/application/usecase/customer/get-purchases"
 	login_command "github.com/maicongiehl/nuvora-api/internal/core/application/usecase/customer/login"
 )
 
@@ -118,7 +118,7 @@ func (h *CustomerHandler) BuyTicket(w http.ResponseWriter, r *http.Request) {
 // @Param        id   				path     		int  true  "Id"
 // @Success      200  										{object}   	object
 // @Failure      404
-// @Router       /customer/last-purchases/{id} [get]
+// @Router       /customer/{id}/tickets [get]
 func (h *CustomerHandler) LastPurchases(w http.ResponseWriter, r *http.Request) {
 	customerId, err := strconv.Atoi(chi.URLParam(r, "id"))
 
@@ -129,7 +129,7 @@ func (h *CustomerHandler) LastPurchases(w http.ResponseWriter, r *http.Request) 
 	}
 
 	command := get_last_purchases_command.With(customerId)
-	output, err := h.app.GetLastPurchasesUseCase.Execute(command)
+	output, err := h.app.GetPurchasesUseCase.Execute(command)
 
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)

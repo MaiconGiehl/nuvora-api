@@ -7,34 +7,37 @@ import (
 	entity "github.com/maicongiehl/nuvora-api/internal/infra/dataprovider/sql/pg/ticket"
 )
 
-type GetLastPurchasesUsecase struct {
+type GetPurchasesUsecase struct {
 	ctx context.Context
 	ticketPGSQLRepository *entity.TicketPGSQLRepository
 }
 
-func NewGetLastPurchasesUsecase(
+func NewGetPurchasesUsecase(
 	ctx context.Context,
 	ticketPGSQLRepository *entity.TicketPGSQLRepository,
-) *GetLastPurchasesUsecase {
-	return &GetLastPurchasesUsecase{
+) *GetPurchasesUsecase {
+	return &GetPurchasesUsecase{
 		ctx: ctx,
 		ticketPGSQLRepository: ticketPGSQLRepository,
 	}	
 }
 
-func (u *GetLastPurchasesUsecase) Execute(
-	command *getLastPurchasesCommand,
+func (u *GetPurchasesUsecase) Execute(
+	command *getPurchasesCommand,
 ) (*[]dto.TicketOutputDTO, error) {
 	var output []dto.TicketOutputDTO
 
-	lastPurchases, err := u.ticketPGSQLRepository.GetLastPurchases(command.accountId)
+	tickets, err := u.ticketPGSQLRepository.GetPurchases(command.accountId)
 	if err != nil {
 		return &output, err
 	}
 
-	for purchase := range *lastPurchases {
+	for _, ticket := range *tickets {
 		output = append(output, dto.TicketOutputDTO{
-			ID: purchase,
+			ID: ticket.ID,
+			StatusID: ticket.StatusID,
+			TravelID: ticket.TravelID,
+			CreatedAt: ticket.CreatedAt,
 		})
 	}
 

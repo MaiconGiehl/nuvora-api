@@ -22,7 +22,7 @@ func Router(app *di.App, logger logger.Logger) http.Handler {
 	customerHandler := handlers.NewCustomerHandler(logger, app) 
 	r.Route("/customer", func (r chi.Router) {
 		r.Post("/",  customerHandler.Login)
-		r.Get("/last-purchases/{id}", customerHandler.LastPurchases)
+		r.Get("/{id}/tickets", customerHandler.LastPurchases)
 		r.Post("/{id}/tickets/{travelId}", customerHandler.BuyTicket)
 	})
 	

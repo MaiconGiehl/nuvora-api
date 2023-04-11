@@ -40,7 +40,7 @@ func (r *TicketPGSQLRepository) CreateTicket(accountId, travelId int) error {
 	return nil
 }
 
-func (r *TicketPGSQLRepository) GetLastPurchases(accountId int) (*[]Ticket, error) {
+func (r *TicketPGSQLRepository) GetPurchases(accountId int) (*[]Ticket, error) {
 	var output []Ticket
 
 	stmt := "SELECT * FROM ticket WHERE account_id = $1 ORDER BY created_at DESC"
@@ -52,14 +52,19 @@ func (r *TicketPGSQLRepository) GetLastPurchases(accountId int) (*[]Ticket, erro
 	}
 
 	for rows.Next() {
-		var travel Ticket
+		var ticket Ticket
 		err = rows.Scan(
-			&travel.ID,
+			&ticket.ID,
+			&ticket.AccountID,
+			&ticket.StatusID,
+			&ticket.TravelID,
+			&ticket.CreatedAt,
+			&ticket.UpdatedAt,
 		)
 		if err != nil {
 			return &output, err
 		}
-		output = append(output, travel)
+		output = append(output, ticket)
 	}
 	
 	return &output, nil
