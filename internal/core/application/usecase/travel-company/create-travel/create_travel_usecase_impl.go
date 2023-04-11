@@ -73,7 +73,7 @@ func (u *CreateTravelUsecase) Execute(
 func (u *CreateTravelUsecase) validateInput(input *createTravelCommand) error {
 	_, err := u.companyPGSQLRepository.FindCompanyByID(input.CompanyID)
 	if err != nil {
-		return errors.New("company does not exist")
+		return errors.New("company not found")
 	}
 
 	if input.Price <= 0 {
@@ -82,7 +82,7 @@ func (u *CreateTravelUsecase) validateInput(input *createTravelCommand) error {
 
 	_, err = u.busPGSQLRepository.FindBusByID(input.BusID)
 	if err != nil {
-		return errors.New("invalid bus id")
+		return errors.New("bus not found")
 	}
 
 	now := time.Now()
@@ -92,7 +92,7 @@ func (u *CreateTravelUsecase) validateInput(input *createTravelCommand) error {
 
 	_, err = u.cityPGSQLRepository.FindCityByID(input.DepartureCityID)
 	if err != nil {
-		return errors.New("invalid city id")
+		return errors.New("city not found")
 	}
 
 	if input.ArrivalTime.Compare(now) == -1 || input.ArrivalTime.Compare(now) == 0 {
@@ -101,7 +101,7 @@ func (u *CreateTravelUsecase) validateInput(input *createTravelCommand) error {
 
 	_, err = u.cityPGSQLRepository.FindCityByID(input.ArrivalCityID)
 	if err != nil {
-		return errors.New("invalid city id")
+		return errors.New("city not found")
 	}
 
 	if input.DepartureCityID == input.ArrivalCityID {

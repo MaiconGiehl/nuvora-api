@@ -80,3 +80,16 @@ func (r *AccountPGSQLRepository) Login(email, password string) (*Account, error)
 
 	return &output, nil
 }
+
+func (r *AccountPGSQLRepository) RemoveTicket(id int) error {
+	stmt := `UPDATE account SET tickets_left = tickets_left - 1 WHERE id = $1`
+	
+	_, err := r.db.Exec(stmt, id)
+
+	if err != nil {
+		r.logger.Errorf("AccountRepository.RemoveTicket: Unable to remove ticket, %s", err)
+		return err
+	}
+
+	return nil
+}

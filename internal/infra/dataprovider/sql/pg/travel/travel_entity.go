@@ -1,12 +1,14 @@
 package entity
 
-import "time"
+import (
+	"database/sql"
+	"time"
+)
 
 type Travel struct {
 	ID int
   Price float64
   CompanyID string
-  CompanyFantasyName string
 	Bus struct {
 		Number int
 		MaxPassengers int
@@ -19,4 +21,6 @@ type Travel struct {
 		Time time.Time
 		CityName string
 	}
+	CreatedAt time.Time
+	UpdatedAt sql.NullTime
 }
