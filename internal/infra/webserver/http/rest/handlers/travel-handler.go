@@ -33,6 +33,7 @@ func NewTravelHandler(
 // @Success      200  										{object}   	[]dto.TravelOutputDTO
 // @Failure      404
 // @Router       /travel/avaiables/{id} [get]
+// @Security ApiKeyAuth
 func (h *TravelHandler) CustomerPossibleTravels(w http.ResponseWriter, r *http.Request) {
 	customerId, err := strconv.Atoi(chi.URLParam(r, "id"))
 

@@ -2,10 +2,13 @@ package handlers
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"strconv"
+	"time"
 
 	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/jwtauth"
 	di "github.com/maicongiehl/nuvora-api/configs/di"
 	dto "github.com/maicongiehl/nuvora-api/internal/core/application/shared/dto"
 	"github.com/maicongiehl/nuvora-api/internal/core/application/shared/logger"
@@ -52,7 +55,7 @@ func (h *CustomerHandler) Login(w http.ResponseWriter, r *http.Request) {
 	}
 
 	command := login_command.With(input.Email, input.Password)
-	output, err := h.app.LoginAsCustomerUseCase.Execute(command)
+	customerAccount, err := h.app.LoginAsCustomerUseCase.Execute(command)
 	if err != nil {
 		h.logger.Errorf("CustomerHandler.Login: Error at searching for customer account, %s", err.Error())
 		w.WriteHeader(http.StatusBadRequest)
@@ -60,9 +63,24 @@ func (h *CustomerHandler) Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	customerAccount.AccessToken = h.createJWT(customerAccount.ID, r)
+
 	h.logger.Infof("CustomerHandler.Login: New connection to account %s", input.Email)
 	w.WriteHeader(http.StatusAccepted)
-	json.NewEncoder(w).Encode(output)
+	json.NewEncoder(w).Encode(customerAccount)
+}
+
+func (h *CustomerHandler) createJWT(id int, r *http.Request) string {
+	jwt := r.Context().Value("jwt").(*jwtauth.JWTAuth)
+	jwtExpiresIn := r.Context().Value("JwtExpiresIn").(int)
+
+	_, tokenString, _ := jwt.Encode(map[string]interface{}{
+		"exp": time.Now().Add(time.Second * time.Duration(jwtExpiresIn)).Unix(),
+		"permission_level": 3,
+	})
+
+	return fmt.Sprintf("Bearer %s", tokenString)
+
 }
 
 // Ticket godoc
@@ -76,6 +94,7 @@ func (h *CustomerHandler) Login(w http.ResponseWriter, r *http.Request) {
 // @Success      200  										{object}   	object
 // @Failure      404
 // @Router       /customer/{id}/tickets/{travelId} [post]
+// @Security ApiKeyAuth
 func (h *CustomerHandler) BuyTicket(w http.ResponseWriter, r *http.Request) {
 	h.logger.Infof("CustomerHandler.BuyTicket: Request received")
 
@@ -119,7 +138,8 @@ func (h *CustomerHandler) BuyTicket(w http.ResponseWriter, r *http.Request) {
 // @Success      200  										{object}   	object
 // @Failure      404
 // @Router       /customer/{id}/tickets [get]
-func (h *CustomerHandler) LastPurchases(w http.ResponseWriter, r *http.Request) {
+// @Security ApiKeyAuth
+func (h *CustomerHandler) Purchases(w http.ResponseWriter, r *http.Request) {
 	customerId, err := strconv.Atoi(chi.URLParam(r, "id"))
 
 	if err != nil {

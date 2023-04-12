@@ -27,7 +27,7 @@ func NewTicketPGSQLRepository(
 }
 
 func (r *TicketPGSQLRepository) CreateTicket(accountId, travelId int) error {
-	stmt := "INSERT INTO ticket (account_id, status_id, travel_id, created_at) VALUES ($1, 0, $2, CURRENT_DATE)"
+	stmt := "INSERT INTO ticket (account_id, status_id, travel_id, created_at) VALUES ($1, 0, $2, NOW())"
 
 	_, err := r.db.Exec(stmt, accountId, travelId)
 

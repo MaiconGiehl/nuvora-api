@@ -2,10 +2,13 @@ package handlers
 
 import (
 	"encoding/json"
+	"fmt"
 	"net/http"
 	"strconv"
+	"time"
 
 	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/jwtauth"
 	di "github.com/maicongiehl/nuvora-api/configs/di"
 	dto "github.com/maicongiehl/nuvora-api/internal/core/application/shared/dto"
 	"github.com/maicongiehl/nuvora-api/internal/core/application/shared/logger"
@@ -51,7 +54,7 @@ func (h *CompanyHandler) Login(w http.ResponseWriter, r *http.Request) {
 	}
 
 	command := login_command.With(input.Email, input.Password)
-	output, err := h.app.LoginAsCompanyUseCase.Execute(command)
+	companyAccount, err := h.app.LoginAsCompanyUseCase.Execute(command)
 	if err != nil {
 		h.logger.Errorf("CompanyHandler.Login: Error at searching for company account, %s", err.Error())
 		w.WriteHeader(http.StatusBadRequest)
@@ -59,9 +62,23 @@ func (h *CompanyHandler) Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	companyAccount.AccessToken = h.createJWT(companyAccount.ID, r, companyAccount.PermissionLevel)
+
 	h.logger.Infof("CompanyHandler.Login: New connection to account %s", input.Email)
 	w.WriteHeader(http.StatusAccepted)
-	json.NewEncoder(w).Encode(output)
+	json.NewEncoder(w).Encode(companyAccount)
+}
+
+func (h *CompanyHandler) createJWT(id int, r *http.Request, permission_level int) string {
+	jwt := r.Context().Value("jwt").(*jwtauth.JWTAuth)
+	jwtExpiresIn := r.Context().Value("JwtExpiresIn").(int)
+
+	_, tokenString, _ := jwt.Encode(map[string]interface{}{
+		"exp": time.Now().Add(time.Second * time.Duration(jwtExpiresIn)).Unix(),
+		"permission_level": permission_level,
+	})
+	
+	return fmt.Sprintf("Bearer %s", tokenString)
 }
 
 // Company godoc
@@ -74,9 +91,10 @@ func (h *CompanyHandler) Login(w http.ResponseWriter, r *http.Request) {
 // @Success      200  										{object}   	[]dto.EmployeeOutputDTO
 // @Failure      404
 // @Router       /company/{id}/employees [get]
+// @Security ApiKeyAuth
 func (h *CompanyHandler) GetEmployees(w http.ResponseWriter, r *http.Request) {
 	h.logger.Infof("CompanyHandler.GetEmployees: Request received")
-	
+
 	companyId, err := strconv.Atoi(chi.URLParam(r, "id"))
 	if err != nil {
 		h.logger.Errorf("CompanyHandler.GetEmployees: Unable to process request, %s", err)

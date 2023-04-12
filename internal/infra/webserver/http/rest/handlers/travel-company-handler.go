@@ -38,6 +38,7 @@ func NewTravelCompanyHandler(
 // @Success      200  										{object}   	object
 // @Failure      404
 // @Router       /travel-company/{id}/travels [post]
+// @Security ApiKeyAuth
 func (h *TravelCompanyHandler) CreateTravel(w http.ResponseWriter, r *http.Request) {
 	h.logger.Infof("TravelCompanyHandler.CreateTravel: Request received")
 	var input dto.TravelInputDTO

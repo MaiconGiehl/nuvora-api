@@ -4,6 +4,7 @@ type CompanyAccountOutputDTO struct {
 	ID int
 	FantasyName string
 	PermissionLevel int
+	AccessToken string
 }
 
 func NewCompanyOutputDTO(

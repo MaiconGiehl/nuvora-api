@@ -38,7 +38,7 @@ func (r *TravelPGSQLRepository) CreateTravel(
 ) error {
 
 	stmt := `INSERT INTO travel ( price, account_id, bus_id, status, departure_time, departure_city_id, arrival_time, arrival_city_id, created_at)
-		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, CURRENT_DATE)
+		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, NOW())
 		`
 	_, err := r.db.Exec(stmt, price, companyId, busId, 0, departureTime, departureCityId, arrivalTime, arrivalCityId)
 
