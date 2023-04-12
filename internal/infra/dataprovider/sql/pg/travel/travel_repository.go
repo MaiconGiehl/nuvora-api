@@ -79,7 +79,7 @@ func (r *TravelPGSQLRepository) FindTravelByID(id int) (*Travel, error) {
 	return &output, err
 }
 
-func (r *TravelPGSQLRepository) GetTravelsByCities(dptCityID, arvCityID int) (*[]Travel, error) {
+func (r *TravelPGSQLRepository) FindTravelsByCities(dptCityID, arvCityID int) (*[]Travel, error) {
 	var output []Travel
 
 	stmt := `

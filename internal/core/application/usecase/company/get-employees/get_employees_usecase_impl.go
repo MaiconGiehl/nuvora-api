@@ -44,13 +44,13 @@ func (u *GetEmployeesUseCase) Execute(
 ) (*[]dto.EmployeeOutputDTO, error) {
 	var output []dto.EmployeeOutputDTO
 
-	companyAccount, err := u.accountPGSQLRepository.GetAccountByID(command.companyId)
+	companyAccount, err := u.accountPGSQLRepository.FindAccountByID(command.companyId)
 	if err != nil {
 		u.logger.Errorf("GetEmployeesUseCase.Execute: Unable to find company account, %s", err.Error())
 		return &output, err
 	}
 
-	companyPerson, err := u.personPGSQLRepository.GetPersonByID(companyAccount.PersonID)
+	companyPerson, err := u.personPGSQLRepository.FindPersonByID(companyAccount.PersonID)
 	if err != nil {
 		u.logger.Errorf("GetEmployeesUseCase.Execute: Unable to find a person associated with the company account, %s", err.Error())
 		return &output, err

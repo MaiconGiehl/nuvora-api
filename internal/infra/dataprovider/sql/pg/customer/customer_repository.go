@@ -26,7 +26,7 @@ func NewCustomerPGSQLRepository(
 	}
 }
 
-func (r *CustomerPGSQLRepository) GetCustomerByID(id int) (*Customer, error) {
+func (r *CustomerPGSQLRepository) FindCustomerByID(id int) (*Customer, error) {
 	var output Customer
 
 	stmt := `SELECT * FROM customer c WHERE c.id=$1`
@@ -45,7 +45,7 @@ func (r *CustomerPGSQLRepository) GetCustomerByID(id int) (*Customer, error) {
 	)
 
 	if err != nil {
-		r.logger.Errorf("CustomerRepository.GetCustomerByID: Unable to find customer, %s", err)
+		r.logger.Errorf("CustomerRepository.FindCustomerByID: Unable to find customer, %s", err)
 		err = errors.New("internal error, please try again in some minutes")
 		return &output, err
 	}

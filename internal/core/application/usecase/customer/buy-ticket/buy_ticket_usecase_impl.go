@@ -47,7 +47,7 @@ func (u *BuyTicketUsecase) Execute(
 		return err
 	}
 
-	customerAccount, err := u.accountPGSQLRepository.GetAccountByID(command.AccountID)
+	customerAccount, err := u.accountPGSQLRepository.FindAccountByID(command.AccountID)
 	if err != nil {
 		u.logger.Errorf("BuyTicketUsecase.Execute: Unable to find account, %s", err.Error())
 		return errors.New("account not found")
@@ -74,7 +74,7 @@ func (u *BuyTicketUsecase) Execute(
 }
 
 func (u *BuyTicketUsecase) validateInput(input *buyTicketCommand) error {
-	_, err := u.accountPGSQLRepository.GetAccountByID(input.AccountID)
+	_, err := u.accountPGSQLRepository.FindAccountByID(input.AccountID)
 	if err != nil {
 		return errors.New("account not found")
 	}

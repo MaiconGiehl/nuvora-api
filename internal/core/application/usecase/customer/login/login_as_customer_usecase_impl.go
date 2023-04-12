@@ -43,13 +43,13 @@ func (u *LoginAsCustomerUseCase) Execute(command *loginAsCustomerCommand) (*dto.
 		return output, err
 	}
 
-	customerPerson, err := u.personPGSQLRepository.GetPersonByID(customerAccount.PersonID)
+	customerPerson, err := u.personPGSQLRepository.FindPersonByID(customerAccount.PersonID)
 	if err != nil {
 		u.logger.Errorf("LoginAsCustomerUseCase.Execute: Unable to get person, %s", err.Error())
 		return output, err
 	}
 
-	customer, err := u.customerPGSQLRepository.GetCustomerByID(int(customerPerson.CustomerID.Int64))
+	customer, err := u.customerPGSQLRepository.FindCustomerByID(int(customerPerson.CustomerID.Int64))
 	if err != nil {
 		u.logger.Errorf("LoginAsCustomerUseCase.Execute: Unable to get customer, %s", err.Error())
 		return output, err
