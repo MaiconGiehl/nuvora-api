@@ -1,7 +1,7 @@
 package dto
 
 type EmployeeTicket struct {
-	Name string
+	Name      string
 	Departure DepartureOutputDTO
-	Arrival ArrivalOutputDTO 
+	Arrival   ArrivalOutputDTO
 }

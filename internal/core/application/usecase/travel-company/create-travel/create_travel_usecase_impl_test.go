@@ -21,9 +21,9 @@ var ctx = context.Background()
 
 type CreateTravelUseCaseImplTestSuite struct {
 	suite.Suite
-	ctx                  	 context.Context
-	logger               	 *logrus_config.LogrusLogger
-	createTravelRepository 	 *CreateTravelUseCase
+	ctx                    context.Context
+	logger                 *logrus_config.LogrusLogger
+	createTravelRepository *CreateTravelUseCase
 }
 
 func (suite *CreateTravelUseCaseImplTestSuite) SetupTest() {
@@ -35,14 +35,14 @@ func (suite *CreateTravelUseCaseImplTestSuite) SetupTest() {
 
 	db := postgresdb.ConnectWithDB(
 		logger,
-		env.DBHost, 
-		env.DBPort, 
-		env.DBUser, 
-		env.DBPassword, 
+		env.DBHost,
+		env.DBPort,
+		env.DBUser,
+		env.DBPassword,
 		env.DBName,
 	)
 
-	companyPGSQLRepository :=  company_entity.NewCompanyPGSQLRepository(ctx, db, logger)
+	companyPGSQLRepository := company_entity.NewCompanyPGSQLRepository(ctx, db, logger)
 	busPGSQLRepository := bus_entity.NewBusPGSQLRepository(ctx, db, logger)
 	cityPGSQLRepository := city_entity.NewCityPGSQLRepository(ctx, db, logger)
 	travelPGSQLRepository := travel_entity.NewTravelPGSQLRepository(ctx, db, logger)
@@ -71,17 +71,17 @@ func (s *CreateTravelUseCaseImplTestSuite) TestCreateTravel() {
 			Price: 1,
 			BusID: 1,
 			Departure: dto.DepartureInputDTO{
-				Time: time.Now().Format("2006-01-02T00:00:00"),
+				Time:   time.Now().Format("2006-01-02T00:00:00"),
 				CityID: 1,
 			},
 			Arrival: dto.ArrivalInputDTO{
-				Time: time.Now().AddDate(10, 10, 10).Format("2006-01-02T00:00:00"),
+				Time:   time.Now().AddDate(10, 10, 10).Format("2006-01-02T00:00:00"),
 				CityID: 2,
 			},
 		},
 	)
 	s.NoError(err)
-	
+
 	err = s.createTravelRepository.Execute(command)
 	s.NoError(err)
 
@@ -91,11 +91,11 @@ func (s *CreateTravelUseCaseImplTestSuite) TestCreateTravel() {
 			Price: 0,
 			BusID: -1,
 			Departure: dto.DepartureInputDTO{
-				Time: time.Now().Format("2006-01-02T00:00:00"),
+				Time:   time.Now().Format("2006-01-02T00:00:00"),
 				CityID: -1,
 			},
 			Arrival: dto.ArrivalInputDTO{
-				Time: time.Now().Format("2006-01-02T00:00:00"),
+				Time:   time.Now().Format("2006-01-02T00:00:00"),
 				CityID: -1,
 			},
 		},
@@ -104,4 +104,35 @@ func (s *CreateTravelUseCaseImplTestSuite) TestCreateTravel() {
 
 	err = s.createTravelRepository.Execute(command)
 	s.Error(err)
+
+	_, err = With(
+		1000,
+		dto.TravelInputDTO{
+			Departure: dto.DepartureInputDTO{
+				Time: "ASDASDAS",
+			},
+			Arrival: dto.ArrivalInputDTO{
+				Time: time.Now().Format("2006-01-02T00:00:00"),
+			},
+		},
+	)
+	s.Error(err)
+
+	_, err = With(
+		1000,
+		dto.TravelInputDTO{
+			Price: 0,
+			BusID: -1,
+			Departure: dto.DepartureInputDTO{
+				Time:   time.Now().Format("2006-01-02T00:00:00"),
+				CityID: 0,
+			},
+			Arrival: dto.ArrivalInputDTO{
+				Time:   "ASDSDASD",
+				CityID: 1,
+			},
+		},
+	)
+	s.Error(err)
+
 }

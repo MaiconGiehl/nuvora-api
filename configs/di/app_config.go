@@ -43,8 +43,8 @@ func SetupDIConfig(
 	newCityPGSQLRepository := city_entity.NewCityPGSQLRepository(ctx, db, logrus)
 
 	// CompanyUseCases
-	newCreateEmployeeUseCase := create_employee_usecase.NewCreateEmployeeUseCase(ctx, 
-		newCustomerPGSQLRepository, 
+	newCreateEmployeeUseCase := create_employee_usecase.NewCreateEmployeeUseCase(ctx,
+		newCustomerPGSQLRepository,
 		newPersonPGSQLRepository,
 		newAccountPGSQLRepository,
 	)
@@ -75,26 +75,26 @@ func SetupDIConfig(
 	newLoginAsCustomerUseCase := login_as_customer_usecase.NewLoginAsCustomerUseCase(
 		ctx,
 		logrus,
-		newCustomerPGSQLRepository, 
+		newCustomerPGSQLRepository,
 		newPersonPGSQLRepository,
 		newAccountPGSQLRepository,
 	)
 
 	newGetLastPurchasesUseCase := get_last_purchases_usecase.NewGetLastPurchasesUsecase(
-		ctx, 
+		ctx,
 		newTicketPGSQLRepository,
 	)
 
 	newGetPossibleTravelsUseCase := get_possible_travels_usecase.NewGetPossibleTravelsUseCase(
-		ctx, 
-		newCustomerPGSQLRepository, 
+		ctx,
+		newCustomerPGSQLRepository,
 		newCompanyPGSQLRepository,
 		newPersonPGSQLRepository,
 		newAccountPGSQLRepository,
 		newTravelPGSQLRepository,
 	)
 
-	newBuyTicketUseCase := buy_ticket_usecase.NewBuyTicketUsecase(
+	newBuyTicketUseCase := buy_ticket_usecase.NewBuyTicketUseCase(
 		ctx,
 		logrus,
 		newAccountPGSQLRepository,
@@ -112,16 +112,15 @@ func SetupDIConfig(
 		newTravelPGSQLRepository,
 	)
 
-
 	return &App{
-		BuyTicketUseCase: newBuyTicketUseCase,
-		CreateTravelUseCase: newCreateTravelUseCase,
-		CreateEmployeeUseCase: newCreateEmployeeUseCase,
+		BuyTicketUseCase:           newBuyTicketUseCase,
+		CreateTravelUseCase:        newCreateTravelUseCase,
+		CreateEmployeeUseCase:      newCreateEmployeeUseCase,
 		GetEmployeesTicketsUsecase: *newGetEmployeesTicketsUseCase,
-		GetEmployeesUseCase: newGetEmployeesUseCase,
-		GetLastPurchasesUseCase: newGetLastPurchasesUseCase,
-		GetPossibleTravelsUseCase: newGetPossibleTravelsUseCase,
-		LoginAsCompanyUseCase: newLoginAsCompanyUseCase,
-		LoginAsCustomerUseCase: newLoginAsCustomerUseCase,
+		GetEmployeesUseCase:        newGetEmployeesUseCase,
+		GetLastPurchasesUseCase:    newGetLastPurchasesUseCase,
+		GetPossibleTravelsUseCase:  newGetPossibleTravelsUseCase,
+		LoginAsCompanyUseCase:      newLoginAsCompanyUseCase,
+		LoginAsCustomerUseCase:     newLoginAsCustomerUseCase,
 	}
 }

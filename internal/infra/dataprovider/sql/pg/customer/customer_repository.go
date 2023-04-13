@@ -9,8 +9,8 @@ import (
 )
 
 type CustomerPGSQLRepository struct {
-	ctx context.Context
-	db *sql.DB
+	ctx    context.Context
+	db     *sql.DB
 	logger logger.Logger
 }
 
@@ -20,8 +20,8 @@ func NewCustomerPGSQLRepository(
 	logger logger.Logger,
 ) *CustomerPGSQLRepository {
 	return &CustomerPGSQLRepository{
-		ctx: ctx,
-		db: db,
+		ctx:    ctx,
+		db:     db,
 		logger: logger,
 	}
 }
@@ -30,7 +30,7 @@ func (r *CustomerPGSQLRepository) GetCustomerByID(id int) (*Customer, error) {
 	var output Customer
 
 	stmt := `SELECT * FROM customer c WHERE c.id=$1`
-	
+
 	row := r.db.QueryRow(stmt, id)
 
 	err := row.Scan(
@@ -85,7 +85,5 @@ func (r *CustomerPGSQLRepository) GetCustomersByCompanyID(id int) (*[]Customer, 
 		return &output, err
 	}
 
-
 	return &output, nil
 }
-

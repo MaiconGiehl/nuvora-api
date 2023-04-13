@@ -3,18 +3,18 @@ package dto
 import "time"
 
 type TravelInputDTO struct {
-  Price float64
-  BusID int
-  Departure DepartureInputDTO
-  Arrival ArrivalInputDTO
+	Price     float64
+	BusID     int
+	Departure DepartureInputDTO
+	Arrival   ArrivalInputDTO
 }
 
 type TravelOutputDTO struct {
-	ID int
-	Price float64
-	CompanyID int
+	ID          int
+	Price       float64
+	CompanyID   int
 	CompanyName string
-	Departure struct {
+	Departure   struct {
 		Time time.Time
 		City string
 	}
@@ -35,11 +35,11 @@ func NewTravelOutputDTO(
 	arrivalCity string,
 ) *TravelOutputDTO {
 	return &TravelOutputDTO{
-		ID: id,
-		Price: price,
-		CompanyID: companyId,
+		ID:          id,
+		Price:       price,
+		CompanyID:   companyId,
 		CompanyName: companyName,
-		Departure: *NewDepartureOutputDTO(departureTime, departureCity),
-		Arrival: *NewArrivalOutputDTO(arrivalTime, arrivalCity),
+		Departure:   *NewDepartureOutputDTO(departureTime, departureCity),
+		Arrival:     *NewArrivalOutputDTO(arrivalTime, arrivalCity),
 	}
 }

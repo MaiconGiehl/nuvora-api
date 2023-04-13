@@ -9,8 +9,8 @@ import (
 )
 
 type CompanyPGSQLRepository struct {
-	ctx context.Context
-	db *sql.DB
+	ctx    context.Context
+	db     *sql.DB
 	logger logger.Logger
 }
 
@@ -20,8 +20,8 @@ func NewCompanyPGSQLRepository(
 	logger logger.Logger,
 ) *CompanyPGSQLRepository {
 	return &CompanyPGSQLRepository{
-		ctx: ctx,
-		db: db,
+		ctx:    ctx,
+		db:     db,
 		logger: logger,
 	}
 }
@@ -29,7 +29,7 @@ func NewCompanyPGSQLRepository(
 func (r *CompanyPGSQLRepository) FindCompanyByID(companyId int) (*Company, error) {
 	var output Company
 	stmt := `SELECT * FROM company c WHERE c.id =$1`
-	
+
 	row := r.db.QueryRow(stmt, companyId)
 
 	err := row.Scan(

@@ -8,7 +8,7 @@ import (
 )
 
 type GetEmployeesTicketsUseCase struct {
-	ctx context.Context
+	ctx                   context.Context
 	ticketPGSQLRepository *ticket_entity.TicketPGSQLRepository
 }
 
@@ -17,9 +17,9 @@ func NewGetEmployeesTicketsUseCase(
 	ticketPGSQLRepository *ticket_entity.TicketPGSQLRepository,
 ) *GetEmployeesTicketsUseCase {
 	return &GetEmployeesTicketsUseCase{
-		ctx: ctx,
-		ticketPGSQLRepository: ticketPGSQLRepository, 
-	}	
+		ctx:                   ctx,
+		ticketPGSQLRepository: ticketPGSQLRepository,
+	}
 }
 
 func (u *GetEmployeesTicketsUseCase) Execute(

@@ -8,7 +8,7 @@ import (
 )
 
 type GetLastPurchasesUsecase struct {
-	ctx context.Context
+	ctx                   context.Context
 	ticketPGSQLRepository *entity.TicketPGSQLRepository
 }
 
@@ -17,9 +17,9 @@ func NewGetLastPurchasesUsecase(
 	ticketPGSQLRepository *entity.TicketPGSQLRepository,
 ) *GetLastPurchasesUsecase {
 	return &GetLastPurchasesUsecase{
-		ctx: ctx,
+		ctx:                   ctx,
 		ticketPGSQLRepository: ticketPGSQLRepository,
-	}	
+	}
 }
 
 func (u *GetLastPurchasesUsecase) Execute(

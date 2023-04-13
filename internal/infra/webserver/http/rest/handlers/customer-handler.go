@@ -16,7 +16,7 @@ import (
 
 type CustomerHandler struct {
 	logger logger.Logger
-	app *di.App
+	app    *di.App
 }
 
 func NewCustomerHandler(
@@ -25,7 +25,7 @@ func NewCustomerHandler(
 ) *CustomerHandler {
 	return &CustomerHandler{
 		logger: logger,
-		app: app,
+		app:    app,
 	}
 }
 
@@ -73,8 +73,9 @@ func (h *CustomerHandler) Login(w http.ResponseWriter, r *http.Request) {
 // @Param        travelId   				path     		int  true  "Travel Id"
 // @Accept       json
 // @Produce      json
-// @Success      200  										{object}   	object
+// @Success      201  										{object}   	object
 // @Failure      404
+// @Failure      406
 // @Router       /customer/{id}/tickets/{travelId} [post]
 func (h *CustomerHandler) BuyTicket(w http.ResponseWriter, r *http.Request) {
 	h.logger.Infof("CustomerHandler.BuyTicket: Request received")
@@ -107,7 +108,6 @@ func (h *CustomerHandler) BuyTicket(w http.ResponseWriter, r *http.Request) {
 	h.logger.Infof("CustomerHandler.BuyTicket: New ticket bought")
 	w.WriteHeader(http.StatusCreated)
 }
-
 
 // Customer godoc
 // @Summary      Get last purchases

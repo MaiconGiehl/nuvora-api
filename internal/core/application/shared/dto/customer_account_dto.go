@@ -5,10 +5,10 @@ import (
 )
 
 type CustomerAccountOutputDTO struct {
-	ID int
-	Name string
+	ID              int
+	Name            string
 	PermissionLevel int
-	TicketsLeft int64
+	TicketsLeft     int64
 }
 
 func NewCustomerAccountOutputDTO(
@@ -18,21 +18,21 @@ func NewCustomerAccountOutputDTO(
 	ticketsLeft int64,
 ) *CustomerAccountOutputDTO {
 	return &CustomerAccountOutputDTO{
-		ID: id,
-		Name: name,
+		ID:              id,
+		Name:            name,
 		PermissionLevel: permissionLevel,
-		TicketsLeft: ticketsLeft,
+		TicketsLeft:     ticketsLeft,
 	}
 }
 
 type CustomerAccountInputDTO struct {
-	Email string
-	Password string
+	Email        string
+	Password     string
 	DailyTickets int
-	CityID int
-	Cpf int
-	Name string
-	Phone int
-	BirthDate time.Time
-	CompanyID int
+	CityID       int
+	Cpf          int
+	Name         string
+	Phone        int
+	BirthDate    time.Time
+	CompanyID    int
 }

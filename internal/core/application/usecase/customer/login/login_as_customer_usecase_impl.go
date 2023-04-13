@@ -11,11 +11,11 @@ import (
 )
 
 type LoginAsCustomerUseCase struct {
-	ctx context.Context
-	logger logger.Logger
+	ctx                     context.Context
+	logger                  logger.Logger
 	customerPGSQLRepository *customer_entity.CustomerPGSQLRepository
-	personPGSQLRepository *person_entity.PersonPGSQLRepository
-	accountPGSQLRepository *account_entity.AccountPGSQLRepository
+	personPGSQLRepository   *person_entity.PersonPGSQLRepository
+	accountPGSQLRepository  *account_entity.AccountPGSQLRepository
 }
 
 func NewLoginAsCustomerUseCase(
@@ -26,11 +26,11 @@ func NewLoginAsCustomerUseCase(
 	accountPGSQLRepository *account_entity.AccountPGSQLRepository,
 ) *LoginAsCustomerUseCase {
 	return &LoginAsCustomerUseCase{
-		ctx: ctx,
-		logger: logger,
+		ctx:                     ctx,
+		logger:                  logger,
 		customerPGSQLRepository: customerPGSQLRepository,
-		personPGSQLRepository: personPGSQLRepository,
-		accountPGSQLRepository: accountPGSQLRepository,
+		personPGSQLRepository:   personPGSQLRepository,
+		accountPGSQLRepository:  accountPGSQLRepository,
 	}
 }
 
@@ -43,17 +43,9 @@ func (u *LoginAsCustomerUseCase) Execute(command *loginAsCustomerCommand) (*dto.
 		return output, err
 	}
 
-	customerPerson, err := u.personPGSQLRepository.GetPersonByID(customerAccount.PersonID)
-	if err != nil {
-		u.logger.Errorf("LoginAsCustomerUseCase.Execute: Unable to get person, %s", err.Error())
-		return output, err
-	}
+	customerPerson, _ := u.personPGSQLRepository.GetPersonByID(customerAccount.PersonID)
 
-	customer, err := u.customerPGSQLRepository.GetCustomerByID(int(customerPerson.CustomerID.Int64))
-	if err != nil {
-		u.logger.Errorf("LoginAsCustomerUseCase.Execute: Unable to get customer, %s", err.Error())
-		return output, err
-	}
+	customer, _ := u.customerPGSQLRepository.GetCustomerByID(int(customerPerson.CustomerID.Int64))
 
 	output = dto.NewCustomerAccountOutputDTO(
 		customerAccount.ID,

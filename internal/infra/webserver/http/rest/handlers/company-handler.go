@@ -14,7 +14,7 @@ import (
 )
 
 type CompanyHandler struct {
-	app *di.App
+	app    *di.App
 	logger logger.Logger
 }
 
@@ -24,7 +24,7 @@ func NewCompanyHandler(
 ) *CompanyHandler {
 	return &CompanyHandler{
 		logger: logger,
-		app: app,
+		app:    app,
 	}
 }
 
@@ -71,12 +71,12 @@ func (h *CompanyHandler) Login(w http.ResponseWriter, r *http.Request) {
 // @Accept       json
 // @Produce      json
 // @Param        id   							path     		int true  "Company ID"
-// @Success      200  										{object}   	[]dto.EmployeeOutputDTO
+// @Success      202  										{object}   	[]dto.EmployeeOutputDTO
 // @Failure      404
 // @Router       /company/{id}/employees [get]
 func (h *CompanyHandler) GetEmployees(w http.ResponseWriter, r *http.Request) {
 	h.logger.Infof("CompanyHandler.GetEmployees: Request received")
-	
+
 	companyId, err := strconv.Atoi(chi.URLParam(r, "id"))
 	if err != nil {
 		h.logger.Errorf("CompanyHandler.GetEmployees: Unable to process request, %s", err)

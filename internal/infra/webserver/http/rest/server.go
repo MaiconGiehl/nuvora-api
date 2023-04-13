@@ -24,8 +24,8 @@ import (
 //	@license.name	Nuvora Promotora License
 //	@license.url	https://nuvora.com.br
 
-//	@host		localhost:8080
-//	@BasePath	/
+// @host		localhost:8080
+// @BasePath	/
 func StartServer() {
 	port := ":8080"
 
@@ -36,10 +36,10 @@ func StartServer() {
 
 	db := postgresdb_config.ConnectWithDB(
 		logger,
-		env.DBHost, 
-		env.DBPort, 
-		env.DBUser, 
-		env.DBPassword, 
+		env.DBHost,
+		env.DBPort,
+		env.DBUser,
+		env.DBPassword,
 		env.DBName,
 	)
 

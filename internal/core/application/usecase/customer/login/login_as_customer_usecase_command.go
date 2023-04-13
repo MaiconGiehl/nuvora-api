@@ -1,16 +1,16 @@
 package usecase
 
 type loginAsCustomerCommand struct {
-	Email string
+	Email    string
 	Password string
 }
 
 func With(
 	email string,
 	password string,
-	) *loginAsCustomerCommand {
+) *loginAsCustomerCommand {
 	return &loginAsCustomerCommand{
-		Email: email,
+		Email:    email,
 		Password: password,
 	}
 }

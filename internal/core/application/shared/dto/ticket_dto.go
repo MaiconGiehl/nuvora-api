@@ -3,9 +3,9 @@ package dto
 import "time"
 
 type TicketOutputDTO struct {
-	ID int
-	Status string
-	Travel TravelOutputDTO
+	ID        int
+	Status    string
+	Travel    TravelOutputDTO
 	CreatedAt time.Time
 }
 
@@ -22,14 +22,14 @@ func NewTicketOutputDTO(
 	arrivalCity string,
 ) *TicketOutputDTO {
 	return &TicketOutputDTO{
-		ID: id,
+		ID:     id,
 		Status: status,
 		Travel: *NewTravelOutputDTO(
-			travelId, 
-			travelPrice, 
-			companyId, 
+			travelId,
+			travelPrice,
+			companyId,
 			companyName,
-		  departureTime,
+			departureTime,
 			departureCity,
 			arrivalTime,
 			arrivalCity,

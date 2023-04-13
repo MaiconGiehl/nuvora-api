@@ -11,23 +11,23 @@ import (
 
 func ConnectWithDB(
 	logger logger.Logger,
-	dbHost, 
-	dbPort, 
-	dbUser, 
-	dbPassword, 
+	dbHost,
+	dbPort,
+	dbUser,
+	dbPassword,
 	dbName string,
 ) *sql.DB {
 	dsn := fmt.Sprintf("host=%s port=%s user=%s password=%s dbname=%s sslmode=disable",
 		dbHost, dbPort, dbUser, dbPassword, dbName)
-	
+
 	db, err := sql.Open("postgres", dsn)
 	if err != nil {
-	  logger.Fatalf("PostgresConfig.ConnectWithConnector: Unable to establish connection with database, %s", err.Error())
+		logger.Fatalf("PostgresConfig.ConnectWithConnector: Unable to establish connection with database, %s", err.Error())
 	}
 
 	err = db.Ping()
 	if err != nil {
-	  logger.Fatalf("PostgresConfig.ConnectWithConnector: Something went wrong while pinging to database, %s", err.Error())
+		logger.Fatalf("PostgresConfig.ConnectWithConnector: Something went wrong while pinging to database, %s", err.Error())
 	}
 
 	logger.Infof("PostgresConfig.ConnectWithDB: Database connection successfully established")

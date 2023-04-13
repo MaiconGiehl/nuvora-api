@@ -11,10 +11,10 @@ import (
 )
 
 type LoginAsCompanyUseCase struct {
-	ctx context.Context
-	logger logger.Logger
+	ctx                    context.Context
+	logger                 logger.Logger
 	companyPGSQLRepository *company_entity.CompanyPGSQLRepository
-	personPGSQLRepository *person_entity.PersonPGSQLRepository
+	personPGSQLRepository  *person_entity.PersonPGSQLRepository
 	accountPGSQLRepository *account_entity.AccountPGSQLRepository
 }
 
@@ -26,10 +26,10 @@ func NewLoginAsCompanyUseCase(
 	accountPGSQLRepository *account_entity.AccountPGSQLRepository,
 ) *LoginAsCompanyUseCase {
 	return &LoginAsCompanyUseCase{
-		ctx: ctx,
-		logger: logger,
+		ctx:                    ctx,
+		logger:                 logger,
 		companyPGSQLRepository: companyPGSQLRepository,
-		personPGSQLRepository: personPGSQLRepository,
+		personPGSQLRepository:  personPGSQLRepository,
 		accountPGSQLRepository: accountPGSQLRepository,
 	}
 }

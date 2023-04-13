@@ -1,6 +1,6 @@
 package dto
 
 type EmployeeOutputDTO struct {
-	Name string
+	Name  string
 	Email string
 }

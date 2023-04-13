@@ -14,12 +14,12 @@ import (
 )
 
 type CreateTravelUseCase struct {
-	ctx context.Context
-	logger logger.Logger
-	busPGSQLRepository *bus_entity.BusPGSQLRepository
-	cityPGSQLRepository *city_entity.CityPGSQLRepository
+	ctx                    context.Context
+	logger                 logger.Logger
+	busPGSQLRepository     *bus_entity.BusPGSQLRepository
+	cityPGSQLRepository    *city_entity.CityPGSQLRepository
 	companyPGSQLRepository *company_entity.CompanyPGSQLRepository
-	travelPGSQLRepository *travel_entity.TravelPGSQLRepository
+	travelPGSQLRepository  *travel_entity.TravelPGSQLRepository
 }
 
 func NewCreateTravelUseCase(
@@ -31,19 +31,19 @@ func NewCreateTravelUseCase(
 	travelPGSQLRepository *travel_entity.TravelPGSQLRepository,
 ) *CreateTravelUseCase {
 	return &CreateTravelUseCase{
-		ctx: ctx,
-		logger: logger,
-		travelPGSQLRepository: travelPGSQLRepository,
-		busPGSQLRepository: busPGSQLRepository,
-		cityPGSQLRepository: cityPGSQLRepository,
+		ctx:                    ctx,
+		logger:                 logger,
+		travelPGSQLRepository:  travelPGSQLRepository,
+		busPGSQLRepository:     busPGSQLRepository,
+		cityPGSQLRepository:    cityPGSQLRepository,
 		companyPGSQLRepository: companyPGSQLRepository,
-	}	
+	}
 }
 
 func (u *CreateTravelUseCase) Execute(
 	command *createTravelCommand,
 ) error {
-	
+
 	err := u.validateInput(command)
 	if err != nil {
 		customErr := fmt.Sprintf("invalid field: %s", err.Error())
@@ -62,12 +62,7 @@ func (u *CreateTravelUseCase) Execute(
 		command.ArrivalCityID,
 	)
 
-	if err != nil {
-		u.logger.Errorf("CreateTravelUseCase.Execute: Unable to create travel, %s", err.Error())
-		return err
-	}
-
-	return nil
+	return err
 }
 
 func (u *CreateTravelUseCase) validateInput(input *createTravelCommand) error {

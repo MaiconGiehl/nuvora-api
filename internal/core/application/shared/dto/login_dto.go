@@ -1,6 +1,6 @@
 package dto
 
 type LoginInputDTO struct {
-	Email string
+	Email    string
 	Password string
 }

@@ -18,9 +18,9 @@ var ctx = context.Background()
 
 type LoginUseCaseImplTestSuite struct {
 	suite.Suite
-	ctx                  context.Context
-	logger               *logrus_config.LogrusLogger
-	loginRepository 		 *LoginAsCustomerUseCase
+	ctx             context.Context
+	logger          *logrus_config.LogrusLogger
+	loginRepository *LoginAsCustomerUseCase
 }
 
 func (suite *LoginUseCaseImplTestSuite) SetupTest() {
@@ -32,15 +32,15 @@ func (suite *LoginUseCaseImplTestSuite) SetupTest() {
 
 	db := postgresdb.ConnectWithDB(
 		logger,
-		env.DBHost, 
-		env.DBPort, 
-		env.DBUser, 
-		env.DBPassword, 
+		env.DBHost,
+		env.DBPort,
+		env.DBUser,
+		env.DBPassword,
 		env.DBName,
 	)
 
-	customerPGSQLRepository :=  customer_entity.NewCustomerPGSQLRepository(ctx, db, logger)
-	personPGSQLRepository := person_entity.NewPersonPGSQLRepository(ctx, db, logger) 
+	customerPGSQLRepository := customer_entity.NewCustomerPGSQLRepository(ctx, db, logger)
+	personPGSQLRepository := person_entity.NewPersonPGSQLRepository(ctx, db, logger)
 	accountPGSQLRepository := account_entity.NewAccountPGSQLRepository(ctx, db, logger)
 	useCaseRepository := NewLoginAsCustomerUseCase(
 		ctx,
@@ -65,7 +65,6 @@ func (s *LoginUseCaseImplTestSuite) TestLogin() {
 	)
 	_, err := s.loginRepository.Execute(command)
 	s.NoError(err)
-
 
 	command = With(
 		"customer@gmail.com",

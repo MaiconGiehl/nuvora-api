@@ -8,8 +8,8 @@ import (
 )
 
 type BusPGSQLRepository struct {
-	ctx context.Context
-	db *sql.DB
+	ctx    context.Context
+	db     *sql.DB
 	logger logger.Logger
 }
 
@@ -19,8 +19,8 @@ func NewBusPGSQLRepository(
 	logger logger.Logger,
 ) *BusPGSQLRepository {
 	return &BusPGSQLRepository{
-		ctx: ctx,
-		db: db,
+		ctx:    ctx,
+		db:     db,
 		logger: logger,
 	}
 }

@@ -11,7 +11,7 @@ func NewDepartureOutputDTO(
 	time time.Time,
 	city string,
 ) *DepartureOutputDTO {
-	return &DepartureOutputDTO {
+	return &DepartureOutputDTO{
 		Time: time,
 		City: city,
 	}
@@ -26,18 +26,18 @@ func NewArrivalOutputDTO(
 	time time.Time,
 	city string,
 ) *ArrivalOutputDTO {
-	return &ArrivalOutputDTO {
+	return &ArrivalOutputDTO{
 		Time: time,
 		City: city,
 	}
 }
 
 type DepartureInputDTO struct {
-	Time string
+	Time   string
 	CityID int
 }
 
 type ArrivalInputDTO struct {
-	Time string
+	Time   string
 	CityID int
 }

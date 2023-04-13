@@ -45,7 +45,6 @@ func (h *TravelHandler) CustomerPossibleTravels(w http.ResponseWriter, r *http.R
 	command := get_possible_command.With(customerId)
 	output, err := h.app.GetPossibleTravelsUseCase.Execute(command)
 
-
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
 		json.NewEncoder(w).Encode(err.Error())

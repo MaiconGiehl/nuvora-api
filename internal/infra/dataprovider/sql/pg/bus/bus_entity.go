@@ -6,10 +6,10 @@ import (
 )
 
 type Bus struct {
-	ID int
-	Number int
+	ID            int
+	Number        int
 	MaxPassengers int
-	CompanyID int
-	CreatedAt time.Time
-	UpdatedAt sql.NullTime
+	CompanyID     int
+	CreatedAt     time.Time
+	UpdatedAt     sql.NullTime
 }

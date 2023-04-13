@@ -13,14 +13,13 @@ import (
 )
 
 type App struct {
-	BuyTicketUseCase buy_ticket_usecase.BuyTicketUseCaseInterface
-	CreateEmployeeUseCase create_employee_usecase.CreateEmployeeUseCaseInterface
-	CreateTravelUseCase create_travel_usecase.CreateTravelUseCaseInterface
-	GetEmployeesTicketsUsecase get_employees_tickets_usecase.GetEmployeesTicketsUseCase  
-	GetEmployeesUseCase get_employees_usecase.GetEmployeesUseCaseInterface
-	GetLastPurchasesUseCase get_last_purchases.GetLastPurchasesUseCaseInterface
+	BuyTicketUseCase           buy_ticket_usecase.BuyTicketUseCaseInterface
+	CreateEmployeeUseCase      create_employee_usecase.CreateEmployeeUseCaseInterface
+	CreateTravelUseCase        create_travel_usecase.CreateTravelUseCaseInterface
+	GetEmployeesTicketsUsecase get_employees_tickets_usecase.GetEmployeesTicketsUseCase
+	GetEmployeesUseCase        get_employees_usecase.GetEmployeesUseCaseInterface
+	GetLastPurchasesUseCase    get_last_purchases.GetLastPurchasesUseCaseInterface
 	GetPossibleTravelsUseCase  get_possible_travels_usecase.GetPossibleTravelsUseCaseInterface
-	LoginAsCompanyUseCase login_as_company_usecase.LoginAsCompanyUseCaseInterface
-	LoginAsCustomerUseCase login_as_customer_usecase.LoginAsCustomerUseCaseInterface
+	LoginAsCompanyUseCase      login_as_company_usecase.LoginAsCompanyUseCaseInterface
+	LoginAsCustomerUseCase     login_as_customer_usecase.LoginAsCustomerUseCaseInterface
 }
-

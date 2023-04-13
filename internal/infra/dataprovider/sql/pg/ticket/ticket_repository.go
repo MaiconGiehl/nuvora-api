@@ -9,8 +9,8 @@ import (
 )
 
 type TicketPGSQLRepository struct {
-	ctx context.Context
-	db *sql.DB
+	ctx    context.Context
+	db     *sql.DB
 	logger logger.Logger
 }
 
@@ -20,8 +20,8 @@ func NewTicketPGSQLRepository(
 	logger logger.Logger,
 ) *TicketPGSQLRepository {
 	return &TicketPGSQLRepository{
-		ctx: ctx,
-		db: db,
+		ctx:    ctx,
+		db:     db,
 		logger: logger,
 	}
 }
@@ -45,7 +45,6 @@ func (r *TicketPGSQLRepository) GetLastPurchases(accountId int) (*[]Ticket, erro
 
 	stmt := "SELECT * FROM ticket WHERE account_id = $1 ORDER BY created_at DESC"
 
-	
 	rows, err := r.db.Query(stmt, accountId)
 	if err != nil {
 		return &output, err
@@ -61,7 +60,7 @@ func (r *TicketPGSQLRepository) GetLastPurchases(accountId int) (*[]Ticket, erro
 		}
 		output = append(output, travel)
 	}
-	
+
 	return &output, nil
 }
 
@@ -70,7 +69,6 @@ func (r *TicketPGSQLRepository) GetEmployeesTickets(accountId int) (*[]EmployeeT
 
 	stmt := "SELECT * FROM ticket WHERE account_id = $1 ORDER BY created_at DESC"
 
-	
 	rows, err := r.db.Query(stmt, accountId)
 	if err != nil {
 		return &output, err
@@ -86,6 +84,30 @@ func (r *TicketPGSQLRepository) GetEmployeesTickets(accountId int) (*[]EmployeeT
 		}
 		output = append(output, travel)
 	}
-	
+
+	return &output, nil
+}
+
+func (r *TicketPGSQLRepository) UpdateTickets(accountId int) (*[]EmployeeTravelTicket, error) {
+	var output []EmployeeTravelTicket
+
+	stmt := "SELECT * FROM ticket WHERE account_id = $1 ORDER BY created_at DESC"
+
+	rows, err := r.db.Query(stmt, accountId)
+	if err != nil {
+		return &output, err
+	}
+
+	for rows.Next() {
+		var travel EmployeeTravelTicket
+		err = rows.Scan(
+			&travel.Name,
+		)
+		if err != nil {
+			return &output, err
+		}
+		output = append(output, travel)
+	}
+
 	return &output, nil
 }

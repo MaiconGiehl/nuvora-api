@@ -2,7 +2,7 @@ package usecase
 
 type buyTicketCommand struct {
 	AccountID int
-	TravelID int
+	TravelID  int
 }
 
 func With(
@@ -11,6 +11,6 @@ func With(
 ) *buyTicketCommand {
 	return &buyTicketCommand{
 		AccountID: accountId,
-		TravelID: travelId,
+		TravelID:  travelId,
 	}
 }
