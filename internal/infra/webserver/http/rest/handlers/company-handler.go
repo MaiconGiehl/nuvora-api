@@ -13,6 +13,7 @@ import (
 	"github.com/maicongiehl/nuvora-api/internal/core/application/shared/logger"
 	get_employees_command "github.com/maicongiehl/nuvora-api/internal/core/application/usecase/company/get-employees"
 	login_command "github.com/maicongiehl/nuvora-api/internal/core/application/usecase/company/login"
+	pay_tickets_command "github.com/maicongiehl/nuvora-api/internal/core/application/usecase/company/pay-tickets"
 )
 
 type CompanyHandler struct {
@@ -61,14 +62,14 @@ func (h *CompanyHandler) Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	companyAccount.AccessToken = h.createJWT(companyAccount.ID, r, companyAccount.PermissionLevel)
+	companyAccount.AccessToken = h.createJWT(r, companyAccount.PermissionLevel)
 
 	h.logger.Infof("CompanyHandler.Login: New connection to account %s", input.Email)
 	w.WriteHeader(http.StatusAccepted)
 	json.NewEncoder(w).Encode(companyAccount)
 }
 
-func (h *CompanyHandler) createJWT(id int, r *http.Request, permission_level int) string {
+func (h *CompanyHandler) createJWT(r *http.Request, permission_level int) string {
 	jwt := r.Context().Value("jwt").(*jwtauth.JWTAuth)
 	jwtExpiresIn := r.Context().Value("JwtExpiresIn").(int)
 
@@ -178,5 +179,26 @@ func (h *CompanyHandler) DeleteEmployee(w http.ResponseWriter, r *http.Request) 
 // @Router       /company/{id}/employees/tickets [patch]
 // @Security ApiKeyAuth
 func (h *CompanyHandler) PayAllTickets(w http.ResponseWriter, r *http.Request) {
+	h.logger.Infof("CompanyHandler.PayAllTickets: Request received")
 
+	companyId, err := strconv.Atoi(chi.URLParam(r, "id"))
+	if err != nil {
+		h.logger.Errorf("CompanyHandler.PayAllTickets: Unable to process request, %s", err)
+		json.NewEncoder(w).Encode(err.Error())
+		return
+	}
+
+	command := pay_tickets_command.With(companyId)
+	rowsAffected, err := h.app.PayTickets.Execute(command)
+	if err != nil {
+		h.logger.Errorf("CompanyHandler.PayAllTickets: Unable to pay tickets, %s", err)
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(err.Error())
+		return
+	}
+
+
+	h.logger.Infof("CompanyHandler.PayAllTickets: tickets paid")
+	w.WriteHeader(http.StatusAccepted)
+	json.NewEncoder(w).Encode(rowsAffected)
 }

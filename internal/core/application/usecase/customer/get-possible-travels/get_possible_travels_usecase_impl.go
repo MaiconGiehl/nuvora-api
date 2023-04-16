@@ -2,6 +2,7 @@ package usecase
 
 import (
 	"context"
+	"errors"
 
 	"github.com/maicongiehl/nuvora-api/internal/core/application/shared/dto"
 	account_entity "github.com/maicongiehl/nuvora-api/internal/infra/dataprovider/sql/pg/account"
@@ -53,7 +54,7 @@ func (u *GetPossibleTravelsUseCase) Execute(
 		return &output, err
 	}
 
-	customer, err := u.customerPGSQLRepository.FindCustomerByID(customerPerson.ID)
+	customer, err := u.customerPGSQLRepository.FindCustomerByID(int(customerPerson.CustomerID.Int64))
 	if err != nil {
 		return &output, err
 	}
@@ -68,8 +69,17 @@ func (u *GetPossibleTravelsUseCase) Execute(
 		return &output, err
 	}
 
-	for travel := range *possibleTravels {
-		output = append(output, dto.TravelOutputDTO{ID: travel})
+	if len(*possibleTravels) < 1 {
+		return &output, errors.New("no travel avaiable")
+	}
+
+
+	for _, travel := range *possibleTravels {
+		output = append(output, dto.TravelOutputDTO{
+			ID: travel.ID,
+			Price: travel.Price,
+			CompanyID: travel.AccountID,
+		})
 	}
 
 	return &output, nil

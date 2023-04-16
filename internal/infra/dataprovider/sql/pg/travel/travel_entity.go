@@ -8,19 +8,18 @@ import (
 type Travel struct {
 	ID int
   Price float64
-  CompanyID string
-	Bus struct {
-		Number int
-		MaxPassengers int
-	}
+  AccountID int
+	BusID int
+	Status int
 	Departure struct {
 		Time time.Time
-		CityName string
+		CityID int
 	}
 	Arrival struct {
 		Time time.Time
-		CityName string
+		CityID int
 	}
 	CreatedAt time.Time
 	UpdatedAt sql.NullTime
 }
+
