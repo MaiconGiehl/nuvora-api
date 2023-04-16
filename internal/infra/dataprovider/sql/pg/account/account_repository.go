@@ -26,7 +26,7 @@ func NewAccountPGSQLRepository(
 	}
 }
 
-func (r *AccountPGSQLRepository) GetAccountByID(accountId int) (*Account, error) {
+func (r *AccountPGSQLRepository) FindAccountByID(accountId int) (*Account, error) {
 	var output Account
 
 	stmt := `SELECT * FROM account a WHERE id = $1`
@@ -46,7 +46,7 @@ func (r *AccountPGSQLRepository) GetAccountByID(accountId int) (*Account, error)
 	)
 
 	if err != nil {
-		r.logger.Errorf("AccountRepository.GetAccountByID: Unable to find account, %s", err)
+		r.logger.Errorf("AccountRepository.FindAccountByID: Unable to find account, %s", err)
 		err = errors.New("invalid account")
 		return &output, err
 	}

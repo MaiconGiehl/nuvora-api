@@ -3,29 +3,15 @@ package rest
 import (
 	"context"
 	"net/http"
+	"strconv"
 
 	_ "github.com/lib/pq"
 	di "github.com/maicongiehl/nuvora-api/configs/di"
 	"github.com/maicongiehl/nuvora-api/configs/env"
-	_ "github.com/maicongiehl/nuvora-api/docs"
 	postgresdb_config "github.com/maicongiehl/nuvora-api/internal/infra/dataprovider/sql/pg"
 	logrus_config "github.com/maicongiehl/nuvora-api/internal/infra/log/logrus"
 )
 
-//	@title			Nuvora API
-//	@version		1.0
-//	@description	Product API with auhtentication
-//	@termsOfService	http://swagger.io/terms/
-
-//	@contact.name	Nuvora
-//	@contact.url	https://techtur.com.br
-//	@contact.email	atendimento@nuvora.com.br
-
-//	@license.name	Nuvora Promotora License
-//	@license.url	https://nuvora.com.br
-
-//	@host		localhost:8080
-//	@BasePath	/
 func StartServer() {
 	port := ":8080"
 
@@ -44,7 +30,15 @@ func StartServer() {
 	)
 
 	app := di.SetupDIConfig(ctx, db, logger)
+	appRouter := NewAppRouter(app, env.TokenAuth, logger)
 
-	logger.Infof("Server.StartServer: Starting server in %s", port)
-	http.ListenAndServe(port, Router(app, logger))
+
+	expiresIn, _ := strconv.Atoi(env.JWTExpiresIn)
+	appRouter.JWTClaims.ExpiresIn = expiresIn
+
+	logger.Infof("Server.StartServer: Starting server in %s", env.WebServerPort)
+	err := http.ListenAndServe(port, appRouter.Route())
+	if err != nil {
+		logger.Fatalf("Rest.StartServer: Unable to start server, %s", err.Error())
+	}
 }

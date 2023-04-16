@@ -1,1 +1,2 @@
-GET http://localhost:8080/customer/bruno@gmail.com/img0213r
+GET http://localhost:8080/nuvora/v1/company/1/employees
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJleHAiOjE2ODEyNTI4MjksInN1YiI6IjEifQ.M3JdDXclEmaMipFwNH9mOdXL-AcccFWFYE3Dg9rfGuI

@@ -9,6 +9,7 @@ type CustomerAccountOutputDTO struct {
 	Name string
 	PermissionLevel int
 	TicketsLeft int64
+	AccessToken string
 }
 
 func NewCustomerAccountOutputDTO(

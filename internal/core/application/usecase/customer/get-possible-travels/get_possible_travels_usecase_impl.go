@@ -43,27 +43,27 @@ func (u *GetPossibleTravelsUseCase) Execute(
 ) (*[]dto.TravelOutputDTO, error) {
 	var output []dto.TravelOutputDTO
 	
-	customerAccount, err := u.accountPGSQLRepository.GetAccountByID(command.accountID)
+	customerAccount, err := u.accountPGSQLRepository.FindAccountByID(command.accountID)
 	if err != nil {
 		return &output, err
 	}
 
-	customerPerson, err := u.personPGSQLRepository.GetPersonByID(customerAccount.ID)
+	customerPerson, err := u.personPGSQLRepository.FindPersonByID(customerAccount.ID)
 	if err != nil {
 		return &output, err
 	}
 
-	customer, err := u.customerPGSQLRepository.GetCustomerByID(customerPerson.ID)
+	customer, err := u.customerPGSQLRepository.FindCustomerByID(customerPerson.ID)
 	if err != nil {
 		return &output, err
 	}
 
-	companyPerson, err := u.personPGSQLRepository.GetPersonByID(customer.CompanyID)
+	companyPerson, err := u.personPGSQLRepository.FindPersonByID(customer.CompanyID)
 	if err != nil {
 		return &output, err
 	}
 
-	possibleTravels, err := u.travelPGSQLRepository.GetTravelsByCities(customerPerson.CityID, companyPerson.CityID)
+	possibleTravels, err := u.travelPGSQLRepository.FindTravelsByCities(customerPerson.CityID, companyPerson.CityID)
 	if err != nil {
 		return &output, err
 	}
