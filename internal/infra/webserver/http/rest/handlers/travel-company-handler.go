@@ -78,3 +78,39 @@ func (h *TravelCompanyHandler) CreateTravel(w http.ResponseWriter, r *http.Reque
 	h.logger.Infof("TravelCompanyHandler.Create: New travel created")
 	w.WriteHeader(http.StatusCreated)
 }
+
+// Travel godoc
+// @Summary      DeleteTravel
+// @Description  DeleteTravel
+// @Tags         TravelCompany
+// @Accept       json
+// @Produce      json
+// @Param        id   				    path      int  true  "Travel company id"
+// @Param        request   				body      dto.TravelInputDTO  true  "Travel info"
+// @Success      200  										{object}   	object
+// @Failure      404
+// @Router       /travel-company/{id}/travel/{travelId} [delete]
+// @Security ApiKeyAuth
+func (h *TravelCompanyHandler) DeleteTravel(w http.ResponseWriter, r *http.Request) {
+
+}
+
+
+
+
+
+// Travel godoc
+// @Summary      GetAllBus
+// @Description  GetAllBus
+// @Tags         TravelCompany
+// @Accept       json
+// @Produce      json
+// @Param        id   				    path      int  true  "Travel company id"
+// @Param        request   				body      dto.TravelInputDTO  true  "Travel info"
+// @Success      200  										{object}   	object
+// @Failure      404
+// @Router       /travel-company/{id}/bus [get]
+// @Security ApiKeyAuth
+func (h *TravelCompanyHandler) GetAllBus(w http.ResponseWriter, r *http.Request) {
+
+}

@@ -43,7 +43,7 @@ func NewCreateTravelUseCase(
 func (u *CreateTravelUsecase) Execute(
 	command *createTravelCommand,
 ) error {
-	
+
 	err := u.validateInput(command)
 	if err != nil {
 		customErr := fmt.Sprintf("invalid field: %s", err.Error())
@@ -71,18 +71,8 @@ func (u *CreateTravelUsecase) Execute(
 }
 
 func (u *CreateTravelUsecase) validateInput(input *createTravelCommand) error {
-	_, err := u.companyPGSQLRepository.FindCompanyByID(input.CompanyID)
-	if err != nil {
-		return errors.New("company not found")
-	}
-
 	if input.Price <= 0 {
 		return errors.New("price can't be lower or equal to zero")
-	}
-
-	_, err = u.busPGSQLRepository.FindBusByID(input.BusID)
-	if err != nil {
-		return errors.New("bus not found")
 	}
 
 	now := time.Now()
@@ -90,26 +80,36 @@ func (u *CreateTravelUsecase) validateInput(input *createTravelCommand) error {
 		return errors.New("departure time must be in the future")
 	}
 
-	_, err = u.cityPGSQLRepository.FindCityByID(input.DepartureCityID)
-	if err != nil {
-		return errors.New("city not found")
+	if input.DepartureCityID == input.ArrivalCityID {
+		return errors.New("arrival and departure city must be different")
 	}
 
 	if input.ArrivalTime.Compare(now) == -1 || input.ArrivalTime.Compare(now) == 0 {
 		return errors.New("departure time must be in the future")
 	}
 
-	_, err = u.cityPGSQLRepository.FindCityByID(input.ArrivalCityID)
+	if input.ArrivalTime.Compare(input.DepartureTime) == -1 || input.ArrivalTime.Compare(input.DepartureTime) == 0 {
+		return errors.New("arrival must be after departure")
+	}
+
+	_, err := u.companyPGSQLRepository.FindCompanyByID(input.CompanyID)
+	if err != nil {
+		return errors.New("company not found")
+	}
+
+	bus, err := u.busPGSQLRepository.FindBusByID(input.BusID)
+	if err != nil || bus.CompanyID != input.CompanyID {
+		return errors.New("bus not found")
+	}
+
+	_, err = u.cityPGSQLRepository.FindCityByID(input.DepartureCityID)
 	if err != nil {
 		return errors.New("city not found")
 	}
 
-	if input.DepartureCityID == input.ArrivalCityID {
-		return errors.New("arrival and departure city must be different")
-	}
-
-	if input.ArrivalTime.Compare(input.DepartureTime) == -11 || input.ArrivalTime.Compare(input.DepartureTime) == 0 {
-		return errors.New("arrival must be after departure")
+	_, err = u.cityPGSQLRepository.FindCityByID(input.ArrivalCityID)
+	if err != nil {
+		return errors.New("city not found")
 	}
 
 	return nil

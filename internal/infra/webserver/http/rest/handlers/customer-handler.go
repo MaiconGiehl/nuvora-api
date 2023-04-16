@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"strconv"
 	"time"
@@ -13,6 +12,7 @@ import (
 	dto "github.com/maicongiehl/nuvora-api/internal/core/application/shared/dto"
 	"github.com/maicongiehl/nuvora-api/internal/core/application/shared/logger"
 	buy_ticket_command "github.com/maicongiehl/nuvora-api/internal/core/application/usecase/customer/buy-ticket"
+	get_possible_command "github.com/maicongiehl/nuvora-api/internal/core/application/usecase/customer/get-possible-travels"
 	get_last_purchases_command "github.com/maicongiehl/nuvora-api/internal/core/application/usecase/customer/get-purchases"
 	login_command "github.com/maicongiehl/nuvora-api/internal/core/application/usecase/customer/login"
 )
@@ -79,7 +79,7 @@ func (h *CustomerHandler) createJWT(id int, r *http.Request) string {
 		"permission_level": 3,
 	})
 
-	return fmt.Sprintf("Bearer %s", tokenString)
+	return tokenString
 
 }
 
@@ -160,4 +160,38 @@ func (h *CustomerHandler) Purchases(w http.ResponseWriter, r *http.Request) {
 	w.WriteHeader(http.StatusAccepted)
 	json.NewEncoder(w).Encode(output)
 
+}
+
+// Customer godoc
+// @Summary      Get customer possible travels
+// @Description  Get travels using customer account id
+// @Tags         Customer
+// @Accept       json
+// @Produce      json
+// @Param        id   				path      int  true  "Customer account id"
+// @Success      200  										{object}   	[]dto.TravelOutputDTO
+// @Failure      404
+// @Router       /customer/{id}/travels [get]
+// @Security ApiKeyAuth
+func (h *CustomerHandler) PossibleTravels(w http.ResponseWriter, r *http.Request) {
+	customerId, err := strconv.Atoi(chi.URLParam(r, "id"))
+
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(err.Error())
+		return
+	}
+
+	command := get_possible_command.With(customerId)
+	output, err := h.app.GetPossibleTravelsUseCase.Execute(command)
+
+
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(err.Error())
+		return
+	}
+
+	w.WriteHeader(http.StatusAccepted)
+	json.NewEncoder(w).Encode(output)
 }

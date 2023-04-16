@@ -2,7 +2,6 @@ package handlers
 
 import (
 	"encoding/json"
-	"fmt"
 	"net/http"
 	"strconv"
 	"time"
@@ -78,7 +77,7 @@ func (h *CompanyHandler) createJWT(id int, r *http.Request, permission_level int
 		"permission_level": permission_level,
 	})
 	
-	return fmt.Sprintf("Bearer %s", tokenString)
+	return tokenString
 }
 
 // Company godoc
@@ -114,4 +113,70 @@ func (h *CompanyHandler) GetEmployees(w http.ResponseWriter, r *http.Request) {
 	h.logger.Infof("CompanyHandler.GetEmployees: Employees infos delievered")
 	w.WriteHeader(http.StatusAccepted)
 	json.NewEncoder(w).Encode(output)
+}
+
+// Company godoc
+// @Summary      GetEmployeesTickets
+// @Description  GetEmployeesTickets
+// @Tags         Company
+// @Accept       json
+// @Produce      json
+// @Param        id   							path     		int true  "Company ID"
+// @Success      200  										{object}   	[]dto.EmployeeOutputDTO
+// @Failure      404
+// @Router       /company/{id}/employees/tickets [get]
+// @Security ApiKeyAuth
+func (h *CompanyHandler) GetEmployeesTickets(w http.ResponseWriter, r *http.Request) {
+	h.logger.Infof("CompanyHandler.GetEmployees: Request received")
+
+	companyId, err := strconv.Atoi(chi.URLParam(r, "id"))
+	if err != nil {
+		h.logger.Errorf("CompanyHandler.GetEmployees: Unable to process request, %s", err)
+		json.NewEncoder(w).Encode(err.Error())
+		return
+	}
+
+	command := get_employees_command.With(companyId)
+	output, err := h.app.GetEmployeesUseCase.Execute(command)
+	if err != nil {
+		h.logger.Errorf("CompanyHandler.GetEmployees: Unable to get employees, %s", err)
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(err.Error())
+		return
+	}
+
+	h.logger.Infof("CompanyHandler.GetEmployees: Employees infos delievered")
+	w.WriteHeader(http.StatusAccepted)
+	json.NewEncoder(w).Encode(output)
+}
+
+
+// Company godoc
+// @Summary      GetEmployeesTickets
+// @Description  GetEmployeesTickets
+// @Tags         Company
+// @Accept       json
+// @Produce      json
+// @Param        id   							path     		int true  "Company ID"
+// @Success      200  										{object}   	[]dto.EmployeeOutputDTO
+// @Failure      404
+// @Router       /company/{id}/employee/{employeId} [delete]
+// @Security ApiKeyAuth
+func (h *CompanyHandler) DeleteEmployee(w http.ResponseWriter, r *http.Request) {
+
+}
+
+// Company godoc
+// @Summary      PayAllTickets
+// @Description  PayAllTickets
+// @Tags         Company
+// @Accept       json
+// @Produce      json
+// @Param        id   							path     		int true  "Company ID"
+// @Success      200  										{object}   	[]dto.EmployeeOutputDTO
+// @Failure      404
+// @Router       /company/{id}/employees/tickets [patch]
+// @Security ApiKeyAuth
+func (h *CompanyHandler) PayAllTickets(w http.ResponseWriter, r *http.Request) {
+
 }

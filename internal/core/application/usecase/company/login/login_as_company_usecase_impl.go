@@ -2,6 +2,7 @@ package usecase
 
 import (
 	"context"
+	"errors"
 
 	"github.com/maicongiehl/nuvora-api/internal/core/application/shared/dto"
 	"github.com/maicongiehl/nuvora-api/internal/core/application/shared/logger"
@@ -47,6 +48,12 @@ func (u *LoginAsCompanyUseCase) Execute(
 	companyPerson, err := u.personPGSQLRepository.FindPersonByID(companyAccount.PersonID)
 	if err != nil {
 		u.logger.Errorf("LoginAsCompanyUseCase.Execute: Unable to get person, %s", err.Error())
+		return output, err
+	}
+
+	if companyPerson.CustomerID.Valid {
+		err = errors.New("invalid credentials")
+		u.logger.Errorf("LoginAsCustomerUseCase.Execute: Unable to login, %s", err.Error())
 		return output, err
 	}
 
