@@ -63,24 +63,23 @@ func (h *CustomerHandler) Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	customerAccount.AccessToken = h.createJWT(customerAccount.ID, r)
+	customerAccount.AccessToken = h.createJWT(r,  customerAccount.PermissionLevel)
 
 	h.logger.Infof("CustomerHandler.Login: New connection to account %s", input.Email)
 	w.WriteHeader(http.StatusAccepted)
 	json.NewEncoder(w).Encode(customerAccount)
 }
 
-func (h *CustomerHandler) createJWT(id int, r *http.Request) string {
+func (h *CustomerHandler) createJWT(r *http.Request, permission_level int) string {
 	jwt := r.Context().Value("jwt").(*jwtauth.JWTAuth)
 	jwtExpiresIn := r.Context().Value("JwtExpiresIn").(int)
 
 	_, tokenString, _ := jwt.Encode(map[string]interface{}{
 		"exp": time.Now().Add(time.Second * time.Duration(jwtExpiresIn)).Unix(),
-		"permission_level": 3,
+		"permission_level": permission_level,
 	})
-
+	
 	return tokenString
-
 }
 
 // Ticket godoc

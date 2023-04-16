@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"errors"
+	"fmt"
 
 	"github.com/maicongiehl/nuvora-api/internal/core/application/shared/logger"
 )
@@ -93,4 +94,27 @@ func (r *TicketPGSQLRepository) GetEmployeesTickets(accountId int) (*[]EmployeeT
 	}
 	
 	return &output, nil
+}
+
+func (r *TicketPGSQLRepository) UpdateTicketsStatusByCompanyID(companyId int) (string, error) {
+	stmt := `UPDATE ticket t SET status_id = 1, updated_at = NOW() WHERE t.id IN (
+		SELECT t.id FROM ticket t 
+		JOIN account a ON t.account_id=a.id 
+		JOIN person p ON a.person_id =p.id 
+		JOIN customer c ON p.customer_id =c.id  
+		WHERE c.company_id=$1
+	) AND status_id = 0`
+
+	
+	rows, err := r.db.Exec(stmt, companyId)
+	if err != nil {
+		return "", err
+	}
+	
+	affectedRows, err := rows.RowsAffected()
+	if err != nil {
+		return "", err
+	}
+
+	return fmt.Sprintf("%d tickets paid", affectedRows), nil
 }

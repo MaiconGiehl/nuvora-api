@@ -59,13 +59,13 @@ func (r *TravelPGSQLRepository) FindTravelByID(id int) (*Travel, error) {
 	err := row.Scan(
 		&output.ID,
 		&output.Price,
-		&output.CompanyID,
-		&output.Bus.Number,
-		&output.Bus.MaxPassengers,
+		&output.AccountID,
+		&output.BusID,
+		&output.Status,
 		&output.Departure.Time,
-		&output.Departure.CityName,
+		&output.Departure.CityID,
 		&output.Arrival.Time,
-		&output.Arrival.CityName,
+		&output.Arrival.CityID,
 		&output.CreatedAt,
 		&output.UpdatedAt,
 	)
@@ -83,11 +83,11 @@ func (r *TravelPGSQLRepository) FindTravelsByCities(dptCityID, arvCityID int) (*
 	var output []Travel
 
 	stmt := `
-		SELECT * FROM travel 
+		SELECT * FROM travel t
 		WHERE 
 			departure_city_id = $1 OR departure_city_id = $2 
 		AND 
-			arrival_departure_city_id = $1 OR arrival_departure_city_id = $2 
+			arrival_city_id = $1 OR arrival_city_id = $2 
 		ORDER BY 
 			departure_city_id`
 	
@@ -101,14 +101,17 @@ func (r *TravelPGSQLRepository) FindTravelsByCities(dptCityID, arvCityID int) (*
 		err = rows.Scan(
 			&travel.ID,
 			&travel.Price,
-			&travel.CompanyID,
-			&travel.Bus.Number,
-			&travel.Bus.MaxPassengers,
+			&travel.AccountID,
+			&travel.BusID,
+			&travel.Status,
 			&travel.Departure.Time,
-			&travel.Departure.CityName,
+			&travel.Departure.CityID,
 			&travel.Arrival.Time,
-			&travel.Arrival.CityName,
+			&travel.Arrival.CityID,
+			&travel.CreatedAt,
+			&travel.UpdatedAt,
 		)
+		
 		if err != nil {
 			return &output, err
 		}
