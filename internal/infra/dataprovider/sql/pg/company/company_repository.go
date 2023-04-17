@@ -51,3 +51,37 @@ func (r *CompanyPGSQLRepository) FindCompanyByID(companyId int) (*Company, error
 
 	return &output, nil
 }
+
+func (r *CompanyPGSQLRepository) FindAllTravelCompanies() ([]*Company, error) {
+	var output []*Company
+
+	stmt := "SELECT * FROM company WHERE c.id IN (SELECT c.id FROM account a JOIN person p ON a.person_id=p.id JOIN company c ON p.company_id=c.id WHERE c.company_type_id=1 )"
+
+	rows, err := r.db.Query(stmt)
+
+	if err != nil {
+		r.logger.Errorf("CompanyPGSQLRepository.FindAll: Unable to find companies, %s", err)
+		return output, err
+	}
+
+	for rows.Next() {
+		var company Company
+		err := rows.Scan(
+			&company.ID,
+			&company.Cnpj,
+			&company.SocialReason,
+			&company.FantasyName,
+			&company.Phone,
+			&company.CompanyTypeID,
+			&company.CreatedAt,
+			&company.UpdatedAt,
+		)
+
+		if err != nil {
+			return output, err
+		}
+		output = append(output, &company)
+	}
+
+	return output, nil
+}

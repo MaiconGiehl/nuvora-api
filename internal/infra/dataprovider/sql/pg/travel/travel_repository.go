@@ -85,9 +85,9 @@ func (r *TravelPGSQLRepository) FindTravelsByCities(dptCityID, arvCityID int) (*
 	stmt := `
 		SELECT * FROM travel t
 		WHERE 
-			departure_city_id = $1 OR departure_city_id = $2 
-		AND 
-			arrival_city_id = $1 OR arrival_city_id = $2 
+			departure_city_id = $1 AND arrival_city_id = $2 
+		OR
+			departure_city_id = $2 AND arrival_city_id = $2 
 		ORDER BY 
 			departure_city_id`
 
@@ -155,3 +155,52 @@ func (r *TravelPGSQLRepository) FindByTicketsIDs(ticketsIds []int) (*[]Travel, e
 
 	return &output, err
 }
+
+
+func (r *TravelPGSQLRepository) FindAll() ([]*Travel, error) {
+	var output []*Travel
+
+	stmt := `
+		SELECT * FROM travel`
+	
+	rows, err := r.db.Query(stmt)
+	if err != nil {
+		return output, err
+	}
+
+	for rows.Next() {
+		var travel Travel
+		err = rows.Scan(
+			&travel.ID,
+			&travel.Price,
+			&travel.AccountID,
+			&travel.BusID,
+			&travel.Status,
+			&travel.Departure.Time,
+			&travel.Departure.CityID,
+			&travel.Arrival.Time,
+			&travel.Arrival.CityID,
+			&travel.CreatedAt,
+			&travel.UpdatedAt,
+		)
+		
+		if err != nil {
+			return output, err
+		}
+		output = append(output, &travel)
+	}
+	
+	return output, err
+}
+
+func (r *TravelPGSQLRepository) DeleteTravelByID(travelId int, companyAccountId int) error {
+	stmt := `DELETE FROM travel WHERE id = $1 AND t.account_id=$2`
+	
+	_, err := r.db.Exec(stmt, travelId, companyAccountId)
+	if err != nil {
+		return err
+	}
+
+	return err
+}
+

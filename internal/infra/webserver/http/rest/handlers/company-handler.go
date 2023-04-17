@@ -11,6 +11,7 @@ import (
 	di "github.com/maicongiehl/nuvora-api/configs/di"
 	dto "github.com/maicongiehl/nuvora-api/internal/core/application/shared/dto"
 	"github.com/maicongiehl/nuvora-api/internal/core/application/shared/logger"
+	delete_employee_command "github.com/maicongiehl/nuvora-api/internal/core/application/usecase/company/delete-employee"
 	get_employees_command "github.com/maicongiehl/nuvora-api/internal/core/application/usecase/company/get-employees"
 	get_employees_tickets_command "github.com/maicongiehl/nuvora-api/internal/core/application/usecase/company/get-employees-tickets"
 	login_command "github.com/maicongiehl/nuvora-api/internal/core/application/usecase/company/login"
@@ -55,7 +56,7 @@ func (h *CompanyHandler) Login(w http.ResponseWriter, r *http.Request) {
 	}
 
 	command := login_command.With(input.Email, input.Password)
-	companyAccount, err := h.app.LoginAsCompanyUseCase.Execute(command)
+	output, err := h.app.LoginAsCompanyUseCase.Execute(command)
 	if err != nil {
 		h.logger.Errorf("CompanyHandler.Login: Error at searching for company account, %s", err.Error())
 		w.WriteHeader(http.StatusBadRequest)
@@ -63,11 +64,11 @@ func (h *CompanyHandler) Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	companyAccount.AccessToken = h.createJWT(r, companyAccount.PermissionLevel)
+	output.SetAccessToken(h.createJWT(r, output.PermissionLevel)) 
 
 	h.logger.Infof("CompanyHandler.Login: New connection to account %s", input.Email)
 	w.WriteHeader(http.StatusAccepted)
-	json.NewEncoder(w).Encode(companyAccount)
+	json.NewEncoder(w).Encode(output)
 }
 
 func (h *CompanyHandler) createJWT(r *http.Request, permission_level int) string {
@@ -153,18 +154,46 @@ func (h *CompanyHandler) GetEmployeesTickets(w http.ResponseWriter, r *http.Requ
 }
 
 // Company godoc
-// @Summary      GetEmployeesTickets
-// @Description  GetEmployeesTickets
+// @Summary      DeleteEmployee
+// @Description  DeleteEmployee
 // @Tags         Company
 // @Accept       json
 // @Produce      json
 // @Param        id   							path     		int true  "Company ID"
-// @Success      200  										{object}   	[]dto.EmployeeOutputDTO
+// @Param        employeeId   							path     		int true  "Employee ID"
+// @Success      200  										{object}   	object
 // @Failure      404
 // @Router       /company/{id}/employee/{employeId} [delete]
 // @Security ApiKeyAuth
 func (h *CompanyHandler) DeleteEmployee(w http.ResponseWriter, r *http.Request) {
+	companyId, err := strconv.Atoi(chi.URLParam(r, "id"))
+	if err != nil {
+		h.logger.Errorf("CompanyHandler.DeleteEmployee: Invalid url path, %s", err.Error())
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(err.Error())
+		return
+	}
 
+	employeeId, err := strconv.Atoi(chi.URLParam(r, "employeeId"))
+	if err != nil {
+		h.logger.Errorf("CompanyHandler.DeleteEmployee: Invalid url path, %s", err.Error())
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(err.Error())
+		return
+	}
+
+	command := delete_employee_command.With(employeeId, companyId)
+
+	err = h.app.DeleteEmployeeUseCase.Execute(command)
+	if err != nil {
+		h.logger.Errorf("CompanyHandler.GetAllBus: Unable to get bus, %s", err)
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(err.Error())
+		return
+	}
+
+	h.logger.Infof("CompanyHandler.GetAllBusTickets: bus infos delievered")
+	w.WriteHeader(http.StatusAccepted)
 }
 
 // Company godoc

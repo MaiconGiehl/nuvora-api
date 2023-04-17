@@ -75,9 +75,12 @@ func (u *GetEmployeesUseCase) Execute(
 	}
 
 	for _, employee := range *employees {
-		output = append(output, dto.EmployeeOutputDTO{
-			Name: employee.Name,
-		})
+		output = append(output, *dto.NewEmployeeOutputDTO(
+			employee.Cpf,
+			employee.Name,
+			employee.Name,
+			employee.Phone,
+		))
 	}
 
 	return &output, nil

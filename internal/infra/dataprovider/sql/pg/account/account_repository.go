@@ -106,3 +106,50 @@ func (r *AccountPGSQLRepository) AddTicket(id int) error {
 
 	return nil
 }
+func (r *AccountPGSQLRepository) FindAccountsByCompanyID(id int) ([]*Account, error) {
+	var output []*Account
+	stmt := `SELECT * FROM account a WHERE a.id IN (SELECT a.id FROM account a JOIN person p ON a.person_id=p.id JOIN customer c ON p.customer_id=c.id WHERE c.company_id = $1 )`
+	
+	rows, err := r.db.Query(stmt, id)
+
+	if err != nil {
+		r.logger.Errorf("AccountRepository.FindAccountsByCompanyID: Unable to find account, %s", err)
+		err = errors.New("invalid credentials")
+		return output, err
+	}
+
+	for rows.Next() {
+		var account Account
+		err := rows.Scan(
+			&account.ID,
+			&account.Email,
+			&account.Password,
+			&account.PersonID,
+			&account.LastAccess,
+			&account.TicketsLeft,
+			&account.DailyTickets,
+			&account.CreatedAt,
+			&account.UpdatedAt,
+		)
+
+		if err != nil {
+			return output, err
+		}
+		output = append(output, &account)
+	}
+
+	return output, nil
+}
+
+
+func (r *AccountPGSQLRepository) DeleteAccountByID(id int) error {
+	stmt := `DELETE FROM person p WHERE id = $1`
+	
+	_, err := r.db.Exec(stmt, id)
+	if err != nil {
+		return err
+	}
+
+	return err
+}
+

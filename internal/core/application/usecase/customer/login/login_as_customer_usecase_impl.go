@@ -56,9 +56,12 @@ func (u *LoginAsCustomerUseCase) Execute(command *loginAsCustomerCommand) (*dto.
 
 	output = dto.NewCustomerAccountOutputDTO(
 		customerAccount.ID,
-		customer.Name,
+		customerAccount.Email,
+		int(customerAccount.TicketsLeft.Int64),
 		customerPerson.PermissionLevel,
-		customerAccount.TicketsLeft.Int64,
+		customer.Cpf,
+		customer.Name,
+		customer.Phone,
 	)
 
 	return output, err

@@ -43,3 +43,31 @@ func (r *CityPGSQLRepository) FindCityByID(id int) (*City, error) {
 
 	return &output, nil
 }
+
+func (r *CityPGSQLRepository) FindAll() ([]*City, error) {
+	var output []*City
+
+	stmt := "SELECT * FROM city c"
+
+	rows, err := r.db.Query(stmt)
+
+	if err != nil {
+		r.logger.Errorf("CityRepository.FindAll: Unable to find cities, %s", err)
+		return output, err
+	}
+
+	for rows.Next() {
+		var city City
+		err := rows.Scan(
+			&city.ID,
+			&city.Name,
+		)
+
+		if err != nil {
+			return output, err
+		}
+		output = append(output, &city)
+	}
+
+	return output, nil
+}

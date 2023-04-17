@@ -10,6 +10,7 @@ import (
 	dto "github.com/maicongiehl/nuvora-api/internal/core/application/shared/dto"
 	"github.com/maicongiehl/nuvora-api/internal/core/application/shared/logger"
 	create_travel_command "github.com/maicongiehl/nuvora-api/internal/core/application/usecase/travel-company/create-travel"
+	delete_travel_command "github.com/maicongiehl/nuvora-api/internal/core/application/usecase/travel-company/delete-travel"
 	get_all_bus_usecase_command "github.com/maicongiehl/nuvora-api/internal/core/application/usecase/travel-company/get-all-bus"
 )
 
@@ -86,14 +87,41 @@ func (h *TravelCompanyHandler) CreateTravel(w http.ResponseWriter, r *http.Reque
 // @Tags         TravelCompany
 // @Accept       json
 // @Produce      json
-// @Param        id   				    path      int  true  "Travel company id"
-// @Param        request   				body      dto.TravelInputDTO  true  "Travel info"
+// @Param        id   				    path      int  true  "Travel  id"
+// @Param        travelId   				    path      int  true  "Travel company id"
 // @Success      200  										{object}   	object
 // @Failure      404
 // @Router       /travel-company/{id}/travel/{travelId} [delete]
 // @Security ApiKeyAuth
 func (h *TravelCompanyHandler) DeleteTravel(w http.ResponseWriter, r *http.Request) {
+	companyId, err := strconv.Atoi(chi.URLParam(r, "id"))
+	if err != nil {
+		h.logger.Errorf("TravelCompanyHandler.DeleteTravel: Invalid url path, %s", err.Error())
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(err.Error())
+		return
+	}
 
+	travelId, err := strconv.Atoi(chi.URLParam(r, "travelId"))
+	if err != nil {
+		h.logger.Errorf("TravelCompanyHandler.DeleteTravel: Invalid url path, %s", err.Error())
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(err.Error())
+		return
+	}
+
+	command := delete_travel_command.With(travelId, companyId)
+
+	err = h.app.DeleteTravelUseCase.Execute(command)
+	if err != nil {
+		h.logger.Errorf("TravelCompanyHandler.DeleteTravel: Unable to get bus, %s", err)
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(err.Error())
+		return
+	}
+
+	h.logger.Infof("TravelCompanyHandler.DeleteTravel: delete travel")
+	w.WriteHeader(http.StatusAccepted)
 }
 
 // Travel godoc
