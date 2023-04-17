@@ -167,12 +167,6 @@ INSERT INTO city (name) values ('SANTA ROSA');
 INSERT INTO city (name) values ('CANDIDO GODOI');
 INSERT INTO city (name) values ('SANTO CRISTO');
 INSERT INTO city (name) values ('TRES DE MAIO');
-INSERT INTO city (name) values ('TUCUNDUVA');
-INSERT INTO city (name) values ('TUPARENDI');
-INSERT INTO city (name) values ('HORIZONTINA');
-INSERT INTO city (name) values ('CAMPINA DAS MISSOES');
-INSERT INTO city (name) values ('CERRO LARGO');
-INSERT INTO city (name) values ('GIRUA');
 
 
 -- Travel companies
@@ -209,11 +203,11 @@ INSERT INTO person (permission_level, customer_id, city_id, created_at) VALUES (
 INSERT INTO account (email, password, person_id, last_access, daily_tickets, tickets_left, created_at) VALUES ('usuario01@gmail.com', 'usuario01',  7, NOW(), 2, 2, NOW());
 
 INSERT into customer (cpf, name, phone, company_id, created_at) VALUES (78084020013, 'Usuario 02', 5555813941193, 4, NOW());
-INSERT INTO person (permission_level, customer_id, city_id, created_at) VALUES (3, 2, 1, NOW());
+INSERT INTO person (permission_level, customer_id, city_id, created_at) VALUES (3, 2, 2, NOW());
 INSERT INTO account (email, password, person_id, last_access, daily_tickets, tickets_left, created_at) VALUES ('usuario02@gmail.com', 'usuario02',  8, NOW(), 2, 2, NOW());
 
 INSERT into customer (cpf, name, phone, company_id, created_at) VALUES (16339577059, 'Usuario 03', 5555262952682, 5, NOW());
-INSERT INTO person (permission_level, customer_id, city_id, created_at) VALUES (3, 3, 1, NOW());
+INSERT INTO person (permission_level, customer_id, city_id, created_at) VALUES (3, 3, 3, NOW());
 INSERT INTO account (email, password, person_id, last_access, daily_tickets, tickets_left, created_at) VALUES ('usuario03@gmail.com', 'usuario03',  9, NOW(), 2, 2, NOW());
 
 INSERT into customer (cpf, name, phone, company_id, created_at) VALUES (91554720010, 'Usuario 04', 5555469199633, 5, NOW());
@@ -221,11 +215,11 @@ INSERT INTO person (permission_level, customer_id, city_id, created_at) VALUES (
 INSERT INTO account (email, password, person_id, last_access, daily_tickets, tickets_left, created_at) VALUES ('usuario04@gmail.com', 'usuario04',  10, NOW(), 2, 2, NOW());
 
 INSERT into customer (cpf, name, phone, company_id, created_at) VALUES (43796465056, 'Usuario 05', 5555752633987, 6, NOW());
-INSERT INTO person (permission_level, customer_id, city_id, created_at) VALUES (3, 5, 1, NOW());
+INSERT INTO person (permission_level, customer_id, city_id, created_at) VALUES (3, 5, 2, NOW());
 INSERT INTO account (email, password, person_id, last_access, daily_tickets, tickets_left, created_at) VALUES ('usuario05@gmail.com', 'usuario05',  11, NOW(), 2, 2, NOW());
 
 INSERT into customer (cpf, name, phone, company_id, created_at) VALUES (10086181017, 'Usuario 06', 5555822191928, 6, NOW());
-INSERT INTO person (permission_level, customer_id, city_id, created_at) VALUES (3, 6, 1, NOW());
+INSERT INTO person (permission_level, customer_id, city_id, created_at) VALUES (3, 6, 3, NOW());
 INSERT INTO account (email, password, person_id, last_access, daily_tickets, tickets_left, created_at) VALUES ('usuario06@gmail.com', 'usuario06',  12, NOW(), 2, 2, NOW());
 
 -- Bus
@@ -265,27 +259,44 @@ INSERT INTO travel (price, account_id, bus_id, status, departure_time, departure
 VALUES (7.50, 1, 1, 0, NOW(), 1, NOW(), 2, NOW());
 
 INSERT INTO travel (price, account_id, bus_id, status, departure_time, departure_city_id, arrival_time, arrival_city_id, created_at)
-VALUES (7.50, 1, 2, 0, NOW(), 1, NOW(), 2, NOW());
+VALUES (7.50, 1, 2, 0, NOW(), 2, NOW(), 3, NOW());
+
+INSERT INTO travel (price, account_id, bus_id, status, departure_time, departure_city_id, arrival_time, arrival_city_id, created_at)
+VALUES (7.50, 1, 3, 0, NOW(), 3, NOW(), 1, NOW());
+
+INSERT INTO travel (price, account_id, bus_id, status, departure_time, departure_city_id, arrival_time, arrival_city_id, created_at)
+VALUES (7.50, 1, 1, 0, NOW(), 3, NOW(), 2, NOW());
+
+INSERT INTO travel (price, account_id, bus_id, status, departure_time, departure_city_id, arrival_time, arrival_city_id, created_at)
+VALUES (7.50, 1, 2, 0, NOW(), 1, NOW(), 3, NOW());
+
+INSERT INTO travel (price, account_id, bus_id, status, departure_time, departure_city_id, arrival_time, arrival_city_id, created_at)
+VALUES (7.50, 1, 3, 0, NOW(), 2, NOW(), 1, NOW());
+
+INSERT INTO travel (price, account_id, bus_id, status, departure_time, departure_city_id, arrival_time, arrival_city_id, created_at)
+VALUES (7.50, 1, 1, 0, NOW(), 1, NOW(), 2, NOW());
+
+INSERT INTO travel (price, account_id, bus_id, status, departure_time, departure_city_id, arrival_time, arrival_city_id, created_at)
+VALUES (7.50, 1, 2, 0, NOW(), 3, NOW(), 2, NOW());
 
 INSERT INTO travel (price, account_id, bus_id, status, departure_time, departure_city_id, arrival_time, arrival_city_id, created_at)
 VALUES (7.50, 1, 3, 0, NOW(), 1, NOW(), 2, NOW());
-
 
 -- Tickets
 INSERT INTO ticket (account_id, status_id, travel_id, created_at)
 VALUES (7, 0, 1, NOW());
 
 INSERT INTO ticket (account_id, status_id, travel_id, created_at)
-VALUES (8, 0, 1, NOW());
+VALUES (8, 0, 2, NOW());
 
 INSERT INTO ticket (account_id, status_id, travel_id, created_at)
-VALUES (9, 0, 1, NOW());
+VALUES (9, 0, 3, NOW());
 
 INSERT INTO ticket (account_id, status_id, travel_id, created_at)
-VALUES (10, 0, 1, NOW());
+VALUES (10, 0, 2, NOW());
 
 INSERT INTO ticket (account_id, status_id, travel_id, created_at)
-VALUES (11, 0, 1, NOW());
+VALUES (11, 0, 3, NOW());
 
 INSERT INTO ticket (account_id, status_id, travel_id, created_at)
 VALUES (12, 0, 1, NOW());

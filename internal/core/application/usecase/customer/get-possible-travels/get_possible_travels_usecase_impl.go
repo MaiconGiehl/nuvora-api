@@ -59,10 +59,12 @@ func (u *GetPossibleTravelsUseCase) Execute(
 		return &output, err
 	}
 
-	companyPerson, err := u.personPGSQLRepository.FindPersonByID(customer.CompanyID)
+	company, err := u.companyPGSQLRepository.FindCompanyByID(customer.CompanyID)
 	if err != nil {
 		return &output, err
 	}
+
+	companyPerson, err := u.personPGSQLRepository.FindPersonByCompanyID(company.ID)
 
 	possibleTravels, err := u.travelPGSQLRepository.FindTravelsByCities(customerPerson.CityID, companyPerson.CityID)
 	if err != nil {

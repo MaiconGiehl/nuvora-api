@@ -2,6 +2,7 @@ package setup_di_config
 
 import (
 	create_employee_usecase "github.com/maicongiehl/nuvora-api/internal/core/application/usecase/company/create-employee"
+	delete_employee_usecase "github.com/maicongiehl/nuvora-api/internal/core/application/usecase/company/delete-employee"
 	get_employees_usecase "github.com/maicongiehl/nuvora-api/internal/core/application/usecase/company/get-employees"
 	get_employees_tickets_usecase "github.com/maicongiehl/nuvora-api/internal/core/application/usecase/company/get-employees-tickets"
 	login_as_company_usecase "github.com/maicongiehl/nuvora-api/internal/core/application/usecase/company/login"
@@ -11,6 +12,7 @@ import (
 	get_purchases "github.com/maicongiehl/nuvora-api/internal/core/application/usecase/customer/get-purchases"
 	login_as_customer_usecase "github.com/maicongiehl/nuvora-api/internal/core/application/usecase/customer/login"
 	create_travel_usecase "github.com/maicongiehl/nuvora-api/internal/core/application/usecase/travel-company/create-travel"
+	delete_travel_usecase "github.com/maicongiehl/nuvora-api/internal/core/application/usecase/travel-company/delete-travel"
 	get_all_bus_usecase "github.com/maicongiehl/nuvora-api/internal/core/application/usecase/travel-company/get-all-bus"
 )
 
@@ -18,6 +20,8 @@ type App struct {
 	BuyTicketUseCase buy_ticket_usecase.BuyTicketUseCaseInterface
 	CreateEmployeeUseCase create_employee_usecase.CreateEmployeeUseCaseInterface
 	CreateTravelUseCase create_travel_usecase.CreateTravelUseCaseInterface
+	DeleteTravelUseCase delete_travel_usecase.DeleteTravelUseCaseInterface
+	DeleteEmployeeUseCase delete_employee_usecase.DeleteEmployeeUseCaseInterface
 	GetAllBusUseCase  get_all_bus_usecase.GetAllBusUseCase
 	GetEmployeesTicketsUsecase get_employees_tickets_usecase.GetEmployeesTicketsUseCase  
 	GetEmployeesUseCase get_employees_usecase.GetEmployeesUseCaseInterface

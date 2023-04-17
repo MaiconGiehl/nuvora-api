@@ -15,6 +15,7 @@ import (
 
 	"github.com/maicongiehl/nuvora-api/internal/core/application/shared/logger"
 	create_employee_usecase "github.com/maicongiehl/nuvora-api/internal/core/application/usecase/company/create-employee"
+	delete_employee_usecase "github.com/maicongiehl/nuvora-api/internal/core/application/usecase/company/delete-employee"
 	get_employees_usecase "github.com/maicongiehl/nuvora-api/internal/core/application/usecase/company/get-employees"
 	get_employees_tickets_usecase "github.com/maicongiehl/nuvora-api/internal/core/application/usecase/company/get-employees-tickets"
 	login_as_company_usecase "github.com/maicongiehl/nuvora-api/internal/core/application/usecase/company/login"
@@ -24,6 +25,7 @@ import (
 	get_last_purchases_usecase "github.com/maicongiehl/nuvora-api/internal/core/application/usecase/customer/get-purchases"
 	login_as_customer_usecase "github.com/maicongiehl/nuvora-api/internal/core/application/usecase/customer/login"
 	create_travel_usecase "github.com/maicongiehl/nuvora-api/internal/core/application/usecase/travel-company/create-travel"
+	delete_travel_usecase "github.com/maicongiehl/nuvora-api/internal/core/application/usecase/travel-company/delete-travel"
 	get_all_bus_usecase "github.com/maicongiehl/nuvora-api/internal/core/application/usecase/travel-company/get-all-bus"
 )
 
@@ -54,6 +56,8 @@ func SetupDIConfig(
 	newGetEmployeesTicketsUseCase := get_employees_tickets_usecase.NewGetEmployeesTicketsUseCase(
 		ctx,
 		logrus,
+		newCityPGSQLRepository,
+		newTravelPGSQLRepository,
 		newCompanyPGSQLRepository,
 		newPersonPGSQLRepository,
 		newAccountPGSQLRepository,
@@ -72,6 +76,7 @@ func SetupDIConfig(
 	newLoginAsCompanyUseCase := login_as_company_usecase.NewLoginAsCompanyUseCase(
 		ctx,
 		logrus,
+		newCityPGSQLRepository,
 		newCompanyPGSQLRepository,
 		newPersonPGSQLRepository,
 		newAccountPGSQLRepository,
@@ -84,6 +89,15 @@ func SetupDIConfig(
 		newPersonPGSQLRepository,
 		newAccountPGSQLRepository,
 		newTicketPGSQLRepository,
+	)
+
+	newDeleteEmployeeUseCase := delete_employee_usecase.NewDeleteEmployeeUseCase(
+		ctx,
+		logrus,
+		newCityPGSQLRepository,
+		newCustomerPGSQLRepository,
+		newPersonPGSQLRepository,
+		newAccountPGSQLRepository,
 	)
 
 	// CustomerUseCases
@@ -133,11 +147,19 @@ func SetupDIConfig(
 		newBusPGSQLRepository,
 	)
 
+	newDeleteTravelUseCase := delete_travel_usecase.NewDeleteTravelUseCase(
+		ctx,
+		logrus,
+		newTravelPGSQLRepository,
+	)
+
 
 	return &App{
 		BuyTicketUseCase: newBuyTicketUseCase,
 		CreateTravelUseCase: newCreateTravelUseCase,
 		CreateEmployeeUseCase: newCreateEmployeeUseCase,
+		DeleteEmployeeUseCase: newDeleteEmployeeUseCase,
+		DeleteTravelUseCase: newDeleteTravelUseCase,
 		GetAllBusUseCase: *newGetAllBusUseCase,
 		GetEmployeesTicketsUsecase: *newGetEmployeesTicketsUseCase,
 		GetEmployeesUseCase: newGetEmployeesUseCase,
