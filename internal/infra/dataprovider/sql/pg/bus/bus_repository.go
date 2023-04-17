@@ -78,3 +78,33 @@ func (r *BusPGSQLRepository) FindBusByCompanyAccountID(id int) ([]*Bus, error) {
 
 	return output, err
 }
+
+func (r *BusPGSQLRepository) FindAll() ([]*Bus, error) {
+
+	var output []*Bus
+	stmt := "SELECT * FROM bus b"
+
+	rows, err := r.db.Query(stmt)
+	if err != nil {
+		return output, err
+	}
+
+	for rows.Next() {
+		var bus Bus
+		err = rows.Scan(
+			&bus.ID,
+			&bus.Number,
+			&bus.MaxPassengers,
+			&bus.CompanyID,
+			&bus.CreatedAt,
+			&bus.UpdatedAt,
+		)
+		
+		if err != nil {
+			return output, err
+		}
+		output = append(output, &bus)
+	}
+	
+	return output, err
+}

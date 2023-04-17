@@ -111,12 +111,17 @@ func SetupDIConfig(
 
 	newGetPurchasesUseCase := get_purchases_usecase.NewGetPurchasesUsecase(
 		ctx,
+		newBusPGSQLRepository,
+		newCityPGSQLRepository,
 		newTicketPGSQLRepository,
+		newTravelPGSQLRepository,
 	)
 
 	newGetPossibleTravelsUseCase := get_possible_travels_usecase.NewGetPossibleTravelsUseCase(
 		ctx,
-		newCustomerPGSQLRepository,
+		newBusPGSQLRepository,
+		newCityPGSQLRepository,
+		newCustomerPGSQLRepository, 
 		newCompanyPGSQLRepository,
 		newPersonPGSQLRepository,
 		newAccountPGSQLRepository,
