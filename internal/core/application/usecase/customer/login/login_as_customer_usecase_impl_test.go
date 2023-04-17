@@ -73,8 +73,6 @@ func (s *LoginUseCaseImplTestSuite) TestLogin() {
 	_, err = s.loginRepository.Execute(command)
 	s.Error(err)
 
-
-	
 	command = With(
 		"usuario01@gmail.com",
 		"usuario01",

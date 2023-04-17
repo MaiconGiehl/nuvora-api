@@ -11,8 +11,8 @@ import (
 
 type CompanyRouter struct {
 	tokenAuth *jwtauth.JWTAuth
-	logger logger.Logger
-	app    *di.App
+	logger    logger.Logger
+	app       *di.App
 }
 
 func NewCompanyRoutes(
@@ -21,8 +21,8 @@ func NewCompanyRoutes(
 	app *di.App,
 ) *CompanyRouter {
 	return &CompanyRouter{
-		logger: logger,
-		app:    app,
+		logger:    logger,
+		app:       app,
 		tokenAuth: tokenAuth,
 	}
 }
