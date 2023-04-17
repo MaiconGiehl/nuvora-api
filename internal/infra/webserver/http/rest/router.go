@@ -43,7 +43,7 @@ func (ar *AppRouter) Route() http.Handler {
 	r.Route("/nuvora/v1", func(r chi.Router) {
 		r.Route("/customer", routes.NewCustomerRouter(ar.tokenAuth, ar.logger, ar.app).CustomerRoutes)
 		r.Route("/company", routes.NewCompanyRoutes(ar.tokenAuth, ar.logger, ar.app).CompanyRoutes)
-		r.Route("/travel-company", routes.NewTravelCompanyRouter(ar.tokenAuth, ar.logger, ar.app).CompanyRoutes)
+		r.Route("/travel-company", routes.NewTravelCompanyRouter(ar.tokenAuth, ar.logger, ar.app).TravelCompanyRoutes)
 	})
 
 	return r

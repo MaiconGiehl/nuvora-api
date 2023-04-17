@@ -19,8 +19,8 @@ func NewTravelCompanyRouter(
 	tokenAuth *jwtauth.JWTAuth,
 	logger logger.Logger,
 	app *di.App,
-) *CompanyRouter {
-	return &CompanyRouter{
+) *TravelCompanyRouter {
+	return &TravelCompanyRouter{
 		tokenAuth: tokenAuth,
 		logger:    logger,
 		app:       app,
