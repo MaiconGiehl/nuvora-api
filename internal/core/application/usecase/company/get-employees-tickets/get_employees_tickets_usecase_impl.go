@@ -12,13 +12,12 @@ import (
 )
 
 type GetEmployeesTicketsUseCase struct {
-	ctx context.Context
-	logger logger.Logger
+	ctx                    context.Context
+	logger                 logger.Logger
 	companyPGSQLRepository *company_entity.CompanyPGSQLRepository
-	personPGSQLRepository *person_entity.PersonPGSQLRepository
+	personPGSQLRepository  *person_entity.PersonPGSQLRepository
 	accountPGSQLRepository *account_entity.AccountPGSQLRepository
-	ticketPGSQLRepository *ticket_entity.TicketPGSQLRepository
-
+	ticketPGSQLRepository  *ticket_entity.TicketPGSQLRepository
 }
 
 func NewGetEmployeesTicketsUseCase(
@@ -30,20 +29,19 @@ func NewGetEmployeesTicketsUseCase(
 	ticketPGSQLRepository *ticket_entity.TicketPGSQLRepository,
 ) *GetEmployeesTicketsUseCase {
 	return &GetEmployeesTicketsUseCase{
-		ctx: ctx,
-		logger: logger,
+		ctx:                    ctx,
+		logger:                 logger,
 		companyPGSQLRepository: companyPGSQLRepository,
-		personPGSQLRepository: personPGSQLRepository,
+		personPGSQLRepository:  personPGSQLRepository,
 		accountPGSQLRepository: accountPGSQLRepository,
-		ticketPGSQLRepository: ticketPGSQLRepository,
-	}	
+		ticketPGSQLRepository:  ticketPGSQLRepository,
+	}
 }
 
 func (u *GetEmployeesTicketsUseCase) Execute(
 	command *getEmployeesTicketsCommand,
 ) (*[]dto.EmployeeTicket, error) {
 	var output []dto.EmployeeTicket
-
 
 	companyAccount, err := u.accountPGSQLRepository.FindAccountByID(command.companyId)
 	if err != nil {
@@ -68,9 +66,9 @@ func (u *GetEmployeesTicketsUseCase) Execute(
 	for _, ticket := range tickets {
 		output = append(output, dto.EmployeeTicket{
 			TicketOutputDTO: dto.TicketOutputDTO{
-				ID: ticket.ID,
-				StatusID: ticket.StatusID,
-				TravelID: ticket.TravelID,
+				ID:        ticket.ID,
+				StatusID:  ticket.StatusID,
+				TravelID:  ticket.TravelID,
 				CreatedAt: ticket.CreatedAt,
 			},
 		})

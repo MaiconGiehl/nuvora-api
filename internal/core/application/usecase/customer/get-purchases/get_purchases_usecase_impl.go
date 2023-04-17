@@ -8,7 +8,7 @@ import (
 )
 
 type GetPurchasesUsecase struct {
-	ctx context.Context
+	ctx                   context.Context
 	ticketPGSQLRepository *entity.TicketPGSQLRepository
 }
 
@@ -17,7 +17,7 @@ func NewGetPurchasesUsecase(
 	ticketPGSQLRepository *entity.TicketPGSQLRepository,
 ) *GetPurchasesUsecase {
 	return &GetPurchasesUsecase{
-		ctx: ctx,
+		ctx:                   ctx,
 		ticketPGSQLRepository: ticketPGSQLRepository,
 	}
 }
@@ -34,9 +34,9 @@ func (u *GetPurchasesUsecase) Execute(
 
 	for _, ticket := range *tickets {
 		output = append(output, dto.TicketOutputDTO{
-			ID: ticket.ID,
-			StatusID: ticket.StatusID,
-			TravelID: ticket.TravelID,
+			ID:        ticket.ID,
+			StatusID:  ticket.StatusID,
+			TravelID:  ticket.TravelID,
 			CreatedAt: ticket.CreatedAt,
 		})
 	}

@@ -43,7 +43,7 @@ func (u *GetPossibleTravelsUseCase) Execute(
 	command *getPossibleTravelsCommand,
 ) (*[]dto.TravelOutputDTO, error) {
 	var output []dto.TravelOutputDTO
-	
+
 	customerAccount, err := u.accountPGSQLRepository.FindAccountByID(command.accountID)
 	if err != nil {
 		return &output, err
@@ -73,10 +73,9 @@ func (u *GetPossibleTravelsUseCase) Execute(
 		return &output, errors.New("no travel avaiable")
 	}
 
-
 	for _, travel := range *possibleTravels {
 		output = append(output, *dto.NewTravelOutputDTO(
-			travel.ID, 
+			travel.ID,
 			travel.Price,
 			travel.AccountID,
 			travel.Departure.Time,

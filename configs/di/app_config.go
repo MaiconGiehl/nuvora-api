@@ -96,7 +96,7 @@ func SetupDIConfig(
 	)
 
 	newGetPurchasesUseCase := get_purchases_usecase.NewGetPurchasesUsecase(
-		ctx, 
+		ctx,
 		newTicketPGSQLRepository,
 	)
 
@@ -133,18 +133,17 @@ func SetupDIConfig(
 		newBusPGSQLRepository,
 	)
 
-
 	return &App{
-		BuyTicketUseCase: newBuyTicketUseCase,
-		CreateTravelUseCase: newCreateTravelUseCase,
-		CreateEmployeeUseCase: newCreateEmployeeUseCase,
-		GetAllBusUseCase: *newGetAllBusUseCase,
+		BuyTicketUseCase:           newBuyTicketUseCase,
+		CreateTravelUseCase:        newCreateTravelUseCase,
+		CreateEmployeeUseCase:      newCreateEmployeeUseCase,
+		GetAllBusUseCase:           *newGetAllBusUseCase,
 		GetEmployeesTicketsUsecase: *newGetEmployeesTicketsUseCase,
-		GetEmployeesUseCase: newGetEmployeesUseCase,
-		GetPurchasesUseCase: newGetPurchasesUseCase,
-		GetPossibleTravelsUseCase: newGetPossibleTravelsUseCase,
-		LoginAsCompanyUseCase: newLoginAsCompanyUseCase,
-		LoginAsCustomerUseCase: newLoginAsCustomerUseCase,
-		PayTickets: newPayTicketsUseCase,
+		GetEmployeesUseCase:        newGetEmployeesUseCase,
+		GetPurchasesUseCase:        newGetPurchasesUseCase,
+		GetPossibleTravelsUseCase:  newGetPossibleTravelsUseCase,
+		LoginAsCompanyUseCase:      newLoginAsCompanyUseCase,
+		LoginAsCustomerUseCase:     newLoginAsCustomerUseCase,
+		PayTickets:                 newPayTicketsUseCase,
 	}
 }

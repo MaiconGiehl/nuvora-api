@@ -32,7 +32,6 @@ func StartServer() {
 	app := di.SetupDIConfig(ctx, db, logger)
 	appRouter := NewAppRouter(app, env.TokenAuth, logger)
 
-
 	expiresIn, _ := strconv.Atoi(env.JWTExpiresIn)
 	appRouter.JWTClaims.ExpiresIn = expiresIn
 

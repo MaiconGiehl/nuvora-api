@@ -6,7 +6,7 @@ type payTicketsCommand struct {
 
 func With(
 	companyAccountId int,
-	) *payTicketsCommand {
+) *payTicketsCommand {
 	return &payTicketsCommand{
 		companyAccountID: companyAccountId,
 	}

@@ -54,7 +54,7 @@ func (u *LoginAsCustomerUseCase) Execute(command *loginAsCustomerCommand) (*dto.
 		err = errors.New("invalid credentials")
 		u.logger.Errorf("LoginAsCustomerUseCase.Execute: Unable to login, %s", err.Error())
 		return output, err
-}
+	}
 
 	customer, err := u.customerPGSQLRepository.FindCustomerByID(int(customerPerson.CustomerID.Int64))
 	if err != nil {

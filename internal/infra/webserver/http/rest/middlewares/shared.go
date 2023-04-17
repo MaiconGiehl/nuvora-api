@@ -8,12 +8,11 @@ import (
 	"github.com/golang-jwt/jwt"
 )
 
-
 func extractPermissionLevel(tokenString string) (int, error) {
 	var pm int
 	token, _, err := new(jwt.Parser).ParseUnverified(tokenString, jwt.MapClaims{})
 	if err != nil {
-			return -1, err
+		return -1, err
 	}
 
 	if claims, ok := token.Claims.(jwt.MapClaims); ok {

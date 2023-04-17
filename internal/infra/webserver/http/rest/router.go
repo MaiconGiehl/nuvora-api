@@ -13,7 +13,7 @@ import (
 )
 
 type AppRouter struct {
-	app *di.App
+	app       *di.App
 	tokenAuth *jwtauth.JWTAuth
 	JWTClaims struct {
 		ExpiresIn int
@@ -27,9 +27,9 @@ func NewAppRouter(
 	logger logger.Logger,
 ) *AppRouter {
 	return &AppRouter{
-		app: app,
+		app:       app,
 		tokenAuth: tokenAuth,
-		logger: logger,
+		logger:    logger,
 	}
 }
 
@@ -39,12 +39,12 @@ func (ar *AppRouter) Route() http.Handler {
 	r.Use(middleware.WithValue("JwtExpiresIn", ar.JWTClaims.ExpiresIn))
 
 	r.Get("/docs/nuvora/v1*", httpSwagger.Handler(httpSwagger.URL("http://localhost:8080/docs/nuvora/v1/doc.json")))
-	
-	r.Route("/nuvora/v1", func (r chi.Router) {
+
+	r.Route("/nuvora/v1", func(r chi.Router) {
 		r.Route("/customer", routes.NewCustomerRouter(ar.logger, ar.app).CustomerRoutes)
 		r.Route("/company", routes.NewCompanyRoutes(ar.logger, ar.app).CompanyRoutes)
 		r.Route("/travel-company", routes.NewTravelCompanyRouter(ar.logger, ar.app).CompanyRoutes)
-	}) 
+	})
 
 	return r
 }

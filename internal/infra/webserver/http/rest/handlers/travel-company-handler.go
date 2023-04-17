@@ -96,10 +96,6 @@ func (h *TravelCompanyHandler) DeleteTravel(w http.ResponseWriter, r *http.Reque
 
 }
 
-
-
-
-
 // Travel godoc
 // @Summary      GetAllBus
 // @Description  GetAllBus

@@ -12,7 +12,7 @@ import (
 
 type CustomerRouter struct {
 	logger logger.Logger
-	app *di.App
+	app    *di.App
 }
 
 func NewCustomerRouter(
@@ -21,14 +21,14 @@ func NewCustomerRouter(
 ) *CustomerRouter {
 	return &CustomerRouter{
 		logger: logger,
-		app: app,
+		app:    app,
 	}
 }
 
 func (router *CustomerRouter) CustomerRoutes(r chi.Router) {
-	customerHandler := handlers.NewCustomerHandler(router.logger, router.app) 
+	customerHandler := handlers.NewCustomerHandler(router.logger, router.app)
 
-	r.Post("/",  customerHandler.Login)
+	r.Post("/", customerHandler.Login)
 
 	// Protected routes
 	r.Route("/", func(r chi.Router) {

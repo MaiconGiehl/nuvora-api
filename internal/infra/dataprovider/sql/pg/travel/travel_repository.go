@@ -111,13 +111,13 @@ func (r *TravelPGSQLRepository) FindTravelsByCities(dptCityID, arvCityID int) (*
 			&travel.CreatedAt,
 			&travel.UpdatedAt,
 		)
-		
+
 		if err != nil {
 			return &output, err
 		}
 		output = append(output, travel)
 	}
-	
+
 	return &output, err
 }
 
@@ -146,7 +146,7 @@ func (r *TravelPGSQLRepository) FindByTicketsIDs(ticketsIds []int) (*[]Travel, e
 			&travel.CreatedAt,
 			&travel.UpdatedAt,
 		)
-		
+
 		if err != nil {
 			return &output, err
 		}

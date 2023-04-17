@@ -75,10 +75,10 @@ func (h *CompanyHandler) createJWT(r *http.Request, permission_level int) string
 	jwtExpiresIn := r.Context().Value("JwtExpiresIn").(int)
 
 	_, tokenString, _ := jwt.Encode(map[string]interface{}{
-		"exp": time.Now().Add(time.Second * time.Duration(jwtExpiresIn)).Unix(),
+		"exp":              time.Now().Add(time.Second * time.Duration(jwtExpiresIn)).Unix(),
 		"permission_level": permission_level,
 	})
-	
+
 	return tokenString
 }
 
@@ -152,7 +152,6 @@ func (h *CompanyHandler) GetEmployeesTickets(w http.ResponseWriter, r *http.Requ
 	json.NewEncoder(w).Encode(output)
 }
 
-
 // Company godoc
 // @Summary      GetEmployeesTickets
 // @Description  GetEmployeesTickets
@@ -197,7 +196,6 @@ func (h *CompanyHandler) PayAllTickets(w http.ResponseWriter, r *http.Request) {
 		json.NewEncoder(w).Encode(err.Error())
 		return
 	}
-
 
 	h.logger.Infof("CompanyHandler.PayAllTickets: tickets paid")
 	w.WriteHeader(http.StatusAccepted)

@@ -12,7 +12,7 @@ import (
 
 type CompanyRouter struct {
 	logger logger.Logger
-	app *di.App
+	app    *di.App
 }
 
 func NewCompanyRoutes(
@@ -21,7 +21,7 @@ func NewCompanyRoutes(
 ) *CompanyRouter {
 	return &CompanyRouter{
 		logger: logger,
-		app: app,
+		app:    app,
 	}
 }
 
@@ -40,4 +40,5 @@ func (router *CompanyRouter) CompanyRoutes(r chi.Router) {
 		r.Get("/{id}/employees/tickets", companyHandler.GetEmployeesTickets)
 		r.Patch("/{id}/employees/tickets", companyHandler.PayAllTickets)
 		r.Delete("/{id}/employee/{employeeId}", companyHandler.DeleteEmployee)
-	})}
+	})
+}

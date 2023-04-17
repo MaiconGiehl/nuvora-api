@@ -63,7 +63,7 @@ func (h *CustomerHandler) Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	customerAccount.AccessToken = h.createJWT(r,  customerAccount.PermissionLevel)
+	customerAccount.AccessToken = h.createJWT(r, customerAccount.PermissionLevel)
 
 	h.logger.Infof("CustomerHandler.Login: New connection to account %s", input.Email)
 	w.WriteHeader(http.StatusAccepted)
@@ -75,10 +75,10 @@ func (h *CustomerHandler) createJWT(r *http.Request, permission_level int) strin
 	jwtExpiresIn := r.Context().Value("JwtExpiresIn").(int)
 
 	_, tokenString, _ := jwt.Encode(map[string]interface{}{
-		"exp": time.Now().Add(time.Second * time.Duration(jwtExpiresIn)).Unix(),
+		"exp":              time.Now().Add(time.Second * time.Duration(jwtExpiresIn)).Unix(),
 		"permission_level": permission_level,
 	})
-	
+
 	return tokenString
 }
 
@@ -183,7 +183,6 @@ func (h *CustomerHandler) PossibleTravels(w http.ResponseWriter, r *http.Request
 
 	command := get_possible_command.With(customerId)
 	output, err := h.app.GetPossibleTravelsUseCase.Execute(command)
-
 
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)

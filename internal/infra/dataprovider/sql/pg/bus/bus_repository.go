@@ -49,7 +49,6 @@ func (r *BusPGSQLRepository) FindBusByID(id int) (*Bus, error) {
 	return &output, err
 }
 
-
 func (r *BusPGSQLRepository) FindBusByCompanyAccountID(id int) ([]*Bus, error) {
 
 	var output []*Bus
@@ -70,12 +69,12 @@ func (r *BusPGSQLRepository) FindBusByCompanyAccountID(id int) ([]*Bus, error) {
 			&bus.CreatedAt,
 			&bus.UpdatedAt,
 		)
-		
+
 		if err != nil {
 			return output, err
 		}
 		output = append(output, &bus)
 	}
-	
+
 	return output, err
 }

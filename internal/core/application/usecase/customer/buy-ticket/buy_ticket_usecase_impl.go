@@ -80,6 +80,6 @@ func (u *BuyTicketUseCase) validateInput(input *buyTicketCommand) error {
 	if err != nil {
 		return errors.New("travel not found")
 	}
-	
+
 	return nil
 }

@@ -12,7 +12,7 @@ import (
 
 type TravelCompanyRouter struct {
 	logger logger.Logger
-	app *di.App
+	app    *di.App
 }
 
 func NewTravelCompanyRouter(
@@ -21,7 +21,7 @@ func NewTravelCompanyRouter(
 ) *CompanyRouter {
 	return &CompanyRouter{
 		logger: logger,
-		app: app,
+		app:    app,
 	}
 }
 

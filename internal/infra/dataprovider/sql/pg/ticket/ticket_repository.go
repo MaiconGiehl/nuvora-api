@@ -90,10 +90,10 @@ func (r *TicketPGSQLRepository) GetEmployeesTickets(accountId int) ([]*Ticket, e
 	for rows.Next() {
 		var ticket Ticket
 		err = rows.Scan(
-			&ticket.ID, 
-			&ticket.AccountID, 
-			&ticket.StatusID, 
-			&ticket.TravelID, 
+			&ticket.ID,
+			&ticket.AccountID,
+			&ticket.StatusID,
+			&ticket.TravelID,
 			&ticket.CreatedAt,
 			&ticket.UpdatedAt,
 		)
@@ -102,7 +102,7 @@ func (r *TicketPGSQLRepository) GetEmployeesTickets(accountId int) ([]*Ticket, e
 		}
 		output = append(output, &ticket)
 	}
-	
+
 	return output, nil
 }
 
@@ -115,12 +115,11 @@ func (r *TicketPGSQLRepository) UpdateTicketsStatusByCompanyID(companyId int) (s
 		WHERE c.company_id=$1
 	) AND status_id = 0`
 
-	
 	rows, err := r.db.Exec(stmt, companyId)
 	if err != nil {
 		return "", err
 	}
-	
+
 	affectedRows, err := rows.RowsAffected()
 	if err != nil {
 		return "", err
