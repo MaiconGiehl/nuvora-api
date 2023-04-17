@@ -13,7 +13,6 @@ func NewBusOutputDTO(
 	maxPassengers int,
 	accountId int,
 ) *BusOutputDTO {
-
 	return &BusOutputDTO{
 		ID: id,
 		Number: number,

@@ -139,9 +139,12 @@ func (h *CustomerHandler) BuyTicket(w http.ResponseWriter, r *http.Request) {
 // @Router       /customer/{id}/tickets [get]
 // @Security ApiKeyAuth
 func (h *CustomerHandler) Purchases(w http.ResponseWriter, r *http.Request) {
+	h.logger.Infof("CustomerHandler.Purchases: Request received")
+
 	customerId, err := strconv.Atoi(chi.URLParam(r, "id"))
 
 	if err != nil {
+		h.logger.Errorf("CustomerHandler.Purchases: Error, %s", err.Error())
 		w.WriteHeader(http.StatusBadRequest)
 		json.NewEncoder(w).Encode(err.Error())
 		return
@@ -151,11 +154,13 @@ func (h *CustomerHandler) Purchases(w http.ResponseWriter, r *http.Request) {
 	output, err := h.app.GetPurchasesUseCase.Execute(command)
 
 	if err != nil {
+		h.logger.Errorf("CustomerHandler.Purchases: Error while buying a ticket, %s", err.Error())
 		w.WriteHeader(http.StatusBadRequest)
 		json.NewEncoder(w).Encode(err.Error())
 		return
 	}
 
+	h.logger.Infof("CustomerHandler.Purchases: Purchases info delievered")
 	w.WriteHeader(http.StatusAccepted)
 	json.NewEncoder(w).Encode(output)
 
@@ -173,9 +178,12 @@ func (h *CustomerHandler) Purchases(w http.ResponseWriter, r *http.Request) {
 // @Router       /customer/{id}/travels [get]
 // @Security ApiKeyAuth
 func (h *CustomerHandler) PossibleTravels(w http.ResponseWriter, r *http.Request) {
+	h.logger.Infof("CustomerHandler.PossibleTravels: Request received")
+
 	customerId, err := strconv.Atoi(chi.URLParam(r, "id"))
 
 	if err != nil {
+		h.logger.Errorf("CustomerHandler.PossibleTravels: Error at getting possible travels buying a ticket, %s", err.Error())
 		w.WriteHeader(http.StatusBadRequest)
 		json.NewEncoder(w).Encode(err.Error())
 		return
@@ -186,11 +194,13 @@ func (h *CustomerHandler) PossibleTravels(w http.ResponseWriter, r *http.Request
 
 
 	if err != nil {
+		h.logger.Errorf("CustomerHandler.PossibleTravels: Error at getting possible travels buying a ticket, %s", err.Error())
 		w.WriteHeader(http.StatusBadRequest)
 		json.NewEncoder(w).Encode(err.Error())
 		return
 	}
 
+	h.logger.Infof("CustomerHandler.PossibleTravels: PossibleTravels info delievered")
 	w.WriteHeader(http.StatusAccepted)
 	json.NewEncoder(w).Encode(output)
 }

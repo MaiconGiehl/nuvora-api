@@ -6,6 +6,8 @@ import (
 
 	"github.com/maicongiehl/nuvora-api/internal/core/application/shared/dto"
 	account_entity "github.com/maicongiehl/nuvora-api/internal/infra/dataprovider/sql/pg/account"
+	bus_entity "github.com/maicongiehl/nuvora-api/internal/infra/dataprovider/sql/pg/bus"
+	city_entity "github.com/maicongiehl/nuvora-api/internal/infra/dataprovider/sql/pg/city"
 	company_entity "github.com/maicongiehl/nuvora-api/internal/infra/dataprovider/sql/pg/company"
 	customer_entity "github.com/maicongiehl/nuvora-api/internal/infra/dataprovider/sql/pg/customer"
 	person_entity "github.com/maicongiehl/nuvora-api/internal/infra/dataprovider/sql/pg/person"
@@ -14,6 +16,8 @@ import (
 
 type GetPossibleTravelsUseCase struct {
 	ctx context.Context
+	busPGSQLRepository *bus_entity.BusPGSQLRepository
+	cityPGSQLRepository *city_entity.CityPGSQLRepository
 	customerPGSQLRepository *customer_entity.CustomerPGSQLRepository
 	companyPGSQLRepository *company_entity.CompanyPGSQLRepository
 	personPGSQLRepository *person_entity.PersonPGSQLRepository
@@ -23,6 +27,8 @@ type GetPossibleTravelsUseCase struct {
 
 func NewGetPossibleTravelsUseCase(
 	ctx context.Context,
+	busPGSQLRepository *bus_entity.BusPGSQLRepository,
+	cityPGSQLRepository *city_entity.CityPGSQLRepository,
 	customerPGSQLRepository *customer_entity.CustomerPGSQLRepository,
 	companyPGSQLRepository *company_entity.CompanyPGSQLRepository,
 	personPGSQLRepository *person_entity.PersonPGSQLRepository,
@@ -31,6 +37,8 @@ func NewGetPossibleTravelsUseCase(
 ) *GetPossibleTravelsUseCase {
 	return &GetPossibleTravelsUseCase{
 		ctx: ctx,
+		busPGSQLRepository: busPGSQLRepository,
+		cityPGSQLRepository: cityPGSQLRepository,
 		customerPGSQLRepository: customerPGSQLRepository,
 		companyPGSQLRepository: companyPGSQLRepository,
 		personPGSQLRepository: personPGSQLRepository,
@@ -64,7 +72,7 @@ func (u *GetPossibleTravelsUseCase) Execute(
 		return &output, err
 	}
 
-	companyPerson, err := u.personPGSQLRepository.FindPersonByCompanyID(company.ID)
+	companyPerson, _ := u.personPGSQLRepository.FindPersonByCompanyID(company.ID)
 
 	possibleTravels, err := u.travelPGSQLRepository.FindTravelsByCities(customerPerson.CityID, companyPerson.CityID)
 	if err != nil {
@@ -75,16 +83,42 @@ func (u *GetPossibleTravelsUseCase) Execute(
 		return &output, errors.New("no travel avaiable")
 	}
 
+	allBus, _ := u.busPGSQLRepository.FindAll()
+	getBus := func(id int) *bus_entity.Bus {
+		for _, bus := range allBus {
+			if bus.ID == id {
+				return bus
+			}
+		}
+		return &bus_entity.Bus{}
+	}
+
+
+	allCities, _ := u.cityPGSQLRepository.FindAll()
+	getCities := func(id int) city_entity.City {
+		for _, city := range allCities {
+			if city.ID == id {
+				return *city
+			}
+		}
+		return city_entity.City{}
+	}
 
 	for _, travel := range *possibleTravels {
+		bus := getBus(travel.BusID)
+		departureCity := getCities(travel.Departure.CityID)
+		arrivalCity := getCities(travel.Arrival.CityID)
 		output = append(output, *dto.NewTravelOutputDTO(
 			travel.ID, 
 			travel.Price,
+			bus.ID,
+			bus.Number,
+			bus.MaxPassengers,
 			travel.AccountID,
 			travel.Departure.Time,
-			travel.Departure.CityID,
+			departureCity.Name,
 			travel.Arrival.Time,
-			travel.Arrival.CityID,
+			arrivalCity.Name,
 		))
 	}
 

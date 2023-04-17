@@ -90,7 +90,7 @@ func (h *CompanyHandler) createJWT(r *http.Request, permission_level int) string
 // @Accept       json
 // @Produce      json
 // @Param        id   							path     		int true  "Company ID"
-// @Success      200  										{object}   	[]dto.EmployeeOutputDTO
+// @Success      200  										{object}   	object
 // @Failure      404
 // @Router       /company/{id}/employees [get]
 // @Security ApiKeyAuth
@@ -130,11 +130,11 @@ func (h *CompanyHandler) GetEmployees(w http.ResponseWriter, r *http.Request) {
 // @Router       /company/{id}/employees/tickets [get]
 // @Security ApiKeyAuth
 func (h *CompanyHandler) GetEmployeesTickets(w http.ResponseWriter, r *http.Request) {
-	h.logger.Infof("CompanyHandler.GetEmployees: Request received")
+	h.logger.Infof("CompanyHandler.GetEmployeesTickets: Request received")
 
 	companyId, err := strconv.Atoi(chi.URLParam(r, "id"))
 	if err != nil {
-		h.logger.Errorf("CompanyHandler.GetEmployees: Unable to process request, %s", err)
+		h.logger.Errorf("CompanyHandler.GetEmployeesTickets: Unable to process request, %s", err)
 		json.NewEncoder(w).Encode(err.Error())
 		return
 	}
@@ -142,7 +142,7 @@ func (h *CompanyHandler) GetEmployeesTickets(w http.ResponseWriter, r *http.Requ
 	command := get_employees_tickets_command.With(companyId)
 	output, err := h.app.GetEmployeesTicketsUsecase.Execute(command)
 	if err != nil {
-		h.logger.Errorf("CompanyHandler.GetEmployees: Unable to get employees, %s", err)
+		h.logger.Errorf("CompanyHandler.GetEmployeesTickets: Unable to get employees, %s", err)
 		w.WriteHeader(http.StatusBadRequest)
 		json.NewEncoder(w).Encode(err.Error())
 		return
@@ -167,6 +167,8 @@ func (h *CompanyHandler) GetEmployeesTickets(w http.ResponseWriter, r *http.Requ
 // @Router       /company/{id}/employee/{employeId} [delete]
 // @Security ApiKeyAuth
 func (h *CompanyHandler) DeleteEmployee(w http.ResponseWriter, r *http.Request) {
+	h.logger.Infof("CompanyHandler.DeleteEmployee: Request received")
+
 	companyId, err := strconv.Atoi(chi.URLParam(r, "id"))
 	if err != nil {
 		h.logger.Errorf("CompanyHandler.DeleteEmployee: Invalid url path, %s", err.Error())
@@ -187,13 +189,13 @@ func (h *CompanyHandler) DeleteEmployee(w http.ResponseWriter, r *http.Request) 
 
 	err = h.app.DeleteEmployeeUseCase.Execute(command)
 	if err != nil {
-		h.logger.Errorf("CompanyHandler.GetAllBus: Unable to get bus, %s", err)
+		h.logger.Errorf("CompanyHandler.DeleteEmployee: Unable to delete employee, %s", err)
 		w.WriteHeader(http.StatusBadRequest)
 		json.NewEncoder(w).Encode(err.Error())
 		return
 	}
 
-	h.logger.Infof("CompanyHandler.GetAllBusTickets: bus infos delievered")
+	h.logger.Infof("CompanyHandler.DeleteEmployee: employee deleted")
 	w.WriteHeader(http.StatusAccepted)
 }
 
