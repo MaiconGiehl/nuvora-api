@@ -71,29 +71,40 @@ func (r *TicketPGSQLRepository) GetPurchases(accountId int) (*[]Ticket, error) {
 	return &output, nil
 }
 
-func (r *TicketPGSQLRepository) GetEmployeesTickets(accountId int) (*[]EmployeeTravelTicket, error) {
-	var output []EmployeeTravelTicket
+func (r *TicketPGSQLRepository) GetEmployeesTickets(accountId int) ([]*Ticket, error) {
+	var output []*Ticket
 
-	stmt := "SELECT * FROM ticket WHERE account_id = $1 ORDER BY created_at DESC"
+	stmt := `
+		SELECT * FROM ticket t WHERE t.account_id IN (
+			SELECT a.id FROM account a 
+			JOIN person p ON a.person_id =p.id 
+			JOIN customer c ON p.customer_id =c.id 
+			WHERE c.company_id = $1 ) 
+		ORDER BY created_at
+`
 
-	
 	rows, err := r.db.Query(stmt, accountId)
 	if err != nil {
-		return &output, err
+		return output, err
 	}
 
 	for rows.Next() {
-		var travel EmployeeTravelTicket
+		var ticket Ticket
 		err = rows.Scan(
-			&travel.Name,
+			&ticket.ID, 
+			&ticket.AccountID, 
+			&ticket.StatusID, 
+			&ticket.TravelID, 
+			&ticket.CreatedAt,
+			&ticket.UpdatedAt,
 		)
 		if err != nil {
-			return &output, err
+			return output, err
 		}
-		output = append(output, travel)
+		output = append(output, &ticket)
 	}
 	
-	return &output, nil
+	return output, nil
 }
 
 func (r *TicketPGSQLRepository) UpdateTicketsStatusByCompanyID(companyId int) (string, error) {

@@ -12,6 +12,7 @@ import (
 	dto "github.com/maicongiehl/nuvora-api/internal/core/application/shared/dto"
 	"github.com/maicongiehl/nuvora-api/internal/core/application/shared/logger"
 	get_employees_command "github.com/maicongiehl/nuvora-api/internal/core/application/usecase/company/get-employees"
+	get_employees_tickets_command "github.com/maicongiehl/nuvora-api/internal/core/application/usecase/company/get-employees-tickets"
 	login_command "github.com/maicongiehl/nuvora-api/internal/core/application/usecase/company/login"
 	pay_tickets_command "github.com/maicongiehl/nuvora-api/internal/core/application/usecase/company/pay-tickets"
 )
@@ -137,8 +138,8 @@ func (h *CompanyHandler) GetEmployeesTickets(w http.ResponseWriter, r *http.Requ
 		return
 	}
 
-	command := get_employees_command.With(companyId)
-	output, err := h.app.GetEmployeesUseCase.Execute(command)
+	command := get_employees_tickets_command.With(companyId)
+	output, err := h.app.GetEmployeesTicketsUsecase.Execute(command)
 	if err != nil {
 		h.logger.Errorf("CompanyHandler.GetEmployees: Unable to get employees, %s", err)
 		w.WriteHeader(http.StatusBadRequest)
@@ -146,7 +147,7 @@ func (h *CompanyHandler) GetEmployeesTickets(w http.ResponseWriter, r *http.Requ
 		return
 	}
 
-	h.logger.Infof("CompanyHandler.GetEmployees: Employees infos delievered")
+	h.logger.Infof("CompanyHandler.GetEmployeesTickets: Employees infos delievered")
 	w.WriteHeader(http.StatusAccepted)
 	json.NewEncoder(w).Encode(output)
 }

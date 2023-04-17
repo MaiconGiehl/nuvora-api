@@ -276,16 +276,7 @@ INSERT INTO ticket (account_id, status_id, travel_id, created_at)
 VALUES (7, 0, 1, NOW());
 
 INSERT INTO ticket (account_id, status_id, travel_id, created_at)
-VALUES (7, 0, 1, NOW());
-
-INSERT INTO ticket (account_id, status_id, travel_id, created_at)
 VALUES (8, 0, 1, NOW());
-
-INSERT INTO ticket (account_id, status_id, travel_id, created_at)
-VALUES (8, 0, 1, NOW());
-
-INSERT INTO ticket (account_id, status_id, travel_id, created_at)
-VALUES (9, 0, 1, NOW());
 
 INSERT INTO ticket (account_id, status_id, travel_id, created_at)
 VALUES (9, 0, 1, NOW());
@@ -294,4 +285,7 @@ INSERT INTO ticket (account_id, status_id, travel_id, created_at)
 VALUES (10, 0, 1, NOW());
 
 INSERT INTO ticket (account_id, status_id, travel_id, created_at)
-VALUES (10, 0, 1, NOW());
+VALUES (11, 0, 1, NOW());
+
+INSERT INTO ticket (account_id, status_id, travel_id, created_at)
+VALUES (12, 0, 1, NOW());

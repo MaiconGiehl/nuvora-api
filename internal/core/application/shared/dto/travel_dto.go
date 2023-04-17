@@ -12,34 +12,37 @@ type TravelInputDTO struct {
 type TravelOutputDTO struct {
 	ID int
 	Price float64
-	CompanyID int
-	CompanyName string
+	AccountID int
 	Departure struct {
 		Time time.Time
-		City string
+		CityID int
 	}
 	Arrival struct {
 		Time time.Time
-		City string
+		CityID int
 	}
 }
 
 func NewTravelOutputDTO(
 	id int,
 	price float64,
-	companyId int,
-	companyName string,
+	accountID int,
 	departureTime time.Time,
-	departureCity string,
+	departureCityId int,
 	arrivalTime time.Time,
-	arrivalCity string,
+	arrivalCityId int,
 ) *TravelOutputDTO {
 	return &TravelOutputDTO{
 		ID: id,
 		Price: price,
-		CompanyID: companyId,
-		CompanyName: companyName,
-		Departure: *NewDepartureOutputDTO(departureTime, departureCity),
-		Arrival: *NewArrivalOutputDTO(arrivalTime, arrivalCity),
+		AccountID: accountID,
+		Departure: struct{Time time.Time; CityID int}{
+			Time: departureTime, 
+			CityID: departureCityId,
+		},
+		Arrival: struct{Time time.Time; CityID int}{
+			Time: arrivalTime, 
+			CityID: arrivalCityId,
+		},
 	}
 }
