@@ -16,7 +16,7 @@ import (
 
 type TravelCompanyHandler struct {
 	logger logger.Logger
-	app *di.App
+	app    *di.App
 }
 
 func NewTravelCompanyHandler(
@@ -25,7 +25,7 @@ func NewTravelCompanyHandler(
 ) *TravelCompanyHandler {
 	return &TravelCompanyHandler{
 		logger: logger,
-		app: app,
+		app:    app,
 	}
 }
 
@@ -44,7 +44,7 @@ func NewTravelCompanyHandler(
 func (h *TravelCompanyHandler) CreateTravel(w http.ResponseWriter, r *http.Request) {
 	h.logger.Infof("TravelCompanyHandler.CreateTravel: Request received")
 	var input dto.TravelInputDTO
-	
+
 	companyId, err := strconv.Atoi(chi.URLParam(r, "id"))
 	if err != nil {
 		h.logger.Errorf("TravelCompanyHandler.CreateTravel: Invalid url path, %s", err.Error())

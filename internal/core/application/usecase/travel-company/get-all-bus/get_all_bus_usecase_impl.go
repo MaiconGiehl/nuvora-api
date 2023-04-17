@@ -9,8 +9,8 @@ import (
 )
 
 type GetAllBusUseCase struct {
-	ctx context.Context
-	logger logger.Logger
+	ctx                context.Context
+	logger             logger.Logger
 	busPGSQLRepository *bus_entity.BusPGSQLRepository
 }
 
@@ -20,8 +20,8 @@ func NewGetAllBusUseCase(
 	busPGSQLRepository *bus_entity.BusPGSQLRepository,
 ) *GetAllBusUseCase {
 	return &GetAllBusUseCase{
-		ctx: ctx,
-		logger: logger,
+		ctx:                ctx,
+		logger:             logger,
 		busPGSQLRepository: busPGSQLRepository,
 	}
 }

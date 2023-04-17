@@ -6,7 +6,7 @@ type getAllBusCommand struct {
 
 func With(
 	travelCompanyId int,
-	) *getAllBusCommand {
+) *getAllBusCommand {
 	return &getAllBusCommand{
 		travelCompanyID: travelCompanyId,
 	}

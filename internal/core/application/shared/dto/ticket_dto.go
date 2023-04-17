@@ -3,9 +3,9 @@ package dto
 import "time"
 
 type TicketOutputDTO struct {
-	ID int
-	StatusID int
-	TravelID int
+	ID        int
+	StatusID  int
+	TravelID  int
 	CreatedAt time.Time
 }
 
@@ -25,9 +25,9 @@ type TicketOutputDTO struct {
 // 		ID: id,
 // 		Status: status,
 // 		Travel: *NewTravelOutputDTO(
-// 			travelId, 
-// 			travelPrice, 
-// 			companyId, 
+// 			travelId,
+// 			travelPrice,
+// 			companyId,
 // 			companyName,
 // 		  departureTime,
 // 			departureCity,

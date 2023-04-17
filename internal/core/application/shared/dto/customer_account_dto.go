@@ -41,13 +41,13 @@ func (dto *CustomerAccountOutputDTO) SetAccessToken(accessToken string) *Custome
 }
 
 type CustomerAccountInputDTO struct {
-	Email string
-	Password string
+	Email        string
+	Password     string
 	DailyTickets int
-	CityID int
-	Cpf int
-	Name string
-	Phone int
-	BirthDate time.Time
-	CompanyID int
+	CityID       int
+	Cpf          int
+	Name         string
+	Phone        int
+	BirthDate    time.Time
+	CompanyID    int
 }

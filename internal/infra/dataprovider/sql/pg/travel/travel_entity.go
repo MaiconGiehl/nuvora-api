@@ -6,20 +6,19 @@ import (
 )
 
 type Travel struct {
-	ID int
-  Price float64
-  AccountID int
-	BusID int
-	Status int
+	ID        int
+	Price     float64
+	AccountID int
+	BusID     int
+	Status    int
 	Departure struct {
-		Time time.Time
+		Time   time.Time
 		CityID int
 	}
 	Arrival struct {
-		Time time.Time
+		Time   time.Time
 		CityID int
 	}
 	CreatedAt time.Time
 	UpdatedAt sql.NullTime
 }
-

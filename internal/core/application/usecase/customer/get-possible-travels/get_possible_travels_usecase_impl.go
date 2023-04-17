@@ -13,12 +13,12 @@ import (
 )
 
 type GetPossibleTravelsUseCase struct {
-	ctx context.Context
+	ctx                     context.Context
 	customerPGSQLRepository *customer_entity.CustomerPGSQLRepository
-	companyPGSQLRepository *company_entity.CompanyPGSQLRepository
-	personPGSQLRepository *person_entity.PersonPGSQLRepository
-	accountPGSQLRepository *account_entity.AccountPGSQLRepository
-	travelPGSQLRepository *travel_entity.TravelPGSQLRepository
+	companyPGSQLRepository  *company_entity.CompanyPGSQLRepository
+	personPGSQLRepository   *person_entity.PersonPGSQLRepository
+	accountPGSQLRepository  *account_entity.AccountPGSQLRepository
+	travelPGSQLRepository   *travel_entity.TravelPGSQLRepository
 }
 
 func NewGetPossibleTravelsUseCase(
@@ -30,20 +30,20 @@ func NewGetPossibleTravelsUseCase(
 	travelPGSQLRepository *travel_entity.TravelPGSQLRepository,
 ) *GetPossibleTravelsUseCase {
 	return &GetPossibleTravelsUseCase{
-		ctx: ctx,
+		ctx:                     ctx,
 		customerPGSQLRepository: customerPGSQLRepository,
-		companyPGSQLRepository: companyPGSQLRepository,
-		personPGSQLRepository: personPGSQLRepository,
-		accountPGSQLRepository: accountPGSQLRepository,
-		travelPGSQLRepository: travelPGSQLRepository,
-	}	
+		companyPGSQLRepository:  companyPGSQLRepository,
+		personPGSQLRepository:   personPGSQLRepository,
+		accountPGSQLRepository:  accountPGSQLRepository,
+		travelPGSQLRepository:   travelPGSQLRepository,
+	}
 }
 
 func (u *GetPossibleTravelsUseCase) Execute(
 	command *getPossibleTravelsCommand,
 ) (*[]dto.TravelOutputDTO, error) {
 	var output []dto.TravelOutputDTO
-	
+
 	customerAccount, err := u.accountPGSQLRepository.FindAccountByID(command.accountID)
 	if err != nil {
 		return &output, err
@@ -75,10 +75,9 @@ func (u *GetPossibleTravelsUseCase) Execute(
 		return &output, errors.New("no travel avaiable")
 	}
 
-
 	for _, travel := range *possibleTravels {
 		output = append(output, *dto.NewTravelOutputDTO(
-			travel.ID, 
+			travel.ID,
 			travel.Price,
 			travel.AccountID,
 			travel.Departure.Time,

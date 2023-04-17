@@ -19,10 +19,9 @@ type GetEmployeesTicketsUseCase struct {
 	cityPGSQLRepository *city_entity.CityPGSQLRepository
 	travelPGSQLRepository *travel_entity.TravelPGSQLRepository
 	companyPGSQLRepository *company_entity.CompanyPGSQLRepository
-	personPGSQLRepository *person_entity.PersonPGSQLRepository
+	personPGSQLRepository  *person_entity.PersonPGSQLRepository
 	accountPGSQLRepository *account_entity.AccountPGSQLRepository
-	ticketPGSQLRepository *ticket_entity.TicketPGSQLRepository
-
+	ticketPGSQLRepository  *ticket_entity.TicketPGSQLRepository
 }
 
 func NewGetEmployeesTicketsUseCase(
@@ -41,17 +40,16 @@ func NewGetEmployeesTicketsUseCase(
 		cityPGSQLRepository: cityPGSQLRepository,
 		travelPGSQLRepository: travelPGSQLRepository,
 		companyPGSQLRepository: companyPGSQLRepository,
-		personPGSQLRepository: personPGSQLRepository,
+		personPGSQLRepository:  personPGSQLRepository,
 		accountPGSQLRepository: accountPGSQLRepository,
-		ticketPGSQLRepository: ticketPGSQLRepository,
-	}	
+		ticketPGSQLRepository:  ticketPGSQLRepository,
+	}
 }
 
 func (u *GetEmployeesTicketsUseCase) Execute(
 	command *getEmployeesTicketsCommand,
 ) (*[]dto.EmployeeTicket, error) {
 	var output []dto.EmployeeTicket
-
 
 	companyAccount, err := u.accountPGSQLRepository.FindAccountByID(command.companyId)
 	if err != nil {
