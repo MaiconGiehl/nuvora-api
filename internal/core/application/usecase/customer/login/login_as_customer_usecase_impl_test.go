@@ -60,16 +60,25 @@ func TestSuite(t *testing.T) {
 
 func (s *LoginUseCaseImplTestSuite) TestLogin() {
 	command := With(
-		"testecustomer@gmail.com",
-		"teste",
+		"usuario1@gmail.com",
+		"usuario1",
 	)
 	_, err := s.loginRepository.Execute(command)
-	s.NoError(err)
+	s.Error(err)
 
 	command = With(
-		"customer@gmail.com",
-		"teste",
+		"empresa01@gmail.com",
+		"empresa01",
 	)
 	_, err = s.loginRepository.Execute(command)
 	s.Error(err)
+
+
+	
+	command = With(
+		"usuario01@gmail.com",
+		"usuario01",
+	)
+	_, err = s.loginRepository.Execute(command)
+	s.NoError(err)
 }

@@ -41,9 +41,9 @@ func (ar *AppRouter) Route() http.Handler {
 	r.Get("/docs/nuvora/v1*", httpSwagger.Handler(httpSwagger.URL("http://localhost:8080/docs/nuvora/v1/doc.json")))
 
 	r.Route("/nuvora/v1", func(r chi.Router) {
-		r.Route("/customer", routes.NewCustomerRouter(ar.logger, ar.app).CustomerRoutes)
-		r.Route("/company", routes.NewCompanyRoutes(ar.logger, ar.app).CompanyRoutes)
-		r.Route("/travel-company", routes.NewTravelCompanyRouter(ar.logger, ar.app).CompanyRoutes)
+		r.Route("/customer", routes.NewCustomerRouter(ar.tokenAuth, ar.logger, ar.app).CustomerRoutes)
+		r.Route("/company", routes.NewCompanyRoutes(ar.tokenAuth, ar.logger, ar.app).CompanyRoutes)
+		r.Route("/travel-company", routes.NewTravelCompanyRouter(ar.tokenAuth, ar.logger, ar.app).CompanyRoutes)
 	})
 
 	return r
