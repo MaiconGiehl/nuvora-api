@@ -24,6 +24,7 @@ import (
 	get_last_purchases_usecase "github.com/maicongiehl/nuvora-api/internal/core/application/usecase/customer/get-purchases"
 	login_as_customer_usecase "github.com/maicongiehl/nuvora-api/internal/core/application/usecase/customer/login"
 	create_travel_usecase "github.com/maicongiehl/nuvora-api/internal/core/application/usecase/travel-company/create-travel"
+	get_all_bus_usecase "github.com/maicongiehl/nuvora-api/internal/core/application/usecase/travel-company/get-all-bus"
 )
 
 func SetupDIConfig(
@@ -52,6 +53,10 @@ func SetupDIConfig(
 
 	newGetEmployeesTicketsUseCase := get_employees_tickets_usecase.NewGetEmployeesTicketsUseCase(
 		ctx,
+		logrus,
+		newCompanyPGSQLRepository,
+		newPersonPGSQLRepository,
+		newAccountPGSQLRepository,
 		newTicketPGSQLRepository,
 	)
 
@@ -122,11 +127,18 @@ func SetupDIConfig(
 		newTravelPGSQLRepository,
 	)
 
+	newGetAllBusUseCase := get_all_bus_usecase.NewGetAllBusUseCase(
+		ctx,
+		logrus,
+		newBusPGSQLRepository,
+	)
+
 
 	return &App{
 		BuyTicketUseCase: newBuyTicketUseCase,
 		CreateTravelUseCase: newCreateTravelUseCase,
 		CreateEmployeeUseCase: newCreateEmployeeUseCase,
+		GetAllBusUseCase: *newGetAllBusUseCase,
 		GetEmployeesTicketsUsecase: *newGetEmployeesTicketsUseCase,
 		GetEmployeesUseCase: newGetEmployeesUseCase,
 		GetPurchasesUseCase: newGetPurchasesUseCase,

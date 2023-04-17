@@ -120,3 +120,38 @@ func (r *TravelPGSQLRepository) FindTravelsByCities(dptCityID, arvCityID int) (*
 	
 	return &output, err
 }
+
+func (r *TravelPGSQLRepository) FindByTicketsIDs(ticketsIds []int) (*[]Travel, error) {
+	var output []Travel
+
+	stmt := `SELECT * FROM travel t WHERE t.id IN (SELECT t.id FROM ticket tkt JOIN travel trv ON tkt.travel_id =trv.id  WHERE tkt.account_id IN ($1));`
+
+	rows, err := r.db.Query(stmt, ticketsIds)
+	if err != nil {
+		return &output, err
+	}
+
+	for rows.Next() {
+		var travel Travel
+		err = rows.Scan(
+			&travel.ID,
+			&travel.Price,
+			&travel.AccountID,
+			&travel.BusID,
+			&travel.Status,
+			&travel.Departure.Time,
+			&travel.Departure.CityID,
+			&travel.Arrival.Time,
+			&travel.Arrival.CityID,
+			&travel.CreatedAt,
+			&travel.UpdatedAt,
+		)
+		
+		if err != nil {
+			return &output, err
+		}
+		output = append(output, travel)
+	}
+	
+	return &output, err
+}

@@ -75,11 +75,15 @@ func (u *GetPossibleTravelsUseCase) Execute(
 
 
 	for _, travel := range *possibleTravels {
-		output = append(output, dto.TravelOutputDTO{
-			ID: travel.ID,
-			Price: travel.Price,
-			CompanyID: travel.AccountID,
-		})
+		output = append(output, *dto.NewTravelOutputDTO(
+			travel.ID, 
+			travel.Price,
+			travel.AccountID,
+			travel.Departure.Time,
+			travel.Departure.CityID,
+			travel.Arrival.Time,
+			travel.Arrival.CityID,
+		))
 	}
 
 	return &output, nil
