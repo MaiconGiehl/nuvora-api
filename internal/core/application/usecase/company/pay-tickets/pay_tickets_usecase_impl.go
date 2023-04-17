@@ -3,7 +3,6 @@ package usecase
 import (
 	"context"
 
-	"github.com/maicongiehl/nuvora-api/internal/core/application/shared/dto"
 	"github.com/maicongiehl/nuvora-api/internal/core/application/shared/logger"
 	account_entity "github.com/maicongiehl/nuvora-api/internal/infra/dataprovider/sql/pg/account"
 	company_entity "github.com/maicongiehl/nuvora-api/internal/infra/dataprovider/sql/pg/company"
@@ -11,69 +10,55 @@ import (
 	ticket_entity "github.com/maicongiehl/nuvora-api/internal/infra/dataprovider/sql/pg/ticket"
 )
 
-type GetEmployeesTicketsUseCase struct {
+type PayTicketsUseCase struct {
 	ctx context.Context
 	logger logger.Logger
 	companyPGSQLRepository *company_entity.CompanyPGSQLRepository
 	personPGSQLRepository *person_entity.PersonPGSQLRepository
 	accountPGSQLRepository *account_entity.AccountPGSQLRepository
 	ticketPGSQLRepository *ticket_entity.TicketPGSQLRepository
-
 }
 
-func NewGetEmployeesTicketsUseCase(
+func NewPayTicketsUseCase(
 	ctx context.Context,
 	logger logger.Logger,
 	companyPGSQLRepository *company_entity.CompanyPGSQLRepository,
 	personPGSQLRepository *person_entity.PersonPGSQLRepository,
 	accountPGSQLRepository *account_entity.AccountPGSQLRepository,
 	ticketPGSQLRepository *ticket_entity.TicketPGSQLRepository,
-) *GetEmployeesTicketsUseCase {
-	return &GetEmployeesTicketsUseCase{
+) *PayTicketsUseCase {
+	return &PayTicketsUseCase{
 		ctx: ctx,
 		logger: logger,
 		companyPGSQLRepository: companyPGSQLRepository,
 		personPGSQLRepository: personPGSQLRepository,
 		accountPGSQLRepository: accountPGSQLRepository,
 		ticketPGSQLRepository: ticketPGSQLRepository,
-	}	
+	}
 }
 
-func (u *GetEmployeesTicketsUseCase) Execute(
-	command *getEmployeesTicketsCommand,
-) (*[]dto.EmployeeTicket, error) {
-	var output []dto.EmployeeTicket
+func (u *PayTicketsUseCase) Execute(
+	command *payTicketsCommand) (string, error) {
 
-
-	companyAccount, err := u.accountPGSQLRepository.FindAccountByID(command.companyId)
+ 	companyAccount, err :=	u.accountPGSQLRepository.FindAccountByID(command.companyAccountID)
 	if err != nil {
-		return &output, err
+		return "invalid account", err
 	}
 
-	companyPerson, err := u.personPGSQLRepository.FindPersonByID(companyAccount.PersonID)
+	person, err := u.personPGSQLRepository.FindPersonByID(companyAccount.PersonID)
 	if err != nil {
-		return &output, err
+		return "", err
 	}
 
-	company, err := u.companyPGSQLRepository.FindCompanyByID(int(companyPerson.CompanyID.Int64))
+	company, err := u.companyPGSQLRepository.FindCompanyByID(int(person.CompanyID.Int64))
 	if err != nil {
-		return &output, err
+		return "", err
 	}
 
-	tickets, err := u.ticketPGSQLRepository.GetEmployeesTickets(company.ID)
+	rowsAffected, err := u.ticketPGSQLRepository.UpdateTicketsStatusByCompanyID(company.ID)
 	if err != nil {
-		return &output, err
+		return "", err
 	}
 
-	for _, ticket := range tickets {
-		output = append(output, dto.EmployeeTicket{
-			TicketOutputDTO: dto.TicketOutputDTO{
-				ID: ticket.ID,
-				StatusID: ticket.StatusID,
-				TravelID: ticket.TravelID,
-				CreatedAt: ticket.CreatedAt,
-			},
-		})
-	}
-	return &output, nil
+	return rowsAffected, nil 
 }

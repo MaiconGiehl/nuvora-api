@@ -38,7 +38,7 @@ func (r *TravelPGSQLRepository) CreateTravel(
 ) error {
 
 	stmt := `INSERT INTO travel ( price, account_id, bus_id, status, departure_time, departure_city_id, arrival_time, arrival_city_id, created_at)
-		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, CURRENT_DATE)
+		VALUES ($1, $2, $3, $4, $5, $6, $7, $8, NOW())
 		`
 	_, err := r.db.Exec(stmt, price, companyId, busId, 0, departureTime, departureCityId, arrivalTime, arrivalCityId)
 
@@ -59,13 +59,13 @@ func (r *TravelPGSQLRepository) FindTravelByID(id int) (*Travel, error) {
 	err := row.Scan(
 		&output.ID,
 		&output.Price,
-		&output.CompanyID,
-		&output.Bus.Number,
-		&output.Bus.MaxPassengers,
+		&output.AccountID,
+		&output.BusID,
+		&output.Status,
 		&output.Departure.Time,
-		&output.Departure.CityName,
+		&output.Departure.CityID,
 		&output.Arrival.Time,
-		&output.Arrival.CityName,
+		&output.Arrival.CityID,
 		&output.CreatedAt,
 		&output.UpdatedAt,
 	)
@@ -79,15 +79,15 @@ func (r *TravelPGSQLRepository) FindTravelByID(id int) (*Travel, error) {
 	return &output, err
 }
 
-func (r *TravelPGSQLRepository) GetTravelsByCities(dptCityID, arvCityID int) (*[]Travel, error) {
+func (r *TravelPGSQLRepository) FindTravelsByCities(dptCityID, arvCityID int) (*[]Travel, error) {
 	var output []Travel
 
 	stmt := `
-		SELECT * FROM travel 
+		SELECT * FROM travel t
 		WHERE 
 			departure_city_id = $1 OR departure_city_id = $2 
 		AND 
-			arrival_departure_city_id = $1 OR arrival_departure_city_id = $2 
+			arrival_city_id = $1 OR arrival_city_id = $2 
 		ORDER BY 
 			departure_city_id`
 
@@ -101,14 +101,52 @@ func (r *TravelPGSQLRepository) GetTravelsByCities(dptCityID, arvCityID int) (*[
 		err = rows.Scan(
 			&travel.ID,
 			&travel.Price,
-			&travel.CompanyID,
-			&travel.Bus.Number,
-			&travel.Bus.MaxPassengers,
+			&travel.AccountID,
+			&travel.BusID,
+			&travel.Status,
 			&travel.Departure.Time,
-			&travel.Departure.CityName,
+			&travel.Departure.CityID,
 			&travel.Arrival.Time,
-			&travel.Arrival.CityName,
+			&travel.Arrival.CityID,
+			&travel.CreatedAt,
+			&travel.UpdatedAt,
 		)
+		
+		if err != nil {
+			return &output, err
+		}
+		output = append(output, travel)
+	}
+	
+	return &output, err
+}
+
+func (r *TravelPGSQLRepository) FindByTicketsIDs(ticketsIds []int) (*[]Travel, error) {
+	var output []Travel
+
+	stmt := `SELECT * FROM travel t WHERE t.id IN (SELECT t.id FROM ticket tkt JOIN travel trv ON tkt.travel_id =trv.id  WHERE tkt.account_id IN ($1));`
+
+	rows, err := r.db.Query(stmt, ticketsIds)
+	if err != nil {
+		return &output, err
+	}
+
+	for rows.Next() {
+		var travel Travel
+		err = rows.Scan(
+			&travel.ID,
+			&travel.Price,
+			&travel.AccountID,
+			&travel.BusID,
+			&travel.Status,
+			&travel.Departure.Time,
+			&travel.Departure.CityID,
+			&travel.Arrival.Time,
+			&travel.Arrival.CityID,
+			&travel.CreatedAt,
+			&travel.UpdatedAt,
+		)
+		
 		if err != nil {
 			return &output, err
 		}

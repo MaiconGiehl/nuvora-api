@@ -2,6 +2,7 @@ package usecase
 
 import (
 	"context"
+	"errors"
 
 	"github.com/maicongiehl/nuvora-api/internal/core/application/shared/dto"
 	account_entity "github.com/maicongiehl/nuvora-api/internal/infra/dataprovider/sql/pg/account"
@@ -42,34 +43,47 @@ func (u *GetPossibleTravelsUseCase) Execute(
 	command *getPossibleTravelsCommand,
 ) (*[]dto.TravelOutputDTO, error) {
 	var output []dto.TravelOutputDTO
-
-	customerAccount, err := u.accountPGSQLRepository.GetAccountByID(command.accountID)
+	
+	customerAccount, err := u.accountPGSQLRepository.FindAccountByID(command.accountID)
 	if err != nil {
 		return &output, err
 	}
 
-	customerPerson, err := u.personPGSQLRepository.GetPersonByID(customerAccount.ID)
+	customerPerson, err := u.personPGSQLRepository.FindPersonByID(customerAccount.ID)
 	if err != nil {
 		return &output, err
 	}
 
-	customer, err := u.customerPGSQLRepository.GetCustomerByID(customerPerson.ID)
+	customer, err := u.customerPGSQLRepository.FindCustomerByID(int(customerPerson.CustomerID.Int64))
 	if err != nil {
 		return &output, err
 	}
 
-	companyPerson, err := u.personPGSQLRepository.GetPersonByID(customer.CompanyID)
+	companyPerson, err := u.personPGSQLRepository.FindPersonByID(customer.CompanyID)
 	if err != nil {
 		return &output, err
 	}
 
-	possibleTravels, err := u.travelPGSQLRepository.GetTravelsByCities(customerPerson.CityID, companyPerson.CityID)
+	possibleTravels, err := u.travelPGSQLRepository.FindTravelsByCities(customerPerson.CityID, companyPerson.CityID)
 	if err != nil {
 		return &output, err
 	}
 
-	for travel := range *possibleTravels {
-		output = append(output, dto.TravelOutputDTO{ID: travel})
+	if len(*possibleTravels) < 1 {
+		return &output, errors.New("no travel avaiable")
+	}
+
+
+	for _, travel := range *possibleTravels {
+		output = append(output, *dto.NewTravelOutputDTO(
+			travel.ID, 
+			travel.Price,
+			travel.AccountID,
+			travel.Departure.Time,
+			travel.Departure.CityID,
+			travel.Arrival.Time,
+			travel.Arrival.CityID,
+		))
 	}
 
 	return &output, nil

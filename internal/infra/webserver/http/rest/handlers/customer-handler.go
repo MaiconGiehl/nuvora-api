@@ -4,13 +4,16 @@ import (
 	"encoding/json"
 	"net/http"
 	"strconv"
+	"time"
 
 	"github.com/go-chi/chi/v5"
+	"github.com/go-chi/jwtauth"
 	di "github.com/maicongiehl/nuvora-api/configs/di"
 	dto "github.com/maicongiehl/nuvora-api/internal/core/application/shared/dto"
 	"github.com/maicongiehl/nuvora-api/internal/core/application/shared/logger"
 	buy_ticket_command "github.com/maicongiehl/nuvora-api/internal/core/application/usecase/customer/buy-ticket"
-	get_last_purchases_command "github.com/maicongiehl/nuvora-api/internal/core/application/usecase/customer/get-last-purchases"
+	get_possible_command "github.com/maicongiehl/nuvora-api/internal/core/application/usecase/customer/get-possible-travels"
+	get_last_purchases_command "github.com/maicongiehl/nuvora-api/internal/core/application/usecase/customer/get-purchases"
 	login_command "github.com/maicongiehl/nuvora-api/internal/core/application/usecase/customer/login"
 )
 
@@ -52,7 +55,7 @@ func (h *CustomerHandler) Login(w http.ResponseWriter, r *http.Request) {
 	}
 
 	command := login_command.With(input.Email, input.Password)
-	output, err := h.app.LoginAsCustomerUseCase.Execute(command)
+	customerAccount, err := h.app.LoginAsCustomerUseCase.Execute(command)
 	if err != nil {
 		h.logger.Errorf("CustomerHandler.Login: Error at searching for customer account, %s", err.Error())
 		w.WriteHeader(http.StatusBadRequest)
@@ -60,9 +63,23 @@ func (h *CustomerHandler) Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	customerAccount.AccessToken = h.createJWT(r,  customerAccount.PermissionLevel)
+
 	h.logger.Infof("CustomerHandler.Login: New connection to account %s", input.Email)
 	w.WriteHeader(http.StatusAccepted)
-	json.NewEncoder(w).Encode(output)
+	json.NewEncoder(w).Encode(customerAccount)
+}
+
+func (h *CustomerHandler) createJWT(r *http.Request, permission_level int) string {
+	jwt := r.Context().Value("jwt").(*jwtauth.JWTAuth)
+	jwtExpiresIn := r.Context().Value("JwtExpiresIn").(int)
+
+	_, tokenString, _ := jwt.Encode(map[string]interface{}{
+		"exp": time.Now().Add(time.Second * time.Duration(jwtExpiresIn)).Unix(),
+		"permission_level": permission_level,
+	})
+	
+	return tokenString
 }
 
 // Ticket godoc
@@ -77,6 +94,7 @@ func (h *CustomerHandler) Login(w http.ResponseWriter, r *http.Request) {
 // @Failure      404
 // @Failure      406
 // @Router       /customer/{id}/tickets/{travelId} [post]
+// @Security ApiKeyAuth
 func (h *CustomerHandler) BuyTicket(w http.ResponseWriter, r *http.Request) {
 	h.logger.Infof("CustomerHandler.BuyTicket: Request received")
 
@@ -118,8 +136,9 @@ func (h *CustomerHandler) BuyTicket(w http.ResponseWriter, r *http.Request) {
 // @Param        id   				path     		int  true  "Id"
 // @Success      200  										{object}   	object
 // @Failure      404
-// @Router       /customer/last-purchases/{id} [get]
-func (h *CustomerHandler) LastPurchases(w http.ResponseWriter, r *http.Request) {
+// @Router       /customer/{id}/tickets [get]
+// @Security ApiKeyAuth
+func (h *CustomerHandler) Purchases(w http.ResponseWriter, r *http.Request) {
 	customerId, err := strconv.Atoi(chi.URLParam(r, "id"))
 
 	if err != nil {
@@ -129,7 +148,7 @@ func (h *CustomerHandler) LastPurchases(w http.ResponseWriter, r *http.Request) 
 	}
 
 	command := get_last_purchases_command.With(customerId)
-	output, err := h.app.GetLastPurchasesUseCase.Execute(command)
+	output, err := h.app.GetPurchasesUseCase.Execute(command)
 
 	if err != nil {
 		w.WriteHeader(http.StatusBadRequest)
@@ -140,4 +159,38 @@ func (h *CustomerHandler) LastPurchases(w http.ResponseWriter, r *http.Request) 
 	w.WriteHeader(http.StatusAccepted)
 	json.NewEncoder(w).Encode(output)
 
+}
+
+// Customer godoc
+// @Summary      Get customer possible travels
+// @Description  Get travels using customer account id
+// @Tags         Customer
+// @Accept       json
+// @Produce      json
+// @Param        id   				path      int  true  "Customer account id"
+// @Success      200  										{object}   	[]dto.TravelOutputDTO
+// @Failure      404
+// @Router       /customer/{id}/travels [get]
+// @Security ApiKeyAuth
+func (h *CustomerHandler) PossibleTravels(w http.ResponseWriter, r *http.Request) {
+	customerId, err := strconv.Atoi(chi.URLParam(r, "id"))
+
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(err.Error())
+		return
+	}
+
+	command := get_possible_command.With(customerId)
+	output, err := h.app.GetPossibleTravelsUseCase.Execute(command)
+
+
+	if err != nil {
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(err.Error())
+		return
+	}
+
+	w.WriteHeader(http.StatusAccepted)
+	json.NewEncoder(w).Encode(output)
 }

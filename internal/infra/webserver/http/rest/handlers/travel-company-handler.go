@@ -10,6 +10,7 @@ import (
 	dto "github.com/maicongiehl/nuvora-api/internal/core/application/shared/dto"
 	"github.com/maicongiehl/nuvora-api/internal/core/application/shared/logger"
 	create_travel_command "github.com/maicongiehl/nuvora-api/internal/core/application/usecase/travel-company/create-travel"
+	get_all_bus_usecase_command "github.com/maicongiehl/nuvora-api/internal/core/application/usecase/travel-company/get-all-bus"
 )
 
 type TravelCompanyHandler struct {
@@ -38,6 +39,7 @@ func NewTravelCompanyHandler(
 // @Success      200  										{object}   	object
 // @Failure      404
 // @Router       /travel-company/{id}/travels [post]
+// @Security ApiKeyAuth
 func (h *TravelCompanyHandler) CreateTravel(w http.ResponseWriter, r *http.Request) {
 	h.logger.Infof("TravelCompanyHandler.CreateTravel: Request received")
 	var input dto.TravelInputDTO
@@ -76,4 +78,59 @@ func (h *TravelCompanyHandler) CreateTravel(w http.ResponseWriter, r *http.Reque
 
 	h.logger.Infof("TravelCompanyHandler.Create: New travel created")
 	w.WriteHeader(http.StatusCreated)
+}
+
+// Travel godoc
+// @Summary      DeleteTravel
+// @Description  DeleteTravel
+// @Tags         TravelCompany
+// @Accept       json
+// @Produce      json
+// @Param        id   				    path      int  true  "Travel company id"
+// @Param        request   				body      dto.TravelInputDTO  true  "Travel info"
+// @Success      200  										{object}   	object
+// @Failure      404
+// @Router       /travel-company/{id}/travel/{travelId} [delete]
+// @Security ApiKeyAuth
+func (h *TravelCompanyHandler) DeleteTravel(w http.ResponseWriter, r *http.Request) {
+
+}
+
+
+
+
+
+// Travel godoc
+// @Summary      GetAllBus
+// @Description  GetAllBus
+// @Tags         TravelCompany
+// @Accept       json
+// @Produce      json
+// @Param        id   				    path      int  true  "Travel company id"
+// @Success      200  										{object}   	object
+// @Failure      404
+// @Router       /travel-company/{id}/bus [get]
+// @Security ApiKeyAuth
+func (h *TravelCompanyHandler) GetAllBus(w http.ResponseWriter, r *http.Request) {
+	h.logger.Infof("TravelCompanyHandler.GetAllBus: Request received")
+
+	companyId, err := strconv.Atoi(chi.URLParam(r, "id"))
+	if err != nil {
+		h.logger.Errorf("TravelCompanyHandler.GetAllBus: Unable to process request, %s", err)
+		json.NewEncoder(w).Encode(err.Error())
+		return
+	}
+
+	command := get_all_bus_usecase_command.With(companyId)
+	output, err := h.app.GetAllBusUseCase.Execute(command)
+	if err != nil {
+		h.logger.Errorf("TravelCompanyHandler.GetAllBus: Unable to get bus, %s", err)
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(err.Error())
+		return
+	}
+
+	h.logger.Infof("TravelCompanyHandler.GetAllBusTickets: bus infos delievered")
+	w.WriteHeader(http.StatusAccepted)
+	json.NewEncoder(w).Encode(output)
 }

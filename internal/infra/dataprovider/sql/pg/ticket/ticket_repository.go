@@ -4,6 +4,7 @@ import (
 	"context"
 	"database/sql"
 	"errors"
+	"fmt"
 
 	"github.com/maicongiehl/nuvora-api/internal/core/application/shared/logger"
 )
@@ -27,7 +28,7 @@ func NewTicketPGSQLRepository(
 }
 
 func (r *TicketPGSQLRepository) CreateTicket(accountId, travelId int) error {
-	stmt := "INSERT INTO ticket (account_id, status_id, travel_id, created_at) VALUES ($1, 0, $2, CURRENT_DATE)"
+	stmt := "INSERT INTO ticket (account_id, status_id, travel_id, created_at) VALUES ($1, 0, $2, NOW())"
 
 	_, err := r.db.Exec(stmt, accountId, travelId)
 
@@ -40,7 +41,7 @@ func (r *TicketPGSQLRepository) CreateTicket(accountId, travelId int) error {
 	return nil
 }
 
-func (r *TicketPGSQLRepository) GetLastPurchases(accountId int) (*[]Ticket, error) {
+func (r *TicketPGSQLRepository) GetPurchases(accountId int) (*[]Ticket, error) {
 	var output []Ticket
 
 	stmt := "SELECT * FROM ticket WHERE account_id = $1 ORDER BY created_at DESC"
@@ -51,63 +52,79 @@ func (r *TicketPGSQLRepository) GetLastPurchases(accountId int) (*[]Ticket, erro
 	}
 
 	for rows.Next() {
-		var travel Ticket
+		var ticket Ticket
 		err = rows.Scan(
-			&travel.ID,
+			&ticket.ID,
+			&ticket.AccountID,
+			&ticket.StatusID,
+			&ticket.TravelID,
+			&ticket.CreatedAt,
+			&ticket.UpdatedAt,
 		)
 		if err != nil {
 			return &output, err
 		}
-		output = append(output, travel)
+		output = append(output, ticket)
 	}
 
 	return &output, nil
 }
 
-func (r *TicketPGSQLRepository) GetEmployeesTickets(accountId int) (*[]EmployeeTravelTicket, error) {
-	var output []EmployeeTravelTicket
+func (r *TicketPGSQLRepository) GetEmployeesTickets(accountId int) ([]*Ticket, error) {
+	var output []*Ticket
 
-	stmt := "SELECT * FROM ticket WHERE account_id = $1 ORDER BY created_at DESC"
+	stmt := `
+		SELECT * FROM ticket t WHERE t.account_id IN (
+			SELECT a.id FROM account a 
+			JOIN person p ON a.person_id =p.id 
+			JOIN customer c ON p.customer_id =c.id 
+			WHERE c.company_id = $1 ) 
+		ORDER BY created_at
+`
 
 	rows, err := r.db.Query(stmt, accountId)
 	if err != nil {
-		return &output, err
+		return output, err
 	}
 
 	for rows.Next() {
-		var travel EmployeeTravelTicket
+		var ticket Ticket
 		err = rows.Scan(
-			&travel.Name,
+			&ticket.ID, 
+			&ticket.AccountID, 
+			&ticket.StatusID, 
+			&ticket.TravelID, 
+			&ticket.CreatedAt,
+			&ticket.UpdatedAt,
 		)
 		if err != nil {
-			return &output, err
+			return output, err
 		}
-		output = append(output, travel)
+		output = append(output, &ticket)
 	}
-
-	return &output, nil
+	
+	return output, nil
 }
 
-func (r *TicketPGSQLRepository) UpdateTickets(accountId int) (*[]EmployeeTravelTicket, error) {
-	var output []EmployeeTravelTicket
+func (r *TicketPGSQLRepository) UpdateTicketsStatusByCompanyID(companyId int) (string, error) {
+	stmt := `UPDATE ticket t SET status_id = 1, updated_at = NOW() WHERE t.id IN (
+		SELECT t.id FROM ticket t 
+		JOIN account a ON t.account_id=a.id 
+		JOIN person p ON a.person_id =p.id 
+		JOIN customer c ON p.customer_id =c.id  
+		WHERE c.company_id=$1
+	) AND status_id = 0`
 
-	stmt := "SELECT * FROM ticket WHERE account_id = $1 ORDER BY created_at DESC"
-
-	rows, err := r.db.Query(stmt, accountId)
+	
+	rows, err := r.db.Exec(stmt, companyId)
 	if err != nil {
-		return &output, err
+		return "", err
+	}
+	
+	affectedRows, err := rows.RowsAffected()
+	if err != nil {
+		return "", err
 	}
 
-	for rows.Next() {
-		var travel EmployeeTravelTicket
-		err = rows.Scan(
-			&travel.Name,
-		)
-		if err != nil {
-			return &output, err
-		}
-		output = append(output, travel)
-	}
-
-	return &output, nil
+	return fmt.Sprintf("%d tickets paid", affectedRows), nil
 }

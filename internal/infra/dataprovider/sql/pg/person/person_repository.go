@@ -26,7 +26,7 @@ func NewPersonPGSQLRepository(
 	}
 }
 
-func (r *PersonPGSQLRepository) GetPersonByID(id int) (*Person, error) {
+func (r *PersonPGSQLRepository) FindPersonByID(id int) (*Person, error) {
 	var output Person
 
 	stmt := "SELECT * FROM person p WHERE p.id= $1"
@@ -44,7 +44,7 @@ func (r *PersonPGSQLRepository) GetPersonByID(id int) (*Person, error) {
 	)
 
 	if err != nil {
-		r.logger.Errorf("PersonRepository.GetPersonByID: Unable to find person, %s", err)
+		r.logger.Errorf("PersonRepository.FindPersonByID: Unable to find person, %s", err)
 		err = errors.New("internal error, please try again in some minutes")
 		return &output, err
 	}

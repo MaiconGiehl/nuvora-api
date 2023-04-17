@@ -3,6 +3,7 @@ package usecase
 import (
 	"context"
 	"errors"
+	"fmt"
 
 	"github.com/maicongiehl/nuvora-api/internal/core/application/shared/logger"
 	account_entity "github.com/maicongiehl/nuvora-api/internal/infra/dataprovider/sql/pg/account"
@@ -38,7 +39,15 @@ func (u *BuyTicketUseCase) Execute(
 	command *buyTicketCommand,
 ) error {
 
-	customerAccount, err := u.accountPGSQLRepository.GetAccountByID(command.AccountID)
+	err := u.validateInput(command)
+	if err != nil {
+		customErr := fmt.Sprintf("invalid path: %s", err.Error())
+		err = errors.New(customErr)
+		u.logger.Errorf("BuyTicketUsecase.Execute: Unable to buy ticket, %s", err.Error())
+		return err
+	}
+
+	customerAccount, err := u.accountPGSQLRepository.FindAccountByID(command.AccountID)
 	if err != nil {
 		u.logger.Errorf("BuyTicketUsecase.Execute: Unable to find account, %s", err.Error())
 		return errors.New("account not found")
@@ -59,4 +68,18 @@ func (u *BuyTicketUseCase) Execute(
 	_ = u.ticketPGSQLRepository.CreateTicket(command.AccountID, command.TravelID)
 
 	return err
+}
+
+func (u *BuyTicketUseCase) validateInput(input *buyTicketCommand) error {
+	_, err := u.accountPGSQLRepository.FindAccountByID(input.AccountID)
+	if err != nil {
+		return errors.New("account not found")
+	}
+
+	_, err = u.travelPGSQLRepository.FindTravelByID(input.TravelID)
+	if err != nil {
+		return errors.New("travel not found")
+	}
+	
+	return nil
 }
