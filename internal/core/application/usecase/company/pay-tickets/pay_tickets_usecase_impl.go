@@ -11,12 +11,12 @@ import (
 )
 
 type PayTicketsUseCase struct {
-	ctx context.Context
-	logger logger.Logger
+	ctx                    context.Context
+	logger                 logger.Logger
 	companyPGSQLRepository *company_entity.CompanyPGSQLRepository
-	personPGSQLRepository *person_entity.PersonPGSQLRepository
+	personPGSQLRepository  *person_entity.PersonPGSQLRepository
 	accountPGSQLRepository *account_entity.AccountPGSQLRepository
-	ticketPGSQLRepository *ticket_entity.TicketPGSQLRepository
+	ticketPGSQLRepository  *ticket_entity.TicketPGSQLRepository
 }
 
 func NewPayTicketsUseCase(
@@ -28,19 +28,19 @@ func NewPayTicketsUseCase(
 	ticketPGSQLRepository *ticket_entity.TicketPGSQLRepository,
 ) *PayTicketsUseCase {
 	return &PayTicketsUseCase{
-		ctx: ctx,
-		logger: logger,
+		ctx:                    ctx,
+		logger:                 logger,
 		companyPGSQLRepository: companyPGSQLRepository,
-		personPGSQLRepository: personPGSQLRepository,
+		personPGSQLRepository:  personPGSQLRepository,
 		accountPGSQLRepository: accountPGSQLRepository,
-		ticketPGSQLRepository: ticketPGSQLRepository,
+		ticketPGSQLRepository:  ticketPGSQLRepository,
 	}
 }
 
 func (u *PayTicketsUseCase) Execute(
 	command *payTicketsCommand) (string, error) {
 
- 	companyAccount, err :=	u.accountPGSQLRepository.FindAccountByID(command.companyAccountID)
+	companyAccount, err := u.accountPGSQLRepository.FindAccountByID(command.companyAccountID)
 	if err != nil {
 		return "invalid account", err
 	}
@@ -60,5 +60,5 @@ func (u *PayTicketsUseCase) Execute(
 		return "", err
 	}
 
-	return rowsAffected, nil 
+	return rowsAffected, nil
 }

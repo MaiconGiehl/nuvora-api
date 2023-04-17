@@ -9,8 +9,8 @@ import (
 )
 
 type PersonPGSQLRepository struct {
-	ctx context.Context
-	db *sql.DB
+	ctx    context.Context
+	db     *sql.DB
 	logger logger.Logger
 }
 
@@ -20,8 +20,8 @@ func NewPersonPGSQLRepository(
 	logger logger.Logger,
 ) *PersonPGSQLRepository {
 	return &PersonPGSQLRepository{
-		ctx: ctx,
-		db: db,
+		ctx:    ctx,
+		db:     db,
 		logger: logger,
 	}
 }

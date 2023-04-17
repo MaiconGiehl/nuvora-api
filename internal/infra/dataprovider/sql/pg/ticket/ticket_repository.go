@@ -10,8 +10,8 @@ import (
 )
 
 type TicketPGSQLRepository struct {
-	ctx context.Context
-	db *sql.DB
+	ctx    context.Context
+	db     *sql.DB
 	logger logger.Logger
 }
 
@@ -21,8 +21,8 @@ func NewTicketPGSQLRepository(
 	logger logger.Logger,
 ) *TicketPGSQLRepository {
 	return &TicketPGSQLRepository{
-		ctx: ctx,
-		db: db,
+		ctx:    ctx,
+		db:     db,
 		logger: logger,
 	}
 }
@@ -46,7 +46,6 @@ func (r *TicketPGSQLRepository) GetPurchases(accountId int) (*[]Ticket, error) {
 
 	stmt := "SELECT * FROM ticket WHERE account_id = $1 ORDER BY created_at DESC"
 
-	
 	rows, err := r.db.Query(stmt, accountId)
 	if err != nil {
 		return &output, err
@@ -67,7 +66,7 @@ func (r *TicketPGSQLRepository) GetPurchases(accountId int) (*[]Ticket, error) {
 		}
 		output = append(output, ticket)
 	}
-	
+
 	return &output, nil
 }
 
@@ -91,10 +90,10 @@ func (r *TicketPGSQLRepository) GetEmployeesTickets(accountId int) ([]*Ticket, e
 	for rows.Next() {
 		var ticket Ticket
 		err = rows.Scan(
-			&ticket.ID, 
-			&ticket.AccountID, 
-			&ticket.StatusID, 
-			&ticket.TravelID, 
+			&ticket.ID,
+			&ticket.AccountID,
+			&ticket.StatusID,
+			&ticket.TravelID,
 			&ticket.CreatedAt,
 			&ticket.UpdatedAt,
 		)
@@ -103,7 +102,7 @@ func (r *TicketPGSQLRepository) GetEmployeesTickets(accountId int) ([]*Ticket, e
 		}
 		output = append(output, &ticket)
 	}
-	
+
 	return output, nil
 }
 
@@ -116,12 +115,11 @@ func (r *TicketPGSQLRepository) UpdateTicketsStatusByCompanyID(companyId int) (s
 		WHERE c.company_id=$1
 	) AND status_id = 0`
 
-	
 	rows, err := r.db.Exec(stmt, companyId)
 	if err != nil {
 		return "", err
 	}
-	
+
 	affectedRows, err := rows.RowsAffected()
 	if err != nil {
 		return "", err

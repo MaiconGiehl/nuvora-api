@@ -19,7 +19,7 @@ import (
 )
 
 type CompanyHandler struct {
-	app *di.App
+	app    *di.App
 	logger logger.Logger
 }
 
@@ -29,7 +29,7 @@ func NewCompanyHandler(
 ) *CompanyHandler {
 	return &CompanyHandler{
 		logger: logger,
-		app: app,
+		app:    app,
 	}
 }
 
@@ -76,10 +76,10 @@ func (h *CompanyHandler) createJWT(r *http.Request, permission_level int) string
 	jwtExpiresIn := r.Context().Value("JwtExpiresIn").(int)
 
 	_, tokenString, _ := jwt.Encode(map[string]interface{}{
-		"exp": time.Now().Add(time.Second * time.Duration(jwtExpiresIn)).Unix(),
+		"exp":              time.Now().Add(time.Second * time.Duration(jwtExpiresIn)).Unix(),
 		"permission_level": permission_level,
 	})
-	
+
 	return tokenString
 }
 
@@ -90,7 +90,7 @@ func (h *CompanyHandler) createJWT(r *http.Request, permission_level int) string
 // @Accept       json
 // @Produce      json
 // @Param        id   							path     		int true  "Company ID"
-// @Success      200  										{object}   	object
+// @Success      202  										{object}   	[]dto.EmployeeOutputDTO
 // @Failure      404
 // @Router       /company/{id}/employees [get]
 // @Security ApiKeyAuth
@@ -152,7 +152,6 @@ func (h *CompanyHandler) GetEmployeesTickets(w http.ResponseWriter, r *http.Requ
 	w.WriteHeader(http.StatusAccepted)
 	json.NewEncoder(w).Encode(output)
 }
-
 
 // Company godoc
 // @Summary      DeleteEmployee
@@ -228,7 +227,6 @@ func (h *CompanyHandler) PayAllTickets(w http.ResponseWriter, r *http.Request) {
 		json.NewEncoder(w).Encode(err.Error())
 		return
 	}
-
 
 	h.logger.Infof("CompanyHandler.PayAllTickets: tickets paid")
 	w.WriteHeader(http.StatusAccepted)

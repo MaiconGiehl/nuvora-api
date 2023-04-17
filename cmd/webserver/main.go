@@ -18,11 +18,11 @@ import (
 //	@license.name	Nuvora Promotora License
 //	@license.url	https://nuvora.com.br
 
-//	@host		localhost:8080
-// 	@BasePath  /nuvora/v1
-// 	@securityDefinitions.apikey ApiKeyAuth
-// 	@in header
-// 	@name Authorization
+// @host		localhost:8080
+// @BasePath  /nuvora/v1
+// @securityDefinitions.apikey ApiKeyAuth
+// @in header
+// @name Authorization
 func main() {
 	rest.StartServer()
 }

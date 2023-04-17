@@ -10,8 +10,8 @@ import (
 )
 
 type TravelPGSQLRepository struct {
-	ctx context.Context
-	db *sql.DB
+	ctx    context.Context
+	db     *sql.DB
 	logger logger.Logger
 }
 
@@ -21,8 +21,8 @@ func NewTravelPGSQLRepository(
 	logger logger.Logger,
 ) *TravelPGSQLRepository {
 	return &TravelPGSQLRepository{
-		ctx: ctx,
-		db: db,
+		ctx:    ctx,
+		db:     db,
 		logger: logger,
 	}
 }
@@ -53,7 +53,7 @@ func (r *TravelPGSQLRepository) FindTravelByID(id int) (*Travel, error) {
 	var output Travel
 
 	stmt := `SELECT * FROM travel t WHERE t.id = $1`
-	
+
 	row := r.db.QueryRow(stmt, id)
 
 	err := row.Scan(
@@ -75,7 +75,7 @@ func (r *TravelPGSQLRepository) FindTravelByID(id int) (*Travel, error) {
 		err = errors.New("internal error, please try again in some minutes")
 		return &output, err
 	}
-	
+
 	return &output, err
 }
 
@@ -90,7 +90,7 @@ func (r *TravelPGSQLRepository) FindTravelsByCities(dptCityID, arvCityID int) (*
 			departure_city_id = $2 AND arrival_city_id = $2 
 		ORDER BY 
 			departure_city_id`
-	
+
 	rows, err := r.db.Query(stmt, dptCityID, arvCityID)
 	if err != nil {
 		return &output, err
@@ -111,13 +111,13 @@ func (r *TravelPGSQLRepository) FindTravelsByCities(dptCityID, arvCityID int) (*
 			&travel.CreatedAt,
 			&travel.UpdatedAt,
 		)
-		
+
 		if err != nil {
 			return &output, err
 		}
 		output = append(output, travel)
 	}
-	
+
 	return &output, err
 }
 
@@ -146,13 +146,13 @@ func (r *TravelPGSQLRepository) FindByTicketsIDs(ticketsIds []int) (*[]Travel, e
 			&travel.CreatedAt,
 			&travel.UpdatedAt,
 		)
-		
+
 		if err != nil {
 			return &output, err
 		}
 		output = append(output, travel)
 	}
-	
+
 	return &output, err
 }
 

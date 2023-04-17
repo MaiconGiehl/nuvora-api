@@ -13,12 +13,12 @@ import (
 )
 
 type GetEmployeesUseCase struct {
-	ctx context.Context
-	logger logger.Logger
+	ctx                     context.Context
+	logger                  logger.Logger
 	customerPGSQLRepository *customer_entity.CustomerPGSQLRepository
-	companyPGSQLRepository *company_entity.CompanyPGSQLRepository
-	personPGSQLRepository *person_entity.PersonPGSQLRepository
-	accountPGSQLRepository *account_entity.AccountPGSQLRepository
+	companyPGSQLRepository  *company_entity.CompanyPGSQLRepository
+	personPGSQLRepository   *person_entity.PersonPGSQLRepository
+	accountPGSQLRepository  *account_entity.AccountPGSQLRepository
 }
 
 func NewGetEmployeesUseCase(
@@ -30,13 +30,13 @@ func NewGetEmployeesUseCase(
 	accountPGSQLRepository *account_entity.AccountPGSQLRepository,
 ) *GetEmployeesUseCase {
 	return &GetEmployeesUseCase{
-		ctx: ctx,
-		logger: logger,
+		ctx:                     ctx,
+		logger:                  logger,
 		customerPGSQLRepository: customerPGSQLRepository,
-		companyPGSQLRepository: companyPGSQLRepository,
-		personPGSQLRepository: personPGSQLRepository,
-		accountPGSQLRepository: accountPGSQLRepository,
-	}	
+		companyPGSQLRepository:  companyPGSQLRepository,
+		personPGSQLRepository:   personPGSQLRepository,
+		accountPGSQLRepository:  accountPGSQLRepository,
+	}
 }
 
 func (u *GetEmployeesUseCase) Execute(
@@ -60,7 +60,7 @@ func (u *GetEmployeesUseCase) Execute(
 		err = errors.New("invalid account")
 		u.logger.Warnf("GetEmployeesUseCase.Execute: There was a try to use a customer account to use a company usecase , %s.", err.Error())
 		return &output, err
-	} 
+	}
 
 	company, err := u.companyPGSQLRepository.FindCompanyByID(int(companyPerson.CompanyID.Int64))
 	if err != nil {

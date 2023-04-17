@@ -27,8 +27,7 @@ type App struct {
 	GetEmployeesUseCase get_employees_usecase.GetEmployeesUseCaseInterface
 	GetPurchasesUseCase get_purchases.GetPurchasesUseCaseInterface
 	GetPossibleTravelsUseCase  get_possible_travels_usecase.GetPossibleTravelsUseCaseInterface
-	LoginAsCompanyUseCase login_as_company_usecase.LoginAsCompanyUseCaseInterface
-	LoginAsCustomerUseCase login_as_customer_usecase.LoginAsCustomerUseCaseInterface
-	PayTickets  pay_tickets_usecase.PayTicketsUseCaseInterface
+	LoginAsCompanyUseCase      login_as_company_usecase.LoginAsCompanyUseCaseInterface
+	LoginAsCustomerUseCase     login_as_customer_usecase.LoginAsCustomerUseCaseInterface
+	PayTickets                 pay_tickets_usecase.PayTicketsUseCaseInterface
 }
-

@@ -13,13 +13,13 @@ import (
 	travel_entity "github.com/maicongiehl/nuvora-api/internal/infra/dataprovider/sql/pg/travel"
 )
 
-type CreateTravelUsecase struct {
-	ctx context.Context
-	logger logger.Logger
-	busPGSQLRepository *bus_entity.BusPGSQLRepository
-	cityPGSQLRepository *city_entity.CityPGSQLRepository
+type CreateTravelUseCase struct {
+	ctx                    context.Context
+	logger                 logger.Logger
+	busPGSQLRepository     *bus_entity.BusPGSQLRepository
+	cityPGSQLRepository    *city_entity.CityPGSQLRepository
 	companyPGSQLRepository *company_entity.CompanyPGSQLRepository
-	travelPGSQLRepository *travel_entity.TravelPGSQLRepository
+	travelPGSQLRepository  *travel_entity.TravelPGSQLRepository
 }
 
 func NewCreateTravelUseCase(
@@ -29,18 +29,18 @@ func NewCreateTravelUseCase(
 	cityPGSQLRepository *city_entity.CityPGSQLRepository,
 	companyPGSQLRepository *company_entity.CompanyPGSQLRepository,
 	travelPGSQLRepository *travel_entity.TravelPGSQLRepository,
-) *CreateTravelUsecase {
-	return &CreateTravelUsecase{
-		ctx: ctx,
-		logger: logger,
-		travelPGSQLRepository: travelPGSQLRepository,
-		busPGSQLRepository: busPGSQLRepository,
-		cityPGSQLRepository: cityPGSQLRepository,
+) *CreateTravelUseCase {
+	return &CreateTravelUseCase{
+		ctx:                    ctx,
+		logger:                 logger,
+		travelPGSQLRepository:  travelPGSQLRepository,
+		busPGSQLRepository:     busPGSQLRepository,
+		cityPGSQLRepository:    cityPGSQLRepository,
 		companyPGSQLRepository: companyPGSQLRepository,
-	}	
+	}
 }
 
-func (u *CreateTravelUsecase) Execute(
+func (u *CreateTravelUseCase) Execute(
 	command *createTravelCommand,
 ) error {
 
@@ -62,30 +62,25 @@ func (u *CreateTravelUsecase) Execute(
 		command.ArrivalCityID,
 	)
 
-	if err != nil {
-		u.logger.Errorf("CreateTravelUseCase.Execute: Unable to create travel, %s", err.Error())
-		return err
-	}
-
-	return nil
+	return err
 }
 
-func (u *CreateTravelUsecase) validateInput(input *createTravelCommand) error {
+func (u *CreateTravelUseCase) validateInput(input *createTravelCommand) error {
 	if input.Price <= 0 {
 		return errors.New("price can't be lower or equal to zero")
 	}
 
 	now := time.Now()
-	if input.DepartureTime.Compare(now) == -1 || input.DepartureTime.Compare(now) == 0 {
-		return errors.New("departure time must be in the future")
+	if input.ArrivalTime.Compare(input.ArrivalTime) == -1 || input.DepartureTime.Compare(input.ArrivalTime) == 0 {
+		return errors.New("arrival time must be after departure")
 	}
 
 	if input.DepartureCityID == input.ArrivalCityID {
 		return errors.New("arrival and departure city must be different")
 	}
 
-	if input.ArrivalTime.Compare(now) == -1 || input.ArrivalTime.Compare(now) == 0 {
-		return errors.New("departure time must be in the future")
+	if input.DepartureTime.Compare(now) == 1 || input.DepartureTime.Compare(now) == 0 {
+		return errors.New("departure time must be now or in the future")
 	}
 
 	if input.ArrivalTime.Compare(input.DepartureTime) == -1 || input.ArrivalTime.Compare(input.DepartureTime) == 0 {

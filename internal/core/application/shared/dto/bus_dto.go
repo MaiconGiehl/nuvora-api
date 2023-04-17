@@ -1,10 +1,10 @@
 package dto
 
 type BusOutputDTO struct {
-	ID int
-	Number int
+	ID            int
+	Number        int
 	MaxPassengers int
-	AccountID int
+	AccountID     int
 }
 
 func NewBusOutputDTO(
@@ -14,9 +14,9 @@ func NewBusOutputDTO(
 	accountId int,
 ) *BusOutputDTO {
 	return &BusOutputDTO{
-		ID: id,
-		Number: number,
+		ID:            id,
+		Number:        number,
 		MaxPassengers: maxPassengers,
-		AccountID: accountId,
+		AccountID:     accountId,
 	}
 }

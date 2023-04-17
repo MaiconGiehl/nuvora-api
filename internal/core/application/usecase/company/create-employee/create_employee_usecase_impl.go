@@ -9,10 +9,10 @@ import (
 )
 
 type CreateEmployeeUseCase struct {
-	ctx context.Context
+	ctx                     context.Context
 	customerPGSQLRepository *customer_entity.CustomerPGSQLRepository
-	personPGSQLRepository *person_entity.PersonPGSQLRepository
-	accountPGSQLRepository *account_entity.AccountPGSQLRepository
+	personPGSQLRepository   *person_entity.PersonPGSQLRepository
+	accountPGSQLRepository  *account_entity.AccountPGSQLRepository
 }
 
 func NewCreateEmployeeUseCase(
@@ -22,11 +22,11 @@ func NewCreateEmployeeUseCase(
 	accountPGSQLRepository *account_entity.AccountPGSQLRepository,
 ) *CreateEmployeeUseCase {
 	return &CreateEmployeeUseCase{
-		ctx: ctx,
-		customerPGSQLRepository: customerPGSQLRepository, 
-		personPGSQLRepository: personPGSQLRepository,
-		accountPGSQLRepository: accountPGSQLRepository, 
-	}	
+		ctx:                     ctx,
+		customerPGSQLRepository: customerPGSQLRepository,
+		personPGSQLRepository:   personPGSQLRepository,
+		accountPGSQLRepository:  accountPGSQLRepository,
+	}
 }
 
 func (u *CreateEmployeeUseCase) Execute(

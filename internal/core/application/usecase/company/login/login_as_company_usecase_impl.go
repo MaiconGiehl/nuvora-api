@@ -17,7 +17,7 @@ type LoginAsCompanyUseCase struct {
 	logger logger.Logger
 	cityPGSQLRepository *city_entity.CityPGSQLRepository
 	companyPGSQLRepository *company_entity.CompanyPGSQLRepository
-	personPGSQLRepository *person_entity.PersonPGSQLRepository
+	personPGSQLRepository  *person_entity.PersonPGSQLRepository
 	accountPGSQLRepository *account_entity.AccountPGSQLRepository
 }
 
@@ -34,7 +34,7 @@ func NewLoginAsCompanyUseCase(
 		logger: logger,
 		cityPGSQLRepository: cityPGSQLRepository,
 		companyPGSQLRepository: companyPGSQLRepository,
-		personPGSQLRepository: personPGSQLRepository,
+		personPGSQLRepository:  personPGSQLRepository,
 		accountPGSQLRepository: accountPGSQLRepository,
 	}
 }

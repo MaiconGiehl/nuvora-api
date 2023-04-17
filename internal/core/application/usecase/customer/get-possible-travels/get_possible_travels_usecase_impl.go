@@ -19,10 +19,10 @@ type GetPossibleTravelsUseCase struct {
 	busPGSQLRepository *bus_entity.BusPGSQLRepository
 	cityPGSQLRepository *city_entity.CityPGSQLRepository
 	customerPGSQLRepository *customer_entity.CustomerPGSQLRepository
-	companyPGSQLRepository *company_entity.CompanyPGSQLRepository
-	personPGSQLRepository *person_entity.PersonPGSQLRepository
-	accountPGSQLRepository *account_entity.AccountPGSQLRepository
-	travelPGSQLRepository *travel_entity.TravelPGSQLRepository
+	companyPGSQLRepository  *company_entity.CompanyPGSQLRepository
+	personPGSQLRepository   *person_entity.PersonPGSQLRepository
+	accountPGSQLRepository  *account_entity.AccountPGSQLRepository
+	travelPGSQLRepository   *travel_entity.TravelPGSQLRepository
 }
 
 func NewGetPossibleTravelsUseCase(
@@ -40,18 +40,18 @@ func NewGetPossibleTravelsUseCase(
 		busPGSQLRepository: busPGSQLRepository,
 		cityPGSQLRepository: cityPGSQLRepository,
 		customerPGSQLRepository: customerPGSQLRepository,
-		companyPGSQLRepository: companyPGSQLRepository,
-		personPGSQLRepository: personPGSQLRepository,
-		accountPGSQLRepository: accountPGSQLRepository,
-		travelPGSQLRepository: travelPGSQLRepository,
-	}	
+		companyPGSQLRepository:  companyPGSQLRepository,
+		personPGSQLRepository:   personPGSQLRepository,
+		accountPGSQLRepository:  accountPGSQLRepository,
+		travelPGSQLRepository:   travelPGSQLRepository,
+	}
 }
 
 func (u *GetPossibleTravelsUseCase) Execute(
 	command *getPossibleTravelsCommand,
 ) (*[]dto.TravelOutputDTO, error) {
 	var output []dto.TravelOutputDTO
-	
+
 	customerAccount, err := u.accountPGSQLRepository.FindAccountByID(command.accountID)
 	if err != nil {
 		return &output, err
@@ -109,7 +109,7 @@ func (u *GetPossibleTravelsUseCase) Execute(
 		departureCity := getCities(travel.Departure.CityID)
 		arrivalCity := getCities(travel.Arrival.CityID)
 		output = append(output, *dto.NewTravelOutputDTO(
-			travel.ID, 
+			travel.ID,
 			travel.Price,
 			bus.ID,
 			bus.Number,

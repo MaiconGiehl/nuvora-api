@@ -18,20 +18,19 @@ func StartServer() {
 	ctx := context.Background()
 	logger := logrus_config.NewLogrusLogger()
 
-	env := env.LoadConfig(logger)
+	env := env.LoadConfig(".env", logger)
 
 	db := postgresdb_config.ConnectWithDB(
 		logger,
-		env.DBHost, 
-		env.DBPort, 
-		env.DBUser, 
-		env.DBPassword, 
+		env.DBHost,
+		env.DBPort,
+		env.DBUser,
+		env.DBPassword,
 		env.DBName,
 	)
 
 	app := di.SetupDIConfig(ctx, db, logger)
 	appRouter := NewAppRouter(app, env.TokenAuth, logger)
-
 
 	expiresIn, _ := strconv.Atoi(env.JWTExpiresIn)
 	appRouter.JWTClaims.ExpiresIn = expiresIn

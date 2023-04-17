@@ -6,10 +6,10 @@ import (
 )
 
 type Ticket struct {
-	ID int
+	ID        int
 	AccountID int
-	StatusID int
-	TravelID int
+	StatusID  int
+	TravelID  int
 	CreatedAt time.Time
 	UpdatedAt sql.NullTime
 }

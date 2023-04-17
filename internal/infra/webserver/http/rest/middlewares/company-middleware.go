@@ -6,13 +6,13 @@ import (
 	"strings"
 )
 
-func CompanyMiddleware(h http.Handler) (http.Handler) {
+func CompanyMiddleware(h http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		token := strings.Split(r.Header.Values("Authorization")[0], "Bearer ")[1]
 		permissionLevel, err := extractPermissionLevel(token)
 		if err != nil {
 			json.NewEncoder(w).Encode("invalid token")
-			return 
+			return
 		}
 		if permissionLevel != 2 {
 			w.WriteHeader(http.StatusUnauthorized)

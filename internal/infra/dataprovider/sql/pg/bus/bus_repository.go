@@ -8,8 +8,8 @@ import (
 )
 
 type BusPGSQLRepository struct {
-	ctx context.Context
-	db *sql.DB
+	ctx    context.Context
+	db     *sql.DB
 	logger logger.Logger
 }
 
@@ -19,8 +19,8 @@ func NewBusPGSQLRepository(
 	logger logger.Logger,
 ) *BusPGSQLRepository {
 	return &BusPGSQLRepository{
-		ctx: ctx,
-		db: db,
+		ctx:    ctx,
+		db:     db,
 		logger: logger,
 	}
 }
@@ -49,7 +49,6 @@ func (r *BusPGSQLRepository) FindBusByID(id int) (*Bus, error) {
 	return &output, err
 }
 
-
 func (r *BusPGSQLRepository) FindBusByCompanyAccountID(id int) ([]*Bus, error) {
 
 	var output []*Bus
@@ -70,13 +69,13 @@ func (r *BusPGSQLRepository) FindBusByCompanyAccountID(id int) ([]*Bus, error) {
 			&bus.CreatedAt,
 			&bus.UpdatedAt,
 		)
-		
+
 		if err != nil {
 			return output, err
 		}
 		output = append(output, &bus)
 	}
-	
+
 	return output, err
 }
 
