@@ -89,3 +89,23 @@ func (r *CustomerPGSQLRepository) GetCustomersByCompanyID(id int) (*[]Customer, 
 	return &output, nil
 }
 
+func (r *CustomerPGSQLRepository) DeleteCustomerByID(customerId int, companyId int) error {
+	stmt := `DELETE FROM customer c WHERE id = $1 AND c.company_id=$2`
+	
+	res, err := r.db.Exec(stmt, customerId, companyId)
+	if err != nil {
+		return err
+	}
+
+	affectedRowws, err := res.RowsAffected()
+	if err != nil {
+		return err
+	}
+
+	if affectedRowws < 0 {
+		return errors.New("none row affected")
+	}
+
+	return err
+}
+

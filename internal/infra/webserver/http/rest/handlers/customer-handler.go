@@ -63,7 +63,7 @@ func (h *CustomerHandler) Login(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	customerAccount.AccessToken = h.createJWT(r,  customerAccount.PermissionLevel)
+	customerAccount.SetAccessToken(h.createJWT(r,  customerAccount.PermissionLevel)) 
 
 	h.logger.Infof("CustomerHandler.Login: New connection to account %s", input.Email)
 	w.WriteHeader(http.StatusAccepted)

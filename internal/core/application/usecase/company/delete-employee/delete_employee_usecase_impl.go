@@ -2,75 +2,75 @@ package usecase
 
 import (
 	"context"
-	"errors"
 
-	"github.com/maicongiehl/nuvora-api/internal/core/application/shared/dto"
 	"github.com/maicongiehl/nuvora-api/internal/core/application/shared/logger"
 	account_entity "github.com/maicongiehl/nuvora-api/internal/infra/dataprovider/sql/pg/account"
+	city_entity "github.com/maicongiehl/nuvora-api/internal/infra/dataprovider/sql/pg/city"
 	customer_entity "github.com/maicongiehl/nuvora-api/internal/infra/dataprovider/sql/pg/customer"
 	person_entity "github.com/maicongiehl/nuvora-api/internal/infra/dataprovider/sql/pg/person"
 )
 
-type LoginAsCustomerUseCase struct {
+type DeleteEmployeeUseCase struct {
 	ctx context.Context
 	logger logger.Logger
+	cityPGSQLRepository *city_entity.CityPGSQLRepository
 	customerPGSQLRepository *customer_entity.CustomerPGSQLRepository
 	personPGSQLRepository *person_entity.PersonPGSQLRepository
 	accountPGSQLRepository *account_entity.AccountPGSQLRepository
 }
 
-func NewLoginAsCustomerUseCase(
+func NewDeleteEmployeeUseCase(
 	ctx context.Context,
 	logger logger.Logger,
+	cityPGSQLRepository *city_entity.CityPGSQLRepository,
 	customerPGSQLRepository *customer_entity.CustomerPGSQLRepository,
 	personPGSQLRepository *person_entity.PersonPGSQLRepository,
 	accountPGSQLRepository *account_entity.AccountPGSQLRepository,
-) *LoginAsCustomerUseCase {
-	return &LoginAsCustomerUseCase{
+) *DeleteEmployeeUseCase {
+	return &DeleteEmployeeUseCase{
 		ctx: ctx,
 		logger: logger,
+		cityPGSQLRepository: cityPGSQLRepository,
 		customerPGSQLRepository: customerPGSQLRepository,
 		personPGSQLRepository: personPGSQLRepository,
 		accountPGSQLRepository: accountPGSQLRepository,
 	}
 }
 
-func (u *LoginAsCustomerUseCase) Execute(command *loginAsCustomerCommand) (*dto.CustomerAccountOutputDTO, error) {
-	var output *dto.CustomerAccountOutputDTO
-
-	customerAccount, err := u.accountPGSQLRepository.Login(command.Email, command.Password)
+func (u *DeleteEmployeeUseCase) Execute(
+	command *deleteEmployeeCommand,
+) error {
+	customerAccount, err := u.accountPGSQLRepository.FindAccountByID(command.employeeID)
 	if err != nil {
-		u.logger.Errorf("LoginAsCustomerUseCase.Execute: Unable to login in account, %s", err.Error())
-		return output, err
+		u.logger.Errorf("DeleteEmployeeUseCase.Execute: Unable to get account, %s", err.Error())
+		return err
 	}
 
+	
 	customerPerson, err := u.personPGSQLRepository.FindPersonByID(customerAccount.PersonID)
 	if err != nil {
-		u.logger.Errorf("LoginAsCustomerUseCase.Execute: Unable to get person, %s", err.Error())
-		return output, err
+		u.logger.Errorf("DeleteEmployeeUseCase.Execute: Unable to get person, %s", err.Error())
+		return err
 	}
-
-	if customerPerson.CompanyID.Valid {
-		err = errors.New("invalid credentials")
-		u.logger.Errorf("LoginAsCustomerUseCase.Execute: Unable to login, %s", err.Error())
-		return output, err
-}
-
+	
+	
 	customer, err := u.customerPGSQLRepository.FindCustomerByID(int(customerPerson.CustomerID.Int64))
 	if err != nil {
-		u.logger.Errorf("LoginAsCustomerUseCase.Execute: Unable to get customer, %s", err.Error())
-		return output, err
+		u.logger.Errorf("DeleteEmployeeUseCase.Execute: Unable to get customer, %s", err.Error())
+		return err
+	}
+	
+	err = u.customerPGSQLRepository.DeleteCustomerByID(customer.ID, command.companyID)
+	if err != nil {
+		return err
+	}
+	
+	err = u.personPGSQLRepository.DeletePersonByID(customerAccount.PersonID)
+	if err != nil {
+		return err
 	}
 
-	output = dto.NewCustomerAccountOutputDTO(
-		customerAccount.ID,
-		customerAccount.Email,
-		int(customerAccount.TicketsLeft.Int64),
-		customerPerson.PermissionLevel,
-		customer.Cpf,
-		customer.Name,
-		customer.Phone,
-	)
+	err = u.accountPGSQLRepository.DeleteAccountByID(customerAccount.ID)
 
-	return output, err
+	return err
 }

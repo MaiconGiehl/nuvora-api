@@ -6,24 +6,38 @@ import (
 
 type CustomerAccountOutputDTO struct {
 	ID int
-	Name string
+	Email string
+	TicketsLeft int
 	PermissionLevel int
-	TicketsLeft int64
+	Cpf int
+	Name string
+	Phone int
 	AccessToken string
 }
 
 func NewCustomerAccountOutputDTO(
 	id int,
-	name string,
+	email string,
+	ticketsLeft int,
 	permissionLevel int,
-	ticketsLeft int64,
+	cpf int,
+	name string,
+	phone int,
 ) *CustomerAccountOutputDTO {
 	return &CustomerAccountOutputDTO{
-		ID: id,
-		Name: name,
-		PermissionLevel: permissionLevel,
-		TicketsLeft: ticketsLeft,
+		ID: id, 
+		Email: email, 
+		TicketsLeft: ticketsLeft, 
+		PermissionLevel: permissionLevel, 
+		Cpf: cpf, 
+		Name: name, 
+		Phone: phone, 
 	}
+}
+
+func (dto *CustomerAccountOutputDTO) SetAccessToken(accessToken string) *CustomerAccountOutputDTO {
+	dto.AccessToken = accessToken
+	return dto
 }
 
 type CustomerAccountInputDTO struct {

@@ -2,19 +2,44 @@ package dto
 
 type CompanyAccountOutputDTO struct {
 	ID int
-	FantasyName string
+	Email string
 	PermissionLevel int
+	CityName string
+	Cnpj int
+	SocialReason string
+	FantasyName string
+	Phone int
+	CompanyTypeId int
 	AccessToken string
 }
 
 func NewCompanyOutputDTO(
 	id int,
-	fantasyName string,
+	email string,
 	permissionLevel int,
+	cityName string,
+	cnpj int,
+	socialReason string,
+	fantasyName string,
+	phone int,
+	companyTypeId int,
 ) *CompanyAccountOutputDTO {
 	return &CompanyAccountOutputDTO{
 		ID: id,
-		FantasyName: fantasyName,
+		Email: email,
 		PermissionLevel: permissionLevel,
+		CityName: cityName,
+		Cnpj: cnpj,
+		SocialReason: socialReason,
+		FantasyName: fantasyName,
+		Phone: phone,
+		CompanyTypeId: companyTypeId,
 	}
+}
+
+func (dto *CompanyAccountOutputDTO) SetAccessToken(
+	accessToken string,
+) *CompanyAccountOutputDTO {
+	dto.AccessToken = accessToken
+	return dto
 }
