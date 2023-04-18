@@ -78,7 +78,6 @@ func (u *GetEmployeesUseCase) Execute(
 		output = append(output, *dto.NewEmployeeOutputDTO(
 			employee.Cpf,
 			employee.Name,
-			employee.Name,
 			employee.Phone,
 		))
 	}
