@@ -1,24 +1,24 @@
-DROP TABLE account CASCADE;
+DROP TABLE IF EXISTS account CASCADE;
 
-DROP TABLE bus CASCADE;
+DROP TABLE IF EXISTS bus CASCADE;
 
-DROP TABLE city CASCADE;
+DROP TABLE IF EXISTS city CASCADE;
 
-DROP TABLE company CASCADE;
+DROP TABLE IF EXISTS company CASCADE;
 
-DROP TABLE company_type CASCADE;
+DROP TABLE IF EXISTS company_type CASCADE;
 
-DROP TABLE customer CASCADE;
+DROP TABLE IF EXISTS customer CASCADE;
 
-DROP TABLE permission_level CASCADE;
+DROP TABLE IF EXISTS permission_level CASCADE;
 
-DROP TABLE person CASCADE;
+DROP TABLE IF EXISTS person CASCADE;
 
-DROP TABLE ticket CASCADE;
+DROP TABLE IF EXISTS ticket CASCADE;
 
-DROP TABLE ticket_status CASCADE;
+DROP TABLE IF EXISTS ticket_status CASCADE;
 
-DROP TABLE travel CASCADE;
+DROP TABLE IF EXISTS travel CASCADE;
 
 
 CREATE TABLE "person" (
@@ -144,6 +144,7 @@ ALTER TABLE "customer" ADD FOREIGN KEY ("company_id") REFERENCES "company" ("id"
 ALTER TABLE "person" ADD FOREIGN KEY ("city_id") REFERENCES "city" ("id");
 
 ALTER TABLE "bus" ADD FOREIGN KEY ("account_id") REFERENCES "account" ("id");
+
 
 -- Tickets status
 INSERT INTO ticket_status (id, description)
